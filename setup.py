@@ -10,7 +10,7 @@ print(subprocess.call("python -m pip install --upgrade pip", shell=True))
 try:
     import darksky
 except ImportError:
-    install('darksky')
+    install('darkskylib')
 try:
     import uszipcode
 except ImportError:
