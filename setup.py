@@ -31,7 +31,7 @@ def update_modules():
     try:
         import speech_recognition
     except ImportError:
-        install('speech_recognition')
+        install('SpeechRecognition')
     try:
         import gtts
     except ImportError:
@@ -63,7 +63,6 @@ def initial_data():
     user_data = {}
     user_data["first_name"] = input("First Name: ").lower()
     user_data["last_name"] = input("Last Name: ").lower()
-    user_data["age"] = input("Age: ").lower()
     user_data["zip"] = input("Zip Code: ").lower()
     user_data["city"] = input("City: ").lower()
     user_data["state"] = input("State (Ex: ri, nh, ca): ").lower()
@@ -86,10 +85,13 @@ def get_data():
 def settings():
     #specify user data that needs to go into this file
     user_data = get_data()
-    for key in user_data:
-        print (key, 'corresponds to', user_data[key])
-    say(user_data)
-    write_data(user_data)
+    try:
+        for key in user_data:
+            print (key, 'corresponds to', user_data[key])
+        say(user_data)
+        write_data(user_data)
+    except IndexError:
+        user_data = {}
     return user_data
 
 def main():
