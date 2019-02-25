@@ -1,3 +1,5 @@
+#Ignore febuary, didnt add the list key value pair
+#Do all testing with january for the time being
 
 months = {"january":{
     1:[],
