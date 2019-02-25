@@ -1,10 +1,16 @@
 from uszipcode import SearchEngine
 
-search = SearchEngine(simple_zipcode=True)
+def main(city, state):
+    search = SearchEngine(simple_zipcode=True)
 
-zipcode = search.by_zipcode("02881")
+    #print(city, " ", state)
+    zipcode = search.by_city_and_state(city, state)[0]
+    #print("city: ", zipcode)
 
-zip_dict = zipcode.to_dict()
+    zip_dict = zipcode.to_dict()
+    #print("dict: ", zip_dict)
 
-latitude = zip_dict["lat"]
-longitude = zip_dict["lng"]
+    latitude = zip_dict["lat"]
+    longitude = zip_dict["lng"]
+    #print(latitude, " ", longitude)
+    return latitude, longitude
