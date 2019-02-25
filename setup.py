@@ -51,6 +51,8 @@ def update_modules():
     try:
         import nltk
     except ImportError:
+        install(nltk)
+        import nltk
         install('nltk')
         nltk.download('punkt')
         nltk.download('stopwords')
