@@ -24,6 +24,8 @@ class SalmonFisher():
             
             elif(self.number == 100):
                 print("you have caught a salmon! Congrats!")
+                time.sleep(10)
+                print("But you also played this salmon game for an hour... so are you really a winner?")
                 break
 
             time.sleep(2.16)
