@@ -1,6 +1,8 @@
 import subprocess
 import json
-from command_output import say
+
+#create guest variable
+is_guest = False
 
 #function for installing uninstalled modules
 def install(name):
@@ -47,11 +49,15 @@ def update_modules():
     try:
         import pizzapi
     except ImportError:
-        install(pizzapi)
+        install('pizzapi')
+    try:
+        import newspaper
+    except ImportError:
+        install('newspaper3k')
     try:
         import nltk
     except ImportError:
-        install(nltk)
+        install('nltk')
         import nltk
         install('nltk')
         nltk.download('punkt')
@@ -72,14 +78,28 @@ def initial_data():
 
 #write user data to a json file
 def write_data(user_data):
-    data = open("userData.json", "w+")
-    #write the data to the file
+    #if user is guest, create a guest file
+    if is_guest:
+        data = open("guest_data.json", "w+")
+    #otherwise, write the data to the file
+    else:
+        # open the specific user file
+        data = open("user_data.json", "w+")
+    #write data to the file
     with data as outfile:
         json.dump(user_data, outfile)
+    data.close()
 
 #get the information from the data file for various uses
 def get_data():
-    with open("userData.json") as json_file:
+    #if guest user, get the data from the guest file
+    if is_guest:
+        file_name = "guest_data.json"
+    #if not guest, get the data from the user file
+    else:
+        file_name = "user_data.json"
+    #get the data from whatever file is being accessed
+    with open(file_name) as json_file:
         data = json.load(json_file)
         return data
 
@@ -90,11 +110,20 @@ def settings():
     try:
         for key in user_data:
             print (key, 'corresponds to', user_data[key])
-        say(user_data)
         write_data(user_data)
     except IndexError:
         user_data = {}
     return user_data
+
+def del_guest():
+    from pathlib import Path
+    import os
+    #define the file that needs to be removed
+    guest_file = Path("guest_data.json")
+    #remove it if it exists
+    if guest_file.exists():
+        print("File found! " + str(guest_file))
+        os.remove(str(guest_file))
 
 def main():
     update_modules()
