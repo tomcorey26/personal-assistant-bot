@@ -17,28 +17,36 @@ def say(response):
 def order_pizza():
     import pizzapi
     #prompt the user with their order
-    say("Ok, what would you like to order?")
-    # get user data for command use
-    import setup
-    user_data = setup.get_data()
-    # get user's information from user file
-    user_data["email"] = input("Email: ").lower()
-    user_data["phone"] = input("Phone Number(Ex: 1234567890): ").lower()
-    user_data["address"] = input("Address: ").lower()
-    setup.write_data(user_data)
-    customer = pizzapi.Customer(user_data["first_name"], user_data["last_name"], user_data["email"], user_data["phone"])
-    address = pizzapi.Address(user_data["address"], user_data["city"], user_data["state"], user_data["zip"])
-    store = address.closest_store()
-    pizza_order(store, customer, address)
     order_list = input_converter.myCommand()
     return "Ok, I will order your " + order_list
 
-#function to look for a recipe
-def get_recipe():
-    # get the food that is being requested
-    food = input[command_input.index("recipe") + 1]
-    # find the requested recipe
-    return "Here's a recipe for " + food + ": " + "recipe(food)"
+#function to scrape for a recipe
+def get_recipe(command_input):
+    from recipe_scrapers import scrape_me
+    #get the food that is being requested
+    try:
+        food = command_input[command_input.index("recipe") + 1]
+    except IndexError:
+        food = command_input[command_input.index("recipe") - 1]
+    #google a recipe from allrecipes.com
+    from googlesearch import search
+    query = food + " allrecipes.com"
+    #find the desired url
+    url = ""
+    for i in search(query, tld="com", num=1, stop=1, pause=2):
+        url = i
+    print("url: ", url)
+    #assign scraper to this url
+    scraper = scrape_me(url)
+    #find the ingredients for the recipe and convert that into a string
+    ingredients = str(scraper.ingredients())
+    #remove brackets and add line breaks in the string to make it more readable
+    ingredients = ingredients.replace(",", "\n")
+    ingredients = ingredients.replace("[", "")
+    ingredients = ingredients.replace("]", "")
+    ingredients = ingredients.replace("'", "")
+    #get the recipe back to the user
+    return "Here's a recipe for " + food + ": \n " + str(ingredients)
 
 #function to current system time
 def get_time():
@@ -122,7 +130,7 @@ def commands(command_input):
         output = order_pizza()
     #look for a recipe
     elif "recipe" in key:
-        output = get_recipe()
+        output = get_recipe(command_input)
     #current system time
     elif "time" in key:
         output = get_time()
