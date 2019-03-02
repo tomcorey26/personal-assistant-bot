@@ -1,0 +1,15 @@
+# File name: menubar.kv
+
+<MenuBar@BoxLayout>:
+	orientation: 'horizontal'
+	padding: 2
+	
+	MenuButton:
+		text: 'Fun'
+	MenuButton:
+		text: 'Weather'
+	MenuButton:
+		text: 'Calendar'
+
+<MenuButton>:
+	on_release: self.switchScreens()

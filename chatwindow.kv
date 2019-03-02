@@ -1,0 +1,31 @@
+# File name: chatwindow.kv
+
+<UserInput@TextInput>:
+	multiline: False
+	background_color: (0, 0, 0, 1)
+	foreground_color: (0, 1, 0, 1)
+	
+<ChatWindow>:
+	text_log: _text_log
+	text_input: _user_input
+	
+	AnchorLayout:
+		anchor_x: 'center'
+		anchor_y: 'bottom'
+		UserInput:
+			id: _user_input
+			size_hint: 1, None
+			height: 30
+			on_text_validate: root.processText()
+
+			
+	AnchorLayout:
+		anchor_x: 'center'
+		anchor_y: 'top'
+		TextInput:
+			id: _text_log
+			size_hint: 1, None
+			height: root.height - _user_input.height
+			multiline: True
+			readonly: True
+
