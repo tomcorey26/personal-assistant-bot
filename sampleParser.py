@@ -13,6 +13,5 @@ class memeParserXD:
         else:
             output = "idk what that means"
 
-        time.sleep(1)
         return output
         

@@ -6,6 +6,8 @@ from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.button import Button
 from kivy.uix.anchorlayout import AnchorLayout
+from kivy.uix.relativelayout import RelativeLayout
+from kivy.uix.gridlayout import GridLayout
 from datepicker import CalendarWidget
 from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
 from kivy.clock import Clock
@@ -39,7 +41,7 @@ class MenuButton(Button):
 class ChatWindow(AnchorLayout):
     
     def processText(self):
-        #if the textbox is empty, dont do anything
+        # if the textbox is empty, dont do anything
         if self.text_input.text == '':
             return
 
@@ -49,9 +51,10 @@ class ChatWindow(AnchorLayout):
         self.text_log.text = self.text_log.text + 'user: ' + inputString + '\n'
         self.text_input.text = ''
 
-        Clock.schedule_once(lambda dt: self.doNothing(), 1)
+        # TODO figure a way to add delay to the function using kivy.clock, doesn't work as currently configured
+        # Clock.schedule_once(lambda dt: self.doNothing(), 1)
         
-        #print the bot's response
+        # print the bot's response
         self.text_log.text = self.text_log.text + "bot: " + mp.parse(inputString) + '\n'
 
     def doNothing(dt):
