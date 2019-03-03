@@ -103,19 +103,19 @@ def tell_joke():
 def commands(command_input):
     #find which command to execute based on user input
     key = ""
-    for word in command_input:
-        if "settings" in word:
-            key = "settings"
-        if ("domino's" in word) or ("pizza" in word):
-            key = "pizza";
-        elif "recipe" in word:
-            key = "recipe"
-        elif "time" in word:
-            key = "time"
-        elif "weather" in word:
-            key = "weather"
-        elif "joke" in word:
-            key = "joke"
+    if "settings" in command_input:
+        key = "settings"
+    if ("domino's" in command_input) or ("pizza" in command_input):
+        key = "pizza";
+    elif "recipe" in command_input:
+        key = "recipe"
+    elif "time" in command_input:
+        key = "time"
+    elif "weather" in command_input:
+        key = "weather"
+    elif "joke" in command_input:
+        key = "joke"
+        print("Input: ", command_input, "Key: ", key)
 
     #define an output variable for later
     output = "Invalid Command."
@@ -130,13 +130,19 @@ def commands(command_input):
         output = order_pizza()
     #look for a recipe
     elif "recipe" in key:
-        output = get_recipe(command_input)
+        #parse the text for this feature
+        parsed_command = input_converter.convert_text(command_input.lower())
+        #use the parsed text to get the desired output
+        output = get_recipe(parsed_command)
     #current system time
     elif "time" in key:
         output = get_time()
     #find out the weather
     elif "weather" in key:
-        output = get_weather(command_input)
+        #parse the text for this feature
+        parsed_command = input_converter.convert_text(command_input.lower())
+        #use the parsed text to get the desired output
+        output = get_weather(parsed_command)
     #tell a joke
     elif "joke" in key:
         output = tell_joke()
