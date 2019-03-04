@@ -1,9 +1,5 @@
 import praw
 
-numPosts = 5
-
-
-
 #limit = Int
 #subreddit = "subreddit name"
 #random = True
