@@ -209,6 +209,7 @@ class CalendarWidget(RelativeLayout):
         """ Get day value from pressed button """
         
         self.active_date[0] = int(inst.text)
+        self.event_label.text = str(self.active_date)
                 
         if self.as_popup:
             self.parent_popup.dismiss()
