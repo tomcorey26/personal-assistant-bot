@@ -115,6 +115,9 @@ class Pizza:
   def placeOrder(self):
     self.order.place(self.card)
     self.store.place_order(self.order,self.card)
+  
+  def testOrder(self):
+    self.order.pay_with(self.card)
 
 
 
@@ -130,6 +133,7 @@ def main():
   thePizza.initCard()
   thePizza.printCard()
   thePizza.printSummary()
+  thePizza.testOrder()
 
   #uncomment to actually order
   # thePizza.placeOrder()
