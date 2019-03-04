@@ -2,6 +2,7 @@ import pyttsx3
 from datetime import datetime
 import time
 import input_converter
+import nltk
 
 #speaks text back to the user
 def say(response):
@@ -93,6 +94,28 @@ def get_weather(command_input):
     except:
         return "Cannot connect to weather service."
 
+def reddit_posts(command_input):
+    import RedditApi
+    #pull the subreddit from the input
+    sub = ""
+    for token in command_input:
+        #if a sub is given
+        if "r /" in token or "/" in token:
+            sub = token
+        elif "reddit" in token or "all" in token:
+            sub = "all"
+    #pull the subreddit string together to form the proper name
+    #fix underscores
+    sub = sub.replace("underscore", "_")
+    #remove whitespace
+    sub = sub.replace(" ", "")
+    #remove r/
+    sub = sub.replace("r/", "")
+    print("sub: ",sub)
+    say("Here are the top posts from r/" + sub + ": ")
+    return str(RedditApi.redditPosts(5, sub))
+
+
 def tell_joke():
     from random import randint
     joke_list = ["Your social life.", "Something about a cow.", "Your mom."]
@@ -115,7 +138,8 @@ def commands(command_input):
         key = "weather"
     elif "joke" in command_input:
         key = "joke"
-        print("Input: ", command_input, "Key: ", key)
+    elif "reddit" in command_input or "posts" in command_input:
+        key = "reddit"
 
     #define an output variable for later
     output = "Invalid Command."
@@ -146,5 +170,10 @@ def commands(command_input):
     #tell a joke
     elif "joke" in key:
         output = tell_joke()
+    elif "reddit" in key:
+        #parse the text for this feature
+        parsed_command = input_converter.convert_text(command_input.lower())
+        #use the parsed text to get the desired output
+        output = reddit_posts(parsed_command)
 
     say(output)

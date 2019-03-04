@@ -47,6 +47,11 @@ def update_modules():
     except ImportError:
         install('keyboard')
     try:
+        import googlesearch
+    except ImportError:
+        install("beautifulsoup4")
+        install("google")
+    try:
         import pizzapi
     except ImportError:
         install('pizzapi')
@@ -54,6 +59,14 @@ def update_modules():
         import newspaper
     except ImportError:
         install('newspaper3k')
+    try:
+        import praw
+    except ImportError:
+        install('praw')
+    try:
+        import recipe_scrapers
+    except ImportError:
+        install("git+git://github.com/hhursev/recipe-scrapers.git")
     try:
         import nltk
     except ImportError:
@@ -65,6 +78,9 @@ def update_modules():
         nltk.download('averaged_perceptron_tagger')
         nltk.download('maxent_ne_chunker')
         nltk.download('words')
+        nltk.download('brown')
+        nltk.download('maxent_treebank_pos_tagger')
+        nltk.download('wordnet')
 
 #create the initial user data
 def initial_data():
