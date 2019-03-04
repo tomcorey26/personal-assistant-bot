@@ -1,93 +1,141 @@
 from pizzapy import *
 
+class Pizza:
+  def __init__(self,customer,store,menu,order,card):
+    self.customer = customer
+    self.store = store
+    self.menu = menu
+    self.order = order
+    self.card = card
+    self.orderList = [];
+    self.method = ''
 
-#TODO error handling
-def initCustomer():
-  firstName = input("First Name: ")
-  lastName = input("Last Name: ")
-  email = input ("Email: ")
-  number = input ("Phone number: ")
-  address = input ("Address: ")
-  print("\n")
-
-  customer = Customer(firstName, lastName, email, number, address)
-
-  return customer
-
-def printLocalStore(my_local_dominos):
-  print("Your local dominos is: \n")
-  print(my_local_dominos)
-
-def initOrder(customer):
-  my_local_dominos = StoreLocator.find_closest_store_to_customer(customer)
-  printLocalStore(my_local_dominos)
-  menu = my_local_dominos.get_menu()
-  print("Starting order for your location....")
-  order = Order.begin_customer_order(customer, my_local_dominos)
-
-  return my_local_dominos, menu, order
-
-
-# TODO have error handling for order
-# TODO make loop completely stop when done is entered
-#added functions
-def addtoOrder(order, menu):
-  search = ''
-  while search != 'done':
-    search = input("Search for item (Enter 'done' to exit): ")
-    print("Search results for " + search)
+  #TODO error handling
+  def initCustomer(self):
+    firstName = input("First Name: ")
+    lastName = input("Last Name: ")
+    email = input ("Email: ")
+    number = input ("Phone number: ")
+    address = input ("Address: ")
     print("\n")
-    menu.search(Name=search)
-    print("\n")
-    
-    confirm = input("Would you like to add anything to your order? (y/n): ")
-    if confirm == 'y':
-      item = input('Enter the code of the item you would like to add: ')
-      order.add_item(item)
+
+    self.customer = Customer(firstName, lastName, email, number, address)
+
+    return self.customer
   
-  return order
+  def printCustomer(self):
+    print(self.customer)
+    return
 
-def obtainMethod(order):
-  option = input("Carryout or Delivery (c/d): ")
-  if option == 'c':
-    order.changeToCarryout()
+  def initOrder(self):
+    self.store = StoreLocator.find_closest_store_to_customer(self.customer)
+    self.printLocalStore()
+    self.menu = self.store.get_menu()
+    print("Starting order for your location....")
+    self.order = Order.begin_customer_order(self.customer, self.store)
 
-def initCard():
-  card = input("Enter credit card number: ")
-  exp = input("Enter expiration: ")
-  security = input("Enter Security code: ")
-  billing = input("Enter billing ZIP: ")
+    return 
 
-  card = CreditCard(card, exp, security, billing)
+  def printLocalStore(self):
+    print("Your local dominos is: \n")
+    print(self.store)
+    return
 
-  return card
+
+  # TODO have error handling for order
+  # TODO make loop completely stop when done is entered
+  #added functions
+  def addtoOrder(self):
+    search = ''
+    while search != 'done':
+      search = input("Search for item (Enter 'done' to exit): ")
+      if search != 'done':
+        print("Search results for " + search)
+        print("\n")
+        self.menu.search(Name=search)
+        print("\n")
+        
+        confirm = input("Would you like to add anything to your order? (y/n): ")
+        if confirm == 'y':
+          name = input('Enter the name of the item you would like to add (to keep track of order): ') 
+          item = input('Enter the code of the item you would like to add: ')
+          self.orderList.append(name)
+          self.order.add_item(item)
+    
+    self.printOrder()
+    
+    return
+
+# # TODO print how much it costs
+  def printOrder(self):
+    print("Here is your current order:")
+    for x in self.orderList:
+      print(x)
+    
+    return
+
+  def obtainMethod(self):
+    option = input("Carryout or Delivery (c/d): ")
+    if option == 'c':
+      self.method = 'Carryout'
+      self.order.changeToCarryout()
+    else:
+      self.method = 'Delivery'
+
+  def printObtainMethod(self):
+    print("Your obtain Method is")
+    print(self.method)
+
+    return
+
+  def initCard(self):
+    card = input("Enter credit card number: ")
+    exp = input("Enter expiration: ")
+    security = input("Enter Security code: ")
+    billing = input("Enter billing ZIP: ")
+
+    self.card = CreditCard(card, exp, security, billing)
+
+    return self.card
+  
+  def printCard(self):
+    print("Your Card info is:")
+    print(self.card)
+
+    return
+  
+  def printSummary(self):
+    print("Order Summary: ")
+    self.printCustomer()
+    self.printLocalStore()
+    self.printOrder()
+    self.printObtainMethod()
+    self.printCard()
+
+    return
+  
+  def placeOrder(self):
+    self.order.place(self.card)
+    self.store.place_order(self.order,self.card)
+
 
 
 def main():
-  #Get customer information
-  customer = initCustomer()
 
-  #Find local Dominos, get menu, and begin order
-  my_local_dominos, menu, order = initOrder(customer)
+  thePizza = Pizza('','','','','')
+  thePizza.initCustomer()
+  thePizza.printCustomer()
+  thePizza.initOrder()
+  thePizza.addtoOrder()
+  thePizza.obtainMethod()
+  thePizza.printObtainMethod()
+  thePizza.initCard()
+  thePizza.printCard()
+  thePizza.printSummary()
 
-  #Search for items from menu and add to order
-  order = addtoOrder(order, menu)
-  print("Here is your order: ")
-  print(order.data['Products'])
+  #uncomment to actually order
+  # thePizza.placeOrder()
 
-  #Choose between pick up or delivery
-  order = obtainMethod(order)
-  print(order)
-
-  #Get credit card information
-  card = initCard()
-
-  # Uncomment these to actually place order
-
-  # order.place(card)
-  # my_local_dominos.place_order(order, card)
-
-  print("test")
 
 
 if __name__== "__main__":
