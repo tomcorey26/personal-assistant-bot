@@ -41,10 +41,8 @@ class Pizza:
     print(self.store)
     return
 
-
+  # TODO break this up into functions kinda spagetti
   # TODO have error handling for order
-  # TODO make loop completely stop when done is entered
-  #added functions
   def addtoOrder(self):
     search = ''
     while search != 'done':
