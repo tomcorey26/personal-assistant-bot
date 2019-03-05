@@ -77,16 +77,27 @@ def removeEvent(name):
     del x[name]
     write_data(x)
 
+#Prints all events in a more elegant form instead of dictionary stucture
+def printCal():
+    x = get_data()
+    for event, eventInfo in x.items():
+        print("Event: ", event)
+        for i in range(len(eventInfo)):
+            print("Event Time: ",eventInfo[i]["Event Time"])
+            print("Event Date: ",eventInfo[i]["Event Date"])
+            print("--------------------")
+
+
 #Simple UI for testing purposes
 def main():
     appCheck()
     check = True
     print("1: View data. 2: Add event. 3: Search an event. 4: Remove an event. 5: End")
     while check:
-        choice = input("Choice: ")
+        choice = input("Choice: \n")
         if choice == "1":
-            x = get_data()
-            print(x)
+            print("Here are your events: \n")
+            printCal()
         elif choice == "2":
             addEvent()
         elif choice == "3":
