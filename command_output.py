@@ -42,10 +42,13 @@ def get_recipe(command_input):
     #find the ingredients for the recipe and convert that into a string
     ingredients = str(scraper.ingredients())
     #remove brackets and add line breaks in the string to make it more readable
-    ingredients = ingredients.replace(",", "\n")
-    ingredients = ingredients.replace("[", "")
-    ingredients = ingredients.replace("]", "")
-    ingredients = ingredients.replace("'", "")
+    print("Before: ", ingredients)
+    ingredients = ingredients[(ingredients.index(",")+2):]
+    ingredients = ingredients.replace(",", "\n") #replace commas with line breaks
+    ingredients = ingredients.replace("®", "") #remove registered mark for speech purposes
+    ingredients = ingredients.replace("[", "") #remove left bracket
+    ingredients = ingredients.replace("]", "") #remove right bracket
+    ingredients = ingredients.replace("'", "") #remove single quotes
     #get the recipe back to the user
     return "Here's a recipe for " + food + ": \n " + str(ingredients)
 
@@ -115,12 +118,24 @@ def reddit_posts(command_input):
     say("Here are the top posts from r/" + sub + ": ")
     return str(RedditApi.redditPosts(5, sub))
 
-
 def tell_joke():
     from random import randint
     joke_list = ["Your social life.", "Something about a cow.", "Your mom."]
     joke = joke_list[randint(0,len(joke_list)-1)]
     return joke
+
+def get_calendar(command_input):
+    import calendar_events
+    if "view" in command_input:
+        choice = "view"
+    elif "add" in command_input:
+        choice = "add"
+    elif "remove" in command_input:
+        choice = "remove"
+    elif "search" in command_input or "find" in command_input:
+        choice = "search"
+    #perform a different calendar action based on the choice given
+    return calendar_events.choices(choice)
 
 #do different actions based on the given input
 def commands(command_input):
@@ -140,6 +155,8 @@ def commands(command_input):
         key = "joke"
     elif "reddit" in command_input or "posts" in command_input:
         key = "reddit"
+    elif any(c in command_input for c in ("add", "remove", "search", "find", "view")) and any(d in command_input for d in ("event", "calendar")):
+        key = "calendar"
 
     #define an output variable for later
     output = "Invalid Command."
@@ -170,10 +187,14 @@ def commands(command_input):
     #tell a joke
     elif "joke" in key:
         output = tell_joke()
+    #access top reddit posts
     elif "reddit" in key:
         #parse the text for this feature
         parsed_command = input_converter.convert_text(command_input.lower())
         #use the parsed text to get the desired output
         output = reddit_posts(parsed_command)
+    #manipulate or view calendar events
+    elif "calendar" in key:
+        output = get_calendar(command_input)
 
     say(output)
