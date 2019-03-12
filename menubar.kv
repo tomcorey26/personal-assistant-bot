@@ -12,4 +12,4 @@
 		text: 'Calendar'
 
 <MenuButton>:
-	on_release: self.switchScreens()
+	on_release: self.parent.screen_manager.switchScreens(self.text)

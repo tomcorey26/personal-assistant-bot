@@ -11,6 +11,7 @@ from kivy.uix.gridlayout import GridLayout
 from datepicker import CalendarWidget
 from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
 from kivy.clock import Clock
+from functools import partial
 
 from sampleParser import memeParserXD as mp
 import time
@@ -23,7 +24,8 @@ class MenuContainer(AnchorLayout):
     pass
 
 class MenuManager(ScreenManager):
-    pass
+    def switchScreens(self, screen):
+        self.current = screen
 
 class CalendarScreen(Screen):
     pass
@@ -32,11 +34,11 @@ class WeatherScreen(Screen):
     pass
 
 class MemeScreen(Screen):
+
     pass
 
 class MenuButton(Button):
-    def switchScreens(self):
-        self.parent.screen_manager.current = self.text
+    pass
 
 class ChatWindow(AnchorLayout):
     
@@ -51,14 +53,14 @@ class ChatWindow(AnchorLayout):
         self.text_log.text = self.text_log.text + 'user: ' + inputString + '\n'
         self.text_input.text = ''
 
-        # TODO figure a way to add delay to the function using kivy.clock, doesn't work as currently configured
-        # Clock.schedule_once(lambda dt: self.doNothing(), 1)
-        
-        # print the bot's response
-        self.text_log.text = self.text_log.text + "bot: " + mp.parse(inputString) + '\n'
+        #get the user's response 1 second after they enter the input
+        Clock.schedule_once(partial(self.getResponse, inputString), 1)
 
-    def doNothing(dt):
-        pass
+
+    def getResponse(self, inputString, dt):
+        self.text_log.text = self.text_log.text + "bot: " + mp.parse(self, inputString) + '\n'
+        self.text_input.focus = True
+
     
 class MenuApp(App):
     def build(self):
