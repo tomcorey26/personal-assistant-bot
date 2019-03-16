@@ -16,10 +16,9 @@ def say(response):
 
 #function to order a pizza
 def order_pizza():
-    import pizzapi
-    #prompt the user with their order
-    order_list = input_converter.myCommand()
-    return "Ok, I will order your " + order_list
+    import init_order
+    #go through the order process
+    return init_order.main()
 
 #function to scrape for a recipe
 def get_recipe(command_input):
@@ -143,7 +142,7 @@ def commands(command_input):
     key = ""
     if "settings" in command_input:
         key = "settings"
-    if ("domino's" in command_input) or ("pizza" in command_input):
+    if any(c in command_input for c in ("pizza", "domino's")) and not ("recipe" in command_input):
         key = "pizza";
     elif "recipe" in command_input:
         key = "recipe"
