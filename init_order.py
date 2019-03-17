@@ -32,10 +32,13 @@ def printLocalStore(my_local_dominos):
   say(my_local_dominos.get_details()['StreetName'])
 
 def initOrder(customer_info, address_info):
+  #find a local store
   try:
     my_local_dominos = address_info.closest_store()
-  except StoreException:
-    "No local stores are currently open"
+  #if none are open, return nothing
+  except:
+    return
+
   printLocalStore(my_local_dominos)
   menu_data = my_local_dominos.get_menu()
   say("Starting order for your location...")
@@ -73,7 +76,8 @@ def search_handler(menu_data, search):
       #have the user choose in the case of multiple options
       choice = ""
       if input_type == "speech":
-        say("Which number do you want? " + str(ordered_choice))
+        say("Which number do you want? ")
+        print(str(ordered_choice))
         choice = myCommand()
       else:
         choice = input("Which number do you want? " + str(ordered_choice))
@@ -131,22 +135,26 @@ def main():
   #Get customer information
   customer_info, address_info = initCustomer()
 
-  #Find local Dominos, get menu, and begin order
-  my_local_dominos, menu_data, order_info = initOrder(customer_info, address_info)
+  #Find local Domino's, get menu, and begin order
+  try:
+    my_local_dominos, menu_data, order_info = initOrder(customer_info, address_info)
+  #if no local Domino's is open, report this to the user
+  except TypeError:
+    return "No local stores are currently open."
 
   #Search for items from menu and add to order
   order_info = addtoOrder(order_info, menu_data)
   #display the user's order
   say("Here is your order: ")
-  say(order_info.data['Products'])
+  print(order_info.data['Products'])
   #If nothing in the order, end the process
   if len(order_info.data ['Products']) == 0: return "Order empty. Have a nice day!"
 
   #Choose between pick up or delivery
   if input_type == "speech":
     say("Carryout or delivery? ")
-    option = myCommand.lower()
-    if option == "carry out":
+    option = myCommand()
+    if option.lower() == "carry out":
       order_info.changeToCarryout()
   else:
     option = input("Carryout or Delivery (c/d): ")
@@ -156,9 +164,10 @@ def main():
   #Get credit card information
   card = initCard()
 
+  #place the order
+  # order_info.place(card)
+  # my_local_dominos.place_order(order_info, card)
   # Uncomment these to actually place order
-
-  order.place(card)
 
   return "Order complete! It should arrive soon."
 
