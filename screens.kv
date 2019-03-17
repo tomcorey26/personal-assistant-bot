@@ -67,15 +67,19 @@
 			rows: 2
 			
 			Button:
+				id: tempButton
 				background_color: .5, .5, 1, 1
 				text: "Temperature here"
 			Button: 
+				id: summButton
 				text: "Summary here"
 				background_color: .5, .5, 1, 1
 			Button:
+				id: otherButton
 				text: "something else here"
 				background_color: .5, .5, 1, 1
 			Button:
+				id: imageButton
 				text: "image here"
 				background_color: .5, .5, 1, 1
 			
@@ -91,3 +95,62 @@
 			Rectangle:
 				pos: self.pos
 				size: self.size
+				
+<LoginPopup>:
+	title: 'Log In' 
+	size_hint: None, None
+	size: 400, 400
+	BoxLayout:
+		orientation: "vertical"
+		GridLayout:
+			rows: 2
+			size_hint: 1, None
+			height: 60
+		
+			Label:
+				text: "username"
+			TextInput:
+				multiline: False
+			Label:
+				text: "password"
+			TextInput:
+				multiline: False
+				password: True
+				
+		Label:
+		BoxLayout:
+			orientation: "horizontal"
+			Button:
+				text: "Log In"
+				on_release: root.dismiss()
+			Button:
+				text: "Guest"
+				on_release: root.dismiss()
+			Button:
+				text: "Sign up"
+				on_release: root.openSignupPopup()
+
+<SignupPopup>:
+	title: 'Sign Up' 
+	size_hint: None, None
+	size: 400, 400
+	GridLayout:
+		cols: 2
+		
+		Label:
+			text: "username"
+		TextInput:
+			multiline: False
+		Label:
+			text: "password"
+		TextInput:
+			multiline: False
+			password: True
+		Label:
+			text: "repeat password"
+		TextInput:
+			multiline: False
+			password: True
+		Button:
+			text: "confirm"
+			on_release: root.dismiss()				
