@@ -1,7 +1,7 @@
 from darksky import forecast
 import coords_to_zip
 from api_keys import *
-
+from uszipcode import SearchEngine
 
 class forcasts:
 
@@ -48,6 +48,22 @@ class forcasts:
         return self.timedelta
 
 
+
+def coords_to_zip(city, state):
+    search = SearchEngine(simple_zipcode=True)
+
+    #print(city, " ", state)
+    zipcode = search.by_city_and_state(city, state)[0]
+    #print("city: ", zipcode)
+
+    zip_dict = zipcode.to_dict()
+    #print("dict: ", zip_dict)
+
+    latitude = zip_dict["lat"]
+    longitude = zip_dict["lng"]
+    #print(latitude, " ", longitude)
+    return latitude, longitude
+
 def main(city, state):
     # imports the datetime library with the fields date and timedelta
     from datetime import date, timedelta
@@ -56,7 +72,7 @@ def main(city, state):
     date = date.today()
 
     # gets the location from "coords_to_zip.py"
-    LOCATION = coords_to_zip.main(city, state)
+    LOCATION = coords_to_zip(city, state)
 
     # creates a forcasts object from the forcasts class
     forcast = forcasts(LOCATION, date, timedelta)
