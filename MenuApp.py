@@ -42,8 +42,18 @@ class CalendarScreen(Screen):
 class WeatherScreen(Screen):
     pass
 
-class MemeScreen(Screen):
+class TwitterScreen(Screen):
     pass
+
+class RedditScreen(Screen):
+    pass
+
+class FishScreen(Screen):
+    pass
+
+class SettingsScreen(Screen):
+    pass
+
 
 class LoginPopup(Popup):
 

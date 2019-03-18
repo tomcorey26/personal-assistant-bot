@@ -3,7 +3,10 @@
 <MenuManager>:
 	CalendarScreen:
 	WeatherScreen:
-	MemeScreen:
+	TwitterScreen:
+	RedditScreen:
+	FishScreen:
+	SettingsScreen:
 
 <CalendarScreen>:
 	name: "Calendar"
@@ -83,12 +86,55 @@
 				text: "image here"
 				background_color: .5, .5, 1, 1
 			
-			
-		
-<MemeScreen>:
-	name: "Fun"
+
+<SettingsScreen>:
+	name: "Settings"
 	Label:
-		text: "meme screen"
+		text: "Settings Screen"
+		canvas.before:
+			Color:
+				rgba: 1, 0, 0, 1
+			Rectangle:
+				pos: self.pos
+				size: self.size
+				
+<TwitterScreen>:
+	name: "Twitter"
+	Label:
+		text: "Twitter screen"
+		canvas.before:
+			Color:
+				rgba: .1, .8, 1, 1
+			Rectangle:
+				pos: self.pos
+				size: self.size
+
+<RedditScreen>:
+	name: "Reddit"
+	Label:
+		text: "Reddit screen"
+		canvas.before:
+			Color:
+				rgba: 1, .2, 0, 1
+			Rectangle:
+				pos: self.pos
+				size: self.size
+				
+<FishScreen>:
+	name: "Fishing"
+	Label:
+		text: "Fish screen"
+		canvas.before:
+			Color:
+				rgba: 0, 0, 1, 1
+			Rectangle:
+				pos: self.pos
+				size: self.size
+				
+<SettingsScreen>:
+	name: "Settings"
+	Label:
+		text: "settings screen"
 		canvas.before:
 			Color:
 				rgba: 1, 0, 0, 1

@@ -4,8 +4,8 @@ class memeParserXD:
     def parse(chatWindow, textInput):
 
         output = ''
-        if textInput == "fun":
-            chatWindow.screen_manager.current = "Fun"
+        if textInput == "fish":
+            chatWindow.screen_manager.current = "Fishing"
             output = "sup, my dudes"
         elif textInput == "weather":
             output = "it\'s pretty good outside"
