@@ -8,10 +8,12 @@
 		anchor_x: 'center'
 		anchor_y: 'bottom'
 		TextInput:
-			multiline: False
 			id: _user_input
+			multiline: False
 			size_hint: 1, None
 			height: 30
+			hint_text: "Make a command here"
+			hint_color: .3, .3, .3, 1
 			on_text_validate: root.processText()
 
 			
