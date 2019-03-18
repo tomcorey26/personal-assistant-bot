@@ -22,32 +22,13 @@ def order_pizza():
 
 #function to scrape for a recipe
 def get_recipe(command_input):
-    from recipe_scrapers import scrape_me
     #get the food that is being requested
     try:
         food = command_input[command_input.index("recipe") + 1]
     except IndexError:
         food = command_input[command_input.index("recipe") - 1]
-    #google a recipe from allrecipes.com
-    from googlesearch import search
-    query = food + " allrecipes.com"
-    #find the desired url
-    url = ""
-    for i in search(query, tld="com", num=1, stop=1, pause=2):
-        url = i
-    print("url: ", url)
-    #assign scraper to this url
-    scraper = scrape_me(url)
-    #find the ingredients for the recipe and convert that into a string
-    ingredients = str(scraper.ingredients())
-    #remove brackets and add line breaks in the string to make it more readable
-    print("Before: ", ingredients)
-    ingredients = ingredients[(ingredients.index(",")+2):]
-    ingredients = ingredients.replace(",", "\n") #replace commas with line breaks
-    ingredients = ingredients.replace("®", "") #remove registered mark for speech purposes
-    ingredients = ingredients.replace("[", "") #remove left bracket
-    ingredients = ingredients.replace("]", "") #remove right bracket
-    ingredients = ingredients.replace("'", "") #remove single quotes
+    #call the recipe finder
+    ingredients = recipe_finder.main(food)
     #get the recipe back to the user
     return "Here's a recipe for " + food + ": \n " + str(ingredients)
 
