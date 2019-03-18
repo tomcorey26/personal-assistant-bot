@@ -1,0 +1,56 @@
+# File name: menubar.kv
+
+<MenuBar@BoxLayout>:
+	orientation: 'horizontal'
+	padding: 2
+	
+	#the menubuttons change the view to teh selected screen
+	MenuButton:
+		text: 'Weather'
+	MenuButton:
+		text: 'Calendar'
+		
+	#this button opens a submenu with additional feature buttons
+	Button:
+		text: 'Fun'
+		on_release: dropdown.open(self)
+		on_parent: dropdown.dismiss()
+	
+	#this dropdown menu opens when the "Fun" button is selected
+	#it contains buttons for the other features for the program.
+	#TODO find a way to use MenuButtons in the dropdown instead of normal Buttons, to reduce redundancy
+	DropDown:
+		id: dropdown
+		
+		#black background behind the dropdown
+		canvas.before:
+			Color:
+				rgba: 0, 0, 0, 1
+			Rectangle:
+				pos: self.pos
+				size: self.size
+				
+		Button:
+			text: "Twitter"
+			size_hint_y: None
+			height:  30
+			on_release: root.screen_manager.switchScreens(self.text)
+			
+		Button:
+			text: "Reddit"
+			size_hint_y: None
+			height: 30
+			on_release: root.screen_manager.switchScreens(self.text)
+			
+		Button:
+			text: "Fishing"
+			size_hint_y: None
+			height: 30
+			on_release: root.screen_manager.switchScreens(self.text)
+			
+	
+	MenuButton:
+		text: 'Settings'
+		
+<MenuButton>:
+	on_release: self.parent.screen_manager.switchScreens(self.text)

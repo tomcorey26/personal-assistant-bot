@@ -1,0 +1,29 @@
+# File name: chatwindow.kv
+
+<ChatWindow>:
+	text_log: _text_log
+	text_input: _user_input
+	
+	AnchorLayout:
+		anchor_x: 'center'
+		anchor_y: 'bottom'
+		TextInput:
+			id: _user_input
+			multiline: False
+			size_hint: 1, None
+			height: 30
+			hint_text: "Make a command here"
+			hint_color: .3, .3, .3, 1
+			on_text_validate: root.processText()
+
+			
+	AnchorLayout:
+		anchor_x: 'center'
+		anchor_y: 'top'
+		TextInput:
+			id: _text_log
+			size_hint: 1, None
+			height: root.height - _user_input.height
+			multiline: True
+			readonly: True
+
