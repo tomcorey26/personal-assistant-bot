@@ -53,7 +53,7 @@ class ZipConverter():
         self.city = city
         self.state = state
 
-    def coords_to_zip(self):
+    def zipCodeToCoords(self):
         search = SearchEngine(simple_zipcode=True)
 
         #print(city, " ", state)
@@ -78,7 +78,7 @@ def main(city, state):
     zipConverter = ZipConverter(city, state)
 
     # gets the location from "coords_to_zip.py"
-    LOCATION = zipConverter.coords_to_zip()
+    LOCATION = zipConverter.zipCodeToCoords()
 
     # creates a forcasts object from the forcasts class
     forcast = forcasts(LOCATION, date, timedelta)
