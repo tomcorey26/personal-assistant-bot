@@ -1,7 +1,7 @@
 from darksky import forecast
 import zip_converter
 from api_keys import *
-
+from uszipcode import SearchEngine
 
 class forcasts:
 
@@ -47,6 +47,27 @@ class forcasts:
     def getTimeDelta(self):
         return self.timedelta
 
+
+class ZipConverter():
+
+    def __init__(self, city, state):
+        self.city = city
+        self.state = state
+
+    def zipCodeToCoords(self):
+        search = SearchEngine(simple_zipcode=True)
+
+        #print(city, " ", state)
+        zipcode = search.by_city_and_state(self.city, self.state)[0]
+        #print("city: ", zipcode)
+
+        zip_dict = zipcode.to_dict()
+        #print("dict: ", zip_dict)
+
+        latitude = zip_dict["lat"]
+        longitude = zip_dict["lng"]
+        #print(latitude, " ", longitude)
+        return latitude, longitude
 
 def main(city, state):
     # imports the datetime library with the fields date and timedelta
