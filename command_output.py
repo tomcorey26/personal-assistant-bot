@@ -55,12 +55,15 @@ def get_weather(command_input):
     try:
         # if a location is given, use that
         location = command_input[command_input.index("weather") + 1]
+        print("Location: ", location)
         #if a zip code is given
         try:
+            print(int(location))
             from zip_converter import zip_to_city_state
             city, state = zip_to_city_state(location)
         #if a city and state are given
-        except TypeError:
+        except ValueError:
+            print("City state location")
             # separate city and state into individual strings
             state_list = ["al", "ak", "az", "ar", "ca", "co", "ct", "dc", "de", "fl",
                           "ga", "hi", "id", "il", "in", "ia", "ks", "ky", "la", "me",
