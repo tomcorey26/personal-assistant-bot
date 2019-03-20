@@ -16,7 +16,6 @@ def update_modules():
     try:
         import darksky
     except ImportError:
-        print("ERROR!!!!")
         install('darkskylib')
     try:
         import uszipcode
@@ -84,12 +83,14 @@ def update_modules():
 
 #create the initial user data
 def initial_data():
+    from zip_converter import zip_to_city_state
     user_data = {}
     user_data["first_name"] = input("First Name: ").lower()
     user_data["last_name"] = input("Last Name: ").lower()
     user_data["zip"] = input("Zip Code: ").lower()
-    user_data["city"] = input("City: ").lower()
-    user_data["state"] = input("State (Ex: ri, nh, ca): ").lower()
+    user_data["city"], user_data["state"] = zip_to_city_state(user_data["zip"])
+    print(user_data)
+
     return user_data
 
 #write user data to a json file
