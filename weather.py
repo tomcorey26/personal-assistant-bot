@@ -1,4 +1,5 @@
 from darksky import forecast
+import zip_converter
 from api_keys import *
 from uszipcode import SearchEngine
 
@@ -72,13 +73,11 @@ def main(city, state):
     # imports the datetime library with the fields date and timedelta
     from datetime import date, timedelta
 
-    # sets the date to todays date
+    # sets the date to today's date
     date = date.today()
 
-    zipConverter = ZipConverter(city, state)
-
-    # gets the location from "coords_to_zip.py"
-    LOCATION = zipConverter.zipCodeToCoords()
+    # gets the location from "zip_converter.py"
+    LOCATION = zip_converter.main(city, state)
 
     # creates a forcasts object from the forcasts class
     forcast = forcasts(LOCATION, date, timedelta)

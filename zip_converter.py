@@ -14,19 +14,17 @@ def zip_to_coords(zipcode):
 
 def zip_to_city_state(zipcode):
     city_state = search.by_zipcode(zipcode).to_dict()
-    print("dict: ", city_state)
+    #print("dict: ", city_state)
 
     city = city_state["major_city"]
     state = city_state["state"]
-    print("city: ", city, " state: ", state)
+    #print("city: ", city, " state: ", state)
 
     return city, state
 
 def main(city, state):
-    print(city, " ", state)
+    print("City: ", city, " State: ", state)
     zipcode = search.by_city_and_state(city, state)[0]
     #print("zip: ", zipcode)
 
     return zip_to_coords(zipcode)
-
-zip_to_city_state("02882")
