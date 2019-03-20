@@ -44,38 +44,48 @@ def get_time():
 
 #function to find out the weather
 def get_weather(command_input):
-    # get user data for command use
     import setup
+    import zip_converter
+    # get user data for command use
     user_data = setup.get_data()
-    # figure out the location to detect the weather
+    # create base variables to be modified later
+    city = ""
+    state = ""
+    #figure out the location to detect the weather
     try:
         # if a location is given, use that
         location = command_input[command_input.index("weather") + 1]
-        # print("location: ", location)
-        # separate city and state into individual strings
-        state_list = ["al", "ak", "az", "ar", "ca", "co", "ct", "dc", "de", "fl",
-                      "ga", "hi", "id", "il", "in", "ia", "ks", "ky", "la", "me",
-                      "md", "ma", "mi", "mn", "ms", "mo", "mt", "ne", "nv", "nh",
-                      "nj", "nm", "ny", "nc", "nd", "oh", "ok", "or", "pa", "ri",
-                      "sc", "sd", "tn", "tx", "ut", "vt", "va", "wa", "wv", "wi", "wy"]
-        # print("sub: ",location[-3:])
-        for s in state_list:
-            if (" " + s) in location[-3:]:
-                state = s
-                city = location.replace((" " + state), "")
-                # print("city: ", city, "state: ", state)
+        #if a zip code is given
+        try:
+            from zip_converter import zip_to_city_state
+            city, state = zip_to_city_state(location)
+        #if a city and state are given
+        except TypeError:
+            # separate city and state into individual strings
+            state_list = ["al", "ak", "az", "ar", "ca", "co", "ct", "dc", "de", "fl",
+                          "ga", "hi", "id", "il", "in", "ia", "ks", "ky", "la", "me",
+                          "md", "ma", "mi", "mn", "ms", "mo", "mt", "ne", "nv", "nh",
+                          "nj", "nm", "ny", "nc", "nd", "oh", "ok", "or", "pa", "ri",
+                          "sc", "sd", "tn", "tx", "ut", "vt", "va", "wa", "wv", "wi", "wy"]
+            #find state abbreviations in location string
+            for s in state_list:
+                if (" " + s) in location[-3:]:
+                    #isolate the state into a variable
+                    state = s
+                    #isolate the city into a variable
+                    city = location.replace((" " + state), "")
+    #if no location is given
     except IndexError:
+        #use user information
         city = user_data["city"]
         state = user_data["state"]
         location = city + " " + state
     # find the conditions in that location
     import weather
-    try:
-        temp, summ = weather.main(city, state)
-        # construct a single output string from this input
-        return "In " + location + ", it is currently " + temp + " degrees and " + summ + "."
-    except:
-        return "Cannot connect to weather service."
+    print("")
+    temp, summ = weather.main(city, state)
+    # construct a single output string from this input
+    return "In " + location + ", it is currently " + temp + " degrees and " + summ + "."
 
 def reddit_posts(command_input):
     import RedditApi
