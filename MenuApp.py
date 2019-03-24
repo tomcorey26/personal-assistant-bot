@@ -16,6 +16,8 @@ from kivy.uix.popup import Popup
 
 from sampleParser import memeParserXD as mp
 import time
+from fish import Fish
+import random
 
 Builder.load_file('menubar.kv')
 Builder.load_file('chatwindow.kv')
@@ -36,6 +38,8 @@ class MenuManager(ScreenManager):
     def switchScreens(self, name):
         self.current = name
 
+# TODO maybe it would be better to make a screens.py file
+# where all of teh screens functions can be stored.
 class CalendarScreen(Screen):
     pass
 
@@ -49,9 +53,40 @@ class RedditScreen(Screen):
     pass
 
 class FishScreen(Screen):
-    pass
+
+    def castLine(self):
+        fishID = random.randint(0, 20)
+        catch = Fish(fishID)
+        species, wikiURL = catch.getSpecies()
+
+        if (species != "You fail to catch a fish"):
+            species = "You caught a " + species
+        self.ids._catch_label.text = species
+
+        #dictionary of the image URL's
+        #TODO find a better way to implement these
+
+        imageURLs = {1: "Trout.png", 2: "Salmon.png", 5: "Boots.png", 7: "Cod.png", 0: "Seaweed.png"} 
+
+        #get the url for the image
+        url = imageURLs.get(fishID)
+
+        #if the fishID doesn't have an image, just default to seaweed for now
+        if url == None:
+            url = "Seaweed.png"
+
+        self.ids._fish_image.source = "images/" + url
 
 class SettingsScreen(Screen):
+    pass
+
+class PizzaScreen(Screen):
+    pass
+
+class RecipeScreen(Screen):
+    pass
+
+class NewsScreen(Screen):
     pass
 
 

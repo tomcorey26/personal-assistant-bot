@@ -1,4 +1,4 @@
-import random as random
+import random
 
 class Fish():
 
@@ -24,7 +24,7 @@ class Fish():
             elif(fish == "Salmon"):
                 wiki_url = "https://en.wikipedia.org/wiki/Salmon"
             elif(fish == "Carp"):
-                wiki_url = "https://en.wikipedia.org/wiki/Carp  "
+                wiki_url = "https://en.wikipedia.org/wiki/Carp"
             elif(fish == "Goldfish"):
                 wiki_url = "https://en.wikipedia.org/wiki/Goldfish"
             elif(fish == "Catfish"):
@@ -54,5 +54,6 @@ def main():
     print(fish)
     print(fish_wiki)
 
-main()
+if __name__ == "__main__":
+    main()
 
