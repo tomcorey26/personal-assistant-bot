@@ -1,13 +1,13 @@
 from darksky import forecast
 import zip_converter
 from api_keys import *
-from uszipcode import SearchEngine
+
 
 class forcasts:
 
     # class constructor to get values
-    def __init__(self, LOCATION, date, timedelta):
-        self.LOCATION = LOCATION
+    def __init__(self, lat, long, date, timedelta):
+        self.LOCATION = lat, long
         self.date = date
         self.timedelta = timedelta
 
@@ -48,39 +48,15 @@ class forcasts:
         return self.timedelta
 
 
-class ZipConverter():
-
-    def __init__(self, city, state):
-        self.city = city
-        self.state = state
-
-    def zipCodeToCoords(self):
-        search = SearchEngine(simple_zipcode=True)
-
-        #print(city, " ", state)
-        zipcode = search.by_city_and_state(self.city, self.state)[0]
-        #print("city: ", zipcode)
-
-        zip_dict = zipcode.to_dict()
-        #print("dict: ", zip_dict)
-
-        latitude = zip_dict["lat"]
-        longitude = zip_dict["lng"]
-        #print(latitude, " ", longitude)
-        return latitude, longitude
-
-def main(city, state):
+def main(lat, long):
     # imports the datetime library with the fields date and timedelta
     from datetime import date, timedelta
 
     # sets the date to today's date
     date = date.today()
 
-    # gets the location from "zip_converter.py"
-    LOCATION = zip_converter.main(city, state)
-
     # creates a forcasts object from the forcasts class
-    forcast = forcasts(LOCATION, date, timedelta)
+    forcast = forcasts(lat, long, date, timedelta)
 
     temperature, summary = forcast.weeklyForcast()
 

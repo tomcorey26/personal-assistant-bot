@@ -5,7 +5,7 @@ search = SearchEngine(simple_zipcode=True)
 
 def zip_to_coords(zipcode):
     zip_dict = zipcode.to_dict()
-    print("dict: ", zip_dict)
+    #print("dict: ", zip_dict)
 
     latitude = zip_dict["lat"]
     longitude = zip_dict["lng"]
@@ -19,6 +19,14 @@ def zip_to_city_state(zipcode):
     city = city_state["major_city"]
     state = city_state["state"]
     #print("city: ", city, " state: ", state)
+
+    return city, state
+
+def city_to_city_state(city):
+    city_state = (search.by_city(city)[0]).to_dict()
+
+    city = city_state["major_city"]
+    state = city_state["state"]
 
     return city, state
 
