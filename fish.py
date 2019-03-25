@@ -6,7 +6,8 @@ class Fish():
         #the random number generated when ran
         self.number = number
         #dictionary of fish that can be caught by the user
-        self.fishSpecies = {1:"Trout",2:"Salmon", 3:"Carp", 4:"Goldfish", 6:"Catfish", 7:"Atlantic Cod", 8:"Haddock", 5:"Boot", 9:"Finger", 0:"Kelp"}
+        self.fishSpecies = {1:"Trout",2:"Salmon", 3:"Crayfish", 4:"Minnow", 6:"Lobster", 7:"Sardine", 8:"Mackerel", 5:"Boot", 9:"Finger", 0:"Seaweed"}
+
     #gets the species of the fish depending on the random number given
     def getSpecies(self):
         #the default string for the wiki url
@@ -23,22 +24,23 @@ class Fish():
                 wiki_url = "https://en.wikipedia.org/wiki/Trout"
             elif(fish == "Salmon"):
                 wiki_url = "https://en.wikipedia.org/wiki/Salmon"
-            elif(fish == "Carp"):
-                wiki_url = "https://en.wikipedia.org/wiki/Carp  "
-            elif(fish == "Goldfish"):
-                wiki_url = "https://en.wikipedia.org/wiki/Goldfish"
-            elif(fish == "Catfish"):
-                wiki_url = "https://en.wikipedia.org/wiki/Catfish"
-            elif(fish == "Atlantic Cod"):
-                wiki_url = "https://en.wikipedia.org/wiki/Atlantic_cod"
-            elif(fish == "Haddock"):
-                wiki_url = "https://en.wikipedia.org/wiki/Haddock"
+            elif(fish == "Crayfish"):
+                wiki_url = "https://en.wikipedia.org/wiki/Crayfish"
+            elif(fish == "Minnow"):
+                wiki_url = "https://en.wikipedia.org/wiki/Minnow"
+            elif(fish == "Lobster"):
+                wiki_url = "https://en.wikipedia.org/wiki/Lobster"
+            elif(fish == "Sardine"):
+                wiki_url = "https://en.wikipedia.org/wiki/Sardine"
+            elif(fish == "Mackerel"):
+                wiki_url = "https://en.wikipedia.org/wiki/Mackerel"
             elif(fish == "Boot"):
                 wiki_url = "https://en.wikipedia.org/wiki/Boot"
             elif(fish == "Finger"):
                 wiki_url = "https://en.wikipedia.org/wiki/Finger"
-            elif(fish == "Kelp"):
-                wiki_url = "https://en.wikipedia.org/wiki/Kelp"
+            elif(fish == "Seaweed"):
+                wiki_url = "https://en.wikipedia.org/wiki/Seaweed"
+
         #returns the caught fish and the url to the user
         return fish, wiki_url
 
