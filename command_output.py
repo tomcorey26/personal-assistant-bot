@@ -59,17 +59,29 @@ def get_weather(command_input):
         #if a zip code is given
         try:
             print(int(location))
-            from zip_converter import zip_to_city_state
-            city, state = zip_to_city_state(location)
+            city, state = zip_converter.zip_to_city_state(location)
         #if a city and state are given
         except ValueError:
-            print("City state location")
             # separate city and state into individual strings
             state_list = ["al", "ak", "az", "ar", "ca", "co", "ct", "dc", "de", "fl",
                           "ga", "hi", "id", "il", "in", "ia", "ks", "ky", "la", "me",
                           "md", "ma", "mi", "mn", "ms", "mo", "mt", "ne", "nv", "nh",
                           "nj", "nm", "ny", "nc", "nd", "oh", "ok", "or", "pa", "ri",
                           "sc", "sd", "tn", "tx", "ut", "vt", "va", "wa", "wv", "wi", "wy"]
+
+            state_name_list = ["alabama","alaska","arizona","arkansas","california",
+                               "colorado","connecticut","delaware","florida","georgia",
+                               "hawaii","idaho","illinois","indiana","iowa",
+                               "kansas","kentucky","louisiana","maine","maryland",
+                                "massachusetts","michigan","minnesota","mississippi","missouri",
+                               "montana","nebraska","nevada","new hampshire","new jersey",
+                               "new mexico","new york","north carolina","north dakota","ohio",
+                               "oklahoma","oregon","pennsylvania","rhode island","south carolina",
+                               "south dakota","tennessee","texas","utah","vermont",
+                               "virginia","washington","west virginia","wisconsin","wyoming"]
+
+            #find out what sort of location we're dealing with
+            loc = ""
             #find state abbreviations in location string
             for s in state_list:
                 if (" " + s) in location[-3:]:
@@ -77,18 +89,35 @@ def get_weather(command_input):
                     state = s
                     #isolate the city into a variable
                     city = location.replace((" " + state), "")
+                    loc = "abb"
+            #find the state names in location string
+            for s in state_name_list:
+                if (" " + s) in location:
+                    #isolate the state into a variable
+                    state = s
+                    #isolate the city into a variable
+                    city = location.replace((" " + state), "")
+                    loc = "name"
+            if loc == "":
+                city, state = zip_converter.city_to_city_state(location)
+
+
+
     #if no location is given
     except IndexError:
         #use user information
         city = user_data["city"]
         state = user_data["state"]
         location = city + " " + state
+
+    #get latitude and longitude from city and state
+    latitude, longitude = zip_converter.main(city, state)
     # find the conditions in that location
     import weather
     print("")
-    temp, summ = weather.main(city, state)
+    temp, summ = weather.main(latitude, longitude)
     # construct a single output string from this input
-    return "In " + location + ", it is currently " + temp + " degrees and " + summ + "."
+    return "In " + city + " " + state + ", it is currently " + temp + " degrees and " + summ + "."
 
 def reddit_posts(command_input):
     import RedditApi
