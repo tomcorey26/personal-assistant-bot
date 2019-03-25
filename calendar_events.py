@@ -1,4 +1,3 @@
-#Calendar Apllication
 import json
 import os.path
 from datetime import datetime
@@ -6,7 +5,7 @@ from command_output import say
 from input_converter import myCommand
 
 #define an variable to check for user input
-input_type = "speech"
+input_type = "text"
 
 #check if the calendar json exists
 def appCheck():
@@ -48,7 +47,10 @@ def write_data(user_data):
 def convert_date(date):
     from dateutil.parser import parse
     d = parse(date)
-    date = str(d.strftime("%m"))+ "-" + str(d.strftime("%d")) + "-" + str(d.strftime("%y"))
+    date = str(d.strftime("%m")) + "/" + str(d.strftime("%d")) + "/" + str(d.strftime("%y"))
+    date_array = [str(d.strftime("%d")), str(d.strftime("%m")), str(d.strftime("%y"))]
+    print("Date array: ", date_array)
+    print(date)
     return date
 
 #Adds an event to json file dicitonay and writes it
