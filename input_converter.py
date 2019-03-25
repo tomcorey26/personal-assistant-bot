@@ -49,7 +49,7 @@ def convert_text(input):
     print("Tagged: ", tagged)
 
     #chunk common phrases using a chunk grammar
-    grammar = "CM: {<VB>|<JJ.*>*<NN.*>+}"
+    grammar = "CM: {<VB>|<CD>|<JJ.*>*<NN.*>+}"
     cp = nltk.RegexpParser(grammar)
     #using the pattern in the grammer, chunks are put into noun phrases
     result = cp.parse(tagged)

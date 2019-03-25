@@ -7,6 +7,7 @@ class Fish():
         self.number = number
         #dictionary of fish that can be caught by the user
         self.fishSpecies = {1:"Trout",2:"Salmon", 3:"Crayfish", 4:"Minnow", 6:"Lobster", 7:"Sardine", 8:"Mackerel", 5:"Boot", 9:"Finger", 0:"Seaweed"}
+
     #gets the species of the fish depending on the random number given
     def getSpecies(self):
         #the default string for the wiki url
@@ -39,6 +40,7 @@ class Fish():
                 wiki_url = "https://en.wikipedia.org/wiki/Finger"
             elif(fish == "Seaweed"):
                 wiki_url = "https://en.wikipedia.org/wiki/Seaweed"
+
         #returns the caught fish and the url to the user
         return fish, wiki_url
 
