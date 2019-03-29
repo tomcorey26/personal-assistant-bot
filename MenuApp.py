@@ -13,11 +13,13 @@ from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
 from kivy.clock import Clock
 from functools import partial
 from kivy.uix.popup import Popup
+from kivy.properties import ListProperty
 
 from sampleParser import memeParserXD as mp
 import time
 from fish import Fish
 import random
+import calendar_events as events
 
 Builder.load_file('menubar.kv')
 Builder.load_file('chatwindow.kv')
@@ -41,7 +43,24 @@ class MenuManager(ScreenManager):
 # TODO maybe it would be better to make a screens.py file
 # where all of teh screens functions can be stored.
 class CalendarScreen(Screen):
-    pass
+
+    #a list of the currently toggled date. format = [day, month year]
+    toggled_date =  ListProperty([0,0,0])
+
+    #when the "date" property is changed, update the event label to reflect the events for the toggled date
+    def on_toggled_date(self, instance, value):
+        
+        #if the toggled date is [0,0,0], print a default string
+        if self.toggled_date == [0,0,0]:
+            self.event_label.text = "Select a date to view/add an event"
+
+        #if an actual date is selected, update the event label
+        else:
+            dateString = str(self.toggled_date[1]) + "-" + str(self.toggled_date[0]) + "-" + str(self.toggled_date[2])
+            self.event_label.text = "events for " + dateString + ":\n" \
+                                    + "    TODO: add event here"
+        
+        
 
 class WeatherScreen(Screen):
     pass

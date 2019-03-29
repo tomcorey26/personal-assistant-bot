@@ -14,10 +14,21 @@
 
 <CalendarScreen>:
 	name: "Calendar"
+	event_label: _event_label
+	calendar_widget: _calendar_widget
 	
-	AnchorLayout:
-		anchor_x: 'center'
-		anchor_y: 'bottom'
+	BoxLayout:
+		orientation: "vertical"
+
+		CalendarWidget:
+			id: _calendar_widget
+			calendar_screen: root
+			event_label: _event_label
+			anchor_x: 'center'
+			anchor_y: 'top'
+			size_hint: 1, None
+			height: root.height - 165
+			
 		Label:
 			id: _event_label
 			text: "events here\nanother Line\n    A third line with a tab"
@@ -33,17 +44,12 @@
 			halign: "left"
 			valign: "top"
 			height: 120
-			
-	AnchorLayout:
-		anchor_x: 'center'
-		anchor_y: 'top'
-		CalendarWidget:
-			id: _calendar_window
-			event_label: _event_label
-			anchor_x: 'center'
-			anchor_y: 'top'
-			size_hint: 1, None
-			height: root.height - 120
+		
+		Button:
+			text: "add event"
+			size_hint_y: None
+			height: 45
+
 
 <WeatherScreen>:
 	name: "Weather"
@@ -220,14 +226,17 @@
 			
 <PizzaScreen>:
 	name: "Pizza"
-	Label:
-		text: "Pizza screen"
+	BoxLayout:
+		orientation: "vertical"
 		canvas.before:
 			Color:
 				rgba: 1, 0, 0, 1
 			Rectangle:
 				pos: self.pos
 				size: self.size
+	Label:
+		text: "Pizza screen"
+
 	
 <RecipeScreen>:
 	name: "Recipes"
@@ -294,6 +303,7 @@
 	title: 'Log In' 
 	size_hint: None, None
 	size: 400, 400
+	auto_dismiss: False
 	BoxLayout:
 		orientation: "vertical"
 		GridLayout:
@@ -328,6 +338,8 @@
 	title: 'Sign Up' 
 	size_hint: None, None
 	size: 400, 400
+	auto_dismiss: False
+	
 	GridLayout:
 		cols: 2
 		
