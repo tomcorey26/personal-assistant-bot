@@ -4,6 +4,8 @@
 	orientation: 'horizontal'
 	padding: 2
 	
+	dropdown: dropdown.__self__ #needs to be referenced here to prevent garbage collection
+	
 	#the menubuttons change the view to teh selected screen
 	MenuButton:
 		text: 'Weather'
@@ -18,7 +20,6 @@
 	
 	#this dropdown menu opens when the "Fun" button is selected
 	#it contains buttons for the other features for the program.
-	#TODO find a way to use MenuButtons in the dropdown instead of normal Buttons, to reduce redundancy
 	DropDown:
 		id: dropdown
 		
@@ -30,27 +31,33 @@
 				pos: self.pos
 				size: self.size
 				
-		Button:
-			text: "Twitter"
-			size_hint_y: None
-			height:  30
-			on_release: root.screen_manager.switchScreens(self.text)
-			
-		Button:
-			text: "Reddit"
-			size_hint_y: None
-			height: 30
-			on_release: root.screen_manager.switchScreens(self.text)
-			
-		Button:
+		DropDownButton:
 			text: "Fishing"
-			size_hint_y: None
-			height: 30
-			on_release: root.screen_manager.switchScreens(self.text)
 			
-	
+		DropDownButton:
+			text: "Reddit"
+		
+		DropDownButton:
+			text: "Twitter"
+			
+		DropDownButton:
+			text: "Pizza"
+			
+		DropDownButton:
+			text: "Recipes"
+			
+		DropDownButton:
+			text: "News"
+			
 	MenuButton:
 		text: 'Settings'
-		
+
+#This is the class for the buttons on the Main Menu bar at the bottom of the app		
 <MenuButton>:
 	on_release: self.parent.screen_manager.switchScreens(self.text)
+
+#This is the class for the buttons in the dropdown menu, they require a slightly different path to access the screen manager
+<DropDownButton@Button>:
+	size_hint_y: None
+	height: 30
+	on_release: app.root.ids.sm.switchScreens(self.text)
