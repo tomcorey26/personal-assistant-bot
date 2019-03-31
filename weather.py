@@ -3,16 +3,16 @@ import zip_converter
 from api_keys import *
 
 
-class forcasts:
+class forecasts:
 
     # class constructor to get values
     def __init__(self, lat, lng, date, timedelta):
         self.LOCATION = lat, lng
-        self.date = date
+        self.date = date.today()
         self.timedelta = timedelta
 
     # method to take in the location, date, and timedelta and will put back the weekly forcast, aka 7 day forcast
-    def weeklyForcast(self):
+    def hourlyForcast(self):
         # calls the darksky api giving it the location(latitude and longitude) and the api key
         with forecast(DARK_SKY_KEY, *self.LOCATION) as location:
             # formats the weeks data into a dictionary for easy information access
@@ -21,12 +21,27 @@ class forcasts:
             hour = dict(hour=self.date.strftime(str(self.date)),
                         sum=location.summary,
                         temp=location.temperature
-                        )
+                    )
             # the dictionaries information is formatted and printed out to the user
             curr_temp = '{temp}'.format(**hour).lower()
             curr_sum = '{sum}'.format(**hour).lower()
             # increments the date by the timedelta
         return curr_temp, curr_sum
+    
+
+    def weeklySummary(self):
+
+        weekday = self.date.today()
+        with forecast(DARK_SKY_KEY, *self.LOCATION) as location:
+            print(location.daily.summary, end='\n---\n')
+            for day in location.daily:
+                day = dict(day =self.date.strftime(str(weekday)),
+                        sum = day.summary,
+                        tempMin = day.temperatureMin,
+                        tempMax = day.temperatureMax
+                        )
+                print('{day}: {sum} Temp range: {tempMin} - {tempMax}'.format(**day))
+                weekday += self.timedelta(days=1)
 
 
     # returns the location we are currently concerned with
@@ -50,10 +65,8 @@ def main(lat, lng):
     date = date.today()
 
     # creates a forcasts object from the forcasts class
-    forcast = forcasts(lat, lng, date, timedelta)
+    forecast = forecasts(lat, lng, date, timedelta)
 
-    temperature, summary = forcast.weeklyForcast()
+    temperature, summary = forecast.hourlyForcast()
 
     return temperature, summary
-
-print(main(41.4476, -71.5247))
