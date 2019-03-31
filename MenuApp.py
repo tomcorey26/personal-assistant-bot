@@ -20,6 +20,10 @@ import time
 from fish import Fish
 import random
 import calendar_events as events
+import RedditApi
+import weather
+import location_to_coords
+
 
 Builder.load_file('menubar.kv')
 Builder.load_file('chatwindow.kv')
@@ -60,16 +64,50 @@ class CalendarScreen(Screen):
             self.event_label.text = "events for " + dateString + ":\n" \
                                     + "    TODO: add event here"
         
-        
-
 class WeatherScreen(Screen):
-    pass
+
+    def getWeather(self):
+        
+        #save the string from the textbox and set the textbox to empty
+        location = self.location_input.text
+        self.location_input.text = ""
+
+        #convert the location into latitude and longitude
+        lat, lon, cityname = location_to_coords.main(location)
+
+        #if the city isn't found, let the user know of the error
+        if cityname == 'Unrecognized location':
+            self.location_input.hint_text = "Error, location not found"
+            self.location_input.hint_color = (1, .3, .3, 1)
+
+        #otherwise, print out the current weather for that city
+        else:
+            
+            #reset the userinput hint, in case they had an error before
+            self.location_input.hint_text = "Enter zipcode, city, or city/state"
+            self.location_input.hint_color = (.2, .2, .2, 1)
+
+            temp, summ, icon, humid = weather.getCurrentWeather(lat, lon)
+
+            self.temp_button.text = "Temperature:\n" + str(temp)
+            self.summary_button.text = "Summary:\n" + str(summ)
+            self.image_button.text = "imageurl:\n" + str(icon) + ".png"
+            self.humidity_button.text = "Humidity:\n" + str(humid * 100) + "%"
+            
 
 class TwitterScreen(Screen):
     pass
 
 class RedditScreen(Screen):
-    pass
+
+    def getPosts(self):
+        posts = RedditApi.redditPosts(5, self.subreddit_input.text)
+
+        self.top_posts.text = ""
+        
+        for (name, url) in posts.items():
+            self.top_posts.text += (name + "\n" + url + "\n\n")
+        
 
 class FishScreen(Screen):
 

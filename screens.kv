@@ -54,31 +54,50 @@
 <WeatherScreen>:
 	name: "Weather"
 	
+	#variables for the buttons/labels/images
+	location_input: _loc_Input
+	humidity_button: humidButton
+	temp_button: tempButton
+	summary_button: summButton
+	image_button: imageButton
+	
 	BoxLayout:
+		canvas.before:
+			Color:
+				rgba: .5,.5,1, 1
+			Rectangle:
+				pos: self.pos
+				size: self.size
 		orientation: 'vertical'
-		GridLayout:
-			rows: 2
+		
+		Label:
+			text: "Weather Screen"
+			size_hint_y: None
+			height: 30
+			
+		BoxLayout:
+			rows: 1
 			size_hint: 1, None
-			height: 60
+			height: 30
 			
 			Label:
-				text: "City"
+				text: "Location"
 				size_hint_x: None
-				width: 100
-			TextInput:
-				id: cityInput
-				multiline: False
-			Label:
-				text: "State"
-				size_hint_x: None
-				width: 100
-			TextInput:
-				multiline: False
+				width: 120
+			UserInput:
+				id: _loc_Input
+				hint_text: "Enter zipcode, city, or city/state here"
 		
+		Label:
+			id: _city_label
+			text: ""
+			size_hint_y: None
+			height: 60
 		Button:
 			text: "Get Weather"
 			size_hint: 1, None
 			height: 30
+			on_release: root.getWeather()
 			
 		GridLayout:
 			rows: 2
@@ -86,18 +105,18 @@
 			Button:
 				id: tempButton
 				background_color: .5, .5, 1, 1
-				text: "Temperature here"
+				text: "Temperature"
 			Button: 
 				id: summButton
-				text: "Summary here"
+				text: "Summary"
 				background_color: .5, .5, 1, 1
 			Button:
-				id: otherButton
-				text: "something else here"
+				id: humidButton
+				text: "Humidity"
 				background_color: .5, .5, 1, 1
 			Button:
 				id: imageButton
-				text: "image here"
+				text: "Image"
 				background_color: .5, .5, 1, 1
 			
 
@@ -147,6 +166,8 @@
 
 <RedditScreen>:
 	name: "Reddit"
+	subreddit_input: _subreddit_input
+	top_posts:_top_posts
 	BoxLayout:
 		orientation: "vertical"
 		canvas.before:
@@ -165,8 +186,10 @@
 			id: _subreddit_input
 			size_hint_x: 0.9
 			hint_text: "Enter a subreddit name here"
+			on_text_validate: root.getPosts()
 			
 		TextInput:
+			id: _top_posts
 			readonly: True
 			text: "The top post(s) from the subreddit go here" + "\nhyperlinks would be pretty cool"
 			

@@ -47,6 +47,15 @@ class forcasts:
     def getTimeDelta(self):
         return self.timedelta
 
+def getCurrentWeather(lat, lon):
+    currentForecast = forecast(DARK_SKY_KEY, lat, lon)
+
+    temp = currentForecast.temperature
+    summ = currentForecast.summary
+    icon = currentForecast.icon
+    humidity = currentForecast.humidity
+
+    return temp, summ, icon, humidity
 
 def main(lat, long):
     # imports the datetime library with the fields date and timedelta
