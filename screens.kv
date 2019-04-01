@@ -60,6 +60,7 @@
 	temp_button: tempButton
 	summary_button: summButton
 	image_button: imageButton
+	city_label: _city_label
 	
 	BoxLayout:
 		canvas.before:
@@ -76,7 +77,7 @@
 			height: 30
 			
 		BoxLayout:
-			rows: 1
+			orientation: "horizontal"
 			size_hint: 1, None
 			height: 30
 			
@@ -87,17 +88,19 @@
 			UserInput:
 				id: _loc_Input
 				hint_text: "Enter zipcode, city, or city/state here"
+				on_text_validate: root.getWeather()
 		
-		Label:
-			id: _city_label
-			text: ""
-			size_hint_y: None
-			height: 60
 		Button:
 			text: "Get Weather"
 			size_hint: 1, None
 			height: 30
 			on_release: root.getWeather()
+			
+		Label:
+			id: _city_label
+			text: "Enter a location above to get the weather"
+			size_hint_y: None
+			height: 60
 			
 		GridLayout:
 			rows: 2
@@ -249,17 +252,231 @@
 			
 <PizzaScreen>:
 	name: "Pizza"
+	id: _pizza_screen
+
 	BoxLayout:
 		orientation: "vertical"
+		Label:
+			text: "Pizza Screen"
+			size_hint_y: None
+			height: 45
+			
+		ScreenManager:
+			id: _pizza_manager
+			
+			order_screen: _order_screen
+			checkout_screen: _checkout_screen
+			
+			OrderScreen:
+				id: _order_screen
+			CheckoutScreen:
+				id: _checkout_screen
+<OrderScreen>:
+	name: "Order"
+	
+	#attributes for the order screen for use in the .py files
+	size_btn: _size_btn
+	toppings_btn: _topping_btn
+	side_btn: _side_btn
+	drink_btn: _drink_btn
+	order_label: _order_label
+	
+	#the dropdowns need to be explicitly referenced to avoid weakref errors
+	size_dropdown: _pizza_size.__self__
+	topping_dropdown: _pizza_topping.__self__
+	side_dropdown: _side_dropdown.__self__
+	drink_dropdown: _drink_dropdown.__self__
+	
+	#Please forgive me for this plate of spaghetti code...
+	
+	BoxLayout:
+		orientation: "vertical"
+		spacing: 10
+		
+		#bar for getting pizza information
+		BoxLayout:
+			size_hint_y: None
+			height: 30
+			orientation: "horizontal"
+			
+			#this button opens the pizza size dropdown
+			Button:
+				id: _size_btn
+				text: "Small"
+				on_release: _pizza_size.open(self)
+				on_parent: _pizza_size.dismiss()
+			
+			DropDown:
+				id: _pizza_size
+
+				on_select: _size_btn.text = '{}'.format(args[1])
+				
+				Button:
+					text: "Small"
+					size_hint_y: None
+					height: 30
+					on_release: _pizza_size.select(self.text)
+				Button:
+					text: "Medium"
+					size_hint_y: None
+					height: 30
+					on_release: _pizza_size.select(self.text)
+				Button:
+					text: "Large"
+					size_hint_y: None
+					height: 30
+					on_release: _pizza_size.select(self.text)
+			
+			# This button oepn the pizza toppings dropdown
+			Button:
+				id: _topping_btn
+				text: "Cheese"
+				on_parent: _pizza_topping.dismiss()
+				on_release: _pizza_topping.open(self)
+				
+			DropDown:
+				id: _pizza_topping
+				on_select: _topping_btn.text = "{}".format(args[1])
+				
+				Button:
+					text: "Cheese"
+					size_hint_y: None
+					height: 30
+					on_release: _pizza_topping.select(self.text)
+					
+				Button:
+					text: "Pepperoni"
+					size_hint_y: None
+					height: 30
+					on_release: _pizza_topping.select(self.text)
+					
+				Button:
+					text: "Mushroom"
+					size_hint_y: None
+					height: 30
+					on_release: _pizza_topping.select(self.text)
+				
+			Button:
+				id: _add_pizza
+				text: "add to order"
+				size_hint_x: None
+				width: 100
+				background_color: 1, .5, .5, 1
+				on_release: root.addPizza()
+		
+		BoxLayout:
+			size_hint_y: None
+			height: 30
+			orientation: "horizontal"
+			
+			#this opens the sides dropdown
+			Button:
+				id: _side_btn
+				text: "Side"
+				on_parent: _side_dropdown.dismiss()
+				on_release: _side_dropdown.open(self)
+				
+			DropDown:
+				id: _side_dropdown
+				on_select: _side_btn.text = "{}".format(args[1])
+				
+				Button:
+					text: "Breadsticks"
+					size_hint_y: None
+					height: 30
+					on_release: _side_dropdown.select(self.text)
+					
+				Button:
+					text: "Cinnamon Sticks"
+					size_hint_y: None
+					height: 30
+					on_release: _side_dropdown.select(self.text)
+					
+				Button:
+					text: "Lava Cake"
+					size_hint_y: None
+					height: 30
+					on_release: _side_dropdown.select(self.text)
+				
+				Button:
+					text: "None"
+					size_hint_y: None
+					height: 30
+					on_release: _side_dropdown.select(self.text)
+					
+			#this opens the sides dropdown
+			Button:
+				id: _drink_btn
+				text: "Drink"
+				on_parent: _drink_dropdown.dismiss()
+				on_release: _drink_dropdown.open(self)
+				
+			DropDown:
+				id: _drink_dropdown
+				on_select: _drink_btn.text = "{}".format(args[1])
+				
+				Button:
+					text: "Coke (2 Liter)"
+					size_hint_y: None
+					height: 30
+					on_release: _drink_dropdown.select(self.text)
+					
+				Button:
+					text: "Coke (20 Oz)"
+					size_hint_y: None
+					height: 30
+					on_release: _drink_dropdown.select(self.text)
+					
+				Button:
+					text: "Sprite (2 Liter)"
+					size_hint_y: None
+					height: 30
+					on_release: _drink_dropdown.select(self.text)
+					
+				Button:
+					text: "Sprite (20 Oz)"
+					size_hint_y: None
+					height: 30
+					on_release: _drink_dropdown.select(self.text)
+
+				Button:
+					text: "None"
+					size_hint_y: None
+					height: 30
+					on_release: _drink_dropdown.select(self.text)
+					
+			#This Button adds the sides/drink to the order
+			Button:
+				id: _add_sides
+				text: "add to order"
+				size_hint_x: None
+				width: 100
+				background_color: 1, .5, .5, 1
+				on_release: root.addSides()
+					
+					
+		TextInput:
+			id: _order_label
+			text: "Your Order: \n\n"
+			readonly: True
+				
+		Button:
+			text: "Proceed to checkout"
+			size_hint_y: None
+			height: 45
+			on_release: root.go_to_checkout()
+			
+<CheckoutScreen>:
+	name: "Checkout"
+	Label:
+		id: _main_label
+		text: str(root.order_list)
 		canvas.before:
 			Color:
-				rgba: 1, 0, 0, 1
+				rgba: 1, 0, 1, 1
 			Rectangle:
 				pos: self.pos
 				size: self.size
-	Label:
-		text: "Pizza screen"
-
 	
 <RecipeScreen>:
 	name: "Recipes"

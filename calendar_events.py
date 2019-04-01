@@ -49,8 +49,8 @@ def convert_date(date):
     d = parse(date)
     date = str(d.strftime("%m")) + "/" + str(d.strftime("%d")) + "/" + str(d.strftime("%y"))
     date_array = [str(d.strftime("%d")), str(d.strftime("%m")), str(d.strftime("%y"))]
-    print("Date array: ", date_array)
-    print(date)
+    # print("Date array: ", date_array)
+    # print(date)
     return date
 
 #Adds an event to json file dicitonay and writes it

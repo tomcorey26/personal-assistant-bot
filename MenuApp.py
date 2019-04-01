@@ -86,14 +86,18 @@ class WeatherScreen(Screen):
             #reset the userinput hint, in case they had an error before
             self.location_input.hint_text = "Enter zipcode, city, or city/state"
             self.location_input.hint_color = (.2, .2, .2, 1)
-
+            
+            #display the name of the city
+            self.city_label.text = "Weather for " + cityname + ":"
+            
+            #display the city's weather
             temp, summ, icon, humid = weather.getCurrentWeather(lat, lon)
-
             self.temp_button.text = "Temperature:\n" + str(temp)
             self.summary_button.text = "Summary:\n" + str(summ)
             self.image_button.text = "imageurl:\n" + str(icon) + ".png"
             self.humidity_button.text = "Humidity:\n" + str(humid * 100) + "%"
-            
+
+
 
 class TwitterScreen(Screen):
     pass
@@ -134,12 +138,61 @@ class FishScreen(Screen):
 
         self.ids._fish_image.source = "images/" + url
 
+    
 class SettingsScreen(Screen):
     pass
 
 class PizzaScreen(Screen):
     pass
 
+class OrderScreen(Screen):
+
+    # tracks the contents of your order
+    # when something gets added to the list, the order label will  be updated
+    order_list = ListProperty([])
+
+    # when the "add to order" button is pressed, adds the pizza to the order list
+    def addPizza(self):
+        self.order_list.append(self.size_btn.text + " " + self.toppings_btn.text + " Pizza")
+
+    def addSides(self):
+        side = self.side_btn.text
+        drink = self.drink_btn.text
+
+        #add the side/drink if the user has selected one
+        if (side != "Side" and side != "None"):
+            self.order_list.append(side)
+
+        if (drink != "Drink" and drink != "None"):
+            self.order_list.append(drink)
+
+        #reset the side/drink buttons to the default
+        self.side_btn.text = "Side"
+        self.drink_btn.text = "Drink"
+
+    # When the order list property changes, update the order label to reflect the list
+    def on_order_list(self, instance, value):
+        self.order_label.text = "Your Order: \n\n"
+
+        for i in self.order_list:
+            self.order_label.text += i + "\n"
+
+    # goes to the checkout screen if the user is done with their order
+    def go_to_checkout(self):
+
+        #send the order list to the checkout screen
+        checkout_screen = self.manager.checkout_screen
+        checkout_screen.order_list = self.order_list
+
+        #change the current screen to the checkout screen
+        self.manager.current = "Checkout"
+        
+class CheckoutScreen(Screen):
+    order_list = ListProperty([])
+
+    def on_order_list(self, instance, value):
+        self.ids._main_label.text = str(self.order_list)
+    
 class RecipeScreen(Screen):
     pass
 
