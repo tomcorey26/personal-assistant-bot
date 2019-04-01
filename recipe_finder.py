@@ -13,11 +13,14 @@ def main(food):
     # find the ingredients for the recipe and convert that into a string
     ingredients = str(scraper.ingredients())
     #remove brackets and add line breaks in the string to make it more readable
-    ingredients = ingredients[(ingredients.index(",")+2):]
-    ingredients = ingredients.replace(",", "\n") #replace commas with line breaks
+    ingredients = ingredients.replace("',", "\n") #replace commas with line breaks
     ingredients = ingredients.replace("®", "") #remove registered mark for speech purposes
     ingredients = ingredients.replace("[", "") #remove left bracket
     ingredients = ingredients.replace("]", "") #remove right bracket
     ingredients = ingredients.replace("'", "") #remove single quotes
+
+    #if nothing is returned
+    if ingredients == "":
+        return "Not specific enough"
 
     return ingredients

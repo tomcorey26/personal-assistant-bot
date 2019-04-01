@@ -34,13 +34,18 @@ def order_pizza():
 
 #function to scrape for a recipe
 def get_recipe(command_input):
+    import recipe_finder
     #get the food that is being requested
     try:
         food = command_input[command_input.index("recipe") + 1]
     except IndexError:
         food = command_input[command_input.index("recipe") - 1]
-    #call the recipe finder
-    ingredients = recipe_finder.main(food)
+    try:
+        #call the recipe finder
+        ingredients = recipe_finder.main(food)
+    except ValueError:
+        #there is not a recipe listed for this food
+        return "Not specific enough"
     #get the recipe back to the user
     return "Here's a recipe for " + food + ": \n " + str(ingredients)
 
@@ -253,4 +258,5 @@ def commands(command_input):
         # use the parsed text to get the desired output
         output = get_directions(parsed_command)
 
+    say(output)
     return output
