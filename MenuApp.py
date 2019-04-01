@@ -14,6 +14,7 @@ from kivy.clock import Clock
 from functools import partial
 from kivy.uix.popup import Popup
 from kivy.properties import ListProperty
+from kivy.uix.dropdown import DropDown
 
 from sampleParser import memeParserXD as mp
 import time

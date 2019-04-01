@@ -253,7 +253,7 @@
 <PizzaScreen>:
 	name: "Pizza"
 	id: _pizza_screen
-
+	
 	BoxLayout:
 		orientation: "vertical"
 		Label:
@@ -264,6 +264,7 @@
 		ScreenManager:
 			id: _pizza_manager
 			
+			#variables so that the screens can interact with eachother
 			order_screen: _order_screen
 			checkout_screen: _checkout_screen
 			
@@ -280,14 +281,7 @@
 	side_btn: _side_btn
 	drink_btn: _drink_btn
 	order_label: _order_label
-	
-	#the dropdowns need to be explicitly referenced to avoid weakref errors
-	size_dropdown: _pizza_size.__self__
-	topping_dropdown: _pizza_topping.__self__
-	side_dropdown: _side_dropdown.__self__
-	drink_dropdown: _drink_dropdown.__self__
-	
-	#Please forgive me for this plate of spaghetti code...
+ 
 	
 	BoxLayout:
 		orientation: "vertical"
@@ -299,62 +293,21 @@
 			height: 30
 			orientation: "horizontal"
 			
-			#this button opens the pizza size dropdown
-			Button:
+			Label:
+				text: "Pizza"
+				size_hint_x: None
+				width: 45
+			
+			Spinner:
 				id: _size_btn
 				text: "Small"
-				on_release: _pizza_size.open(self)
-				on_parent: _pizza_size.dismiss()
-			
-			DropDown:
-				id: _pizza_size
-
-				on_select: _size_btn.text = '{}'.format(args[1])
+				values: ["Small", "Medium", "Large"]
 				
-				Button:
-					text: "Small"
-					size_hint_y: None
-					height: 30
-					on_release: _pizza_size.select(self.text)
-				Button:
-					text: "Medium"
-					size_hint_y: None
-					height: 30
-					on_release: _pizza_size.select(self.text)
-				Button:
-					text: "Large"
-					size_hint_y: None
-					height: 30
-					on_release: _pizza_size.select(self.text)
-			
 			# This button oepn the pizza toppings dropdown
-			Button:
+			Spinner:
 				id: _topping_btn
 				text: "Cheese"
-				on_parent: _pizza_topping.dismiss()
-				on_release: _pizza_topping.open(self)
-				
-			DropDown:
-				id: _pizza_topping
-				on_select: _topping_btn.text = "{}".format(args[1])
-				
-				Button:
-					text: "Cheese"
-					size_hint_y: None
-					height: 30
-					on_release: _pizza_topping.select(self.text)
-					
-				Button:
-					text: "Pepperoni"
-					size_hint_y: None
-					height: 30
-					on_release: _pizza_topping.select(self.text)
-					
-				Button:
-					text: "Mushroom"
-					size_hint_y: None
-					height: 30
-					on_release: _pizza_topping.select(self.text)
+				values: ["Cheese", "Pepperoni", "Mushroom", "Onion", "Olive", "Extra Cheese"]
 				
 			Button:
 				id: _add_pizza
@@ -369,81 +322,23 @@
 			height: 30
 			orientation: "horizontal"
 			
+			Label:
+				text: "Sides"
+				size_hint_x: None
+				width: 45
+				
 			#this opens the sides dropdown
-			Button:
+			Spinner:
 				id: _side_btn
 				text: "Side"
-				on_parent: _side_dropdown.dismiss()
-				on_release: _side_dropdown.open(self)
+				values: ["Breadsticks", "Cinnamon Sticks", "Lava Cake", "None"]
 				
-			DropDown:
-				id: _side_dropdown
-				on_select: _side_btn.text = "{}".format(args[1])
-				
-				Button:
-					text: "Breadsticks"
-					size_hint_y: None
-					height: 30
-					on_release: _side_dropdown.select(self.text)
-					
-				Button:
-					text: "Cinnamon Sticks"
-					size_hint_y: None
-					height: 30
-					on_release: _side_dropdown.select(self.text)
-					
-				Button:
-					text: "Lava Cake"
-					size_hint_y: None
-					height: 30
-					on_release: _side_dropdown.select(self.text)
-				
-				Button:
-					text: "None"
-					size_hint_y: None
-					height: 30
-					on_release: _side_dropdown.select(self.text)
 					
 			#this opens the sides dropdown
-			Button:
+			Spinner:
 				id: _drink_btn
 				text: "Drink"
-				on_parent: _drink_dropdown.dismiss()
-				on_release: _drink_dropdown.open(self)
-				
-			DropDown:
-				id: _drink_dropdown
-				on_select: _drink_btn.text = "{}".format(args[1])
-				
-				Button:
-					text: "Coke (2 Liter)"
-					size_hint_y: None
-					height: 30
-					on_release: _drink_dropdown.select(self.text)
-					
-				Button:
-					text: "Coke (20 Oz)"
-					size_hint_y: None
-					height: 30
-					on_release: _drink_dropdown.select(self.text)
-					
-				Button:
-					text: "Sprite (2 Liter)"
-					size_hint_y: None
-					height: 30
-					on_release: _drink_dropdown.select(self.text)
-					
-				Button:
-					text: "Sprite (20 Oz)"
-					size_hint_y: None
-					height: 30
-					on_release: _drink_dropdown.select(self.text)
-
-				Button:
-					text: "None"
-					size_hint_y: None
-					height: 30
-					on_release: _drink_dropdown.select(self.text)
+				values: ["Coke (2 Liter)", "Coke (20 Oz)", "Sprite (2 liter)", "Sprite (20 Oz)", "None"]
 					
 			#This Button adds the sides/drink to the order
 			Button:
@@ -465,9 +360,11 @@
 			size_hint_y: None
 			height: 45
 			on_release: root.go_to_checkout()
+
 			
 <CheckoutScreen>:
 	name: "Checkout"
+	
 	Label:
 		id: _main_label
 		text: str(root.order_list)
