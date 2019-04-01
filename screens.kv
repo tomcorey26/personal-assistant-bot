@@ -1,5 +1,6 @@
 # File name: screens.kv
 
+#The list of all screens that are contained within the menu manager. every feature that needs a screen should be here
 <MenuManager>:
 	CalendarScreen:
 	WeatherScreen:
@@ -7,35 +8,48 @@
 	RedditScreen:
 	FishScreen:
 	SettingsScreen:
+	PizzaScreen:
+	RecipeScreen:
+	NewsScreen:
 
 <CalendarScreen>:
 	name: "Calendar"
+	event_label: _event_label
+	calendar_widget: _calendar_widget
 	
-	AnchorLayout:
-		anchor_x: 'center'
-		anchor_y: 'bottom'
-		Label:
-			id: _event_label
-			text: "events here"
-			canvas.before:
-				Color:
-					rgba: 1, 0, 1, 1
-				Rectangle:
-					pos: self.pos
-					size: self.size
-			size_hint: 1, None
-			height: 60
-			
-	AnchorLayout:
-		anchor_x: 'center'
-		anchor_y: 'top'
+	BoxLayout:
+		orientation: "vertical"
+
 		CalendarWidget:
-			id: _calendar_window
+			id: _calendar_widget
+			calendar_screen: root
 			event_label: _event_label
 			anchor_x: 'center'
 			anchor_y: 'top'
 			size_hint: 1, None
-			height: root.height - 60
+			height: root.height - 165
+			
+		Label:
+			id: _event_label
+			text: "events here\nanother Line\n    A third line with a tab"
+			halign: "left"
+			canvas.before:
+				Color:
+					rgba: .8,.3,.3, 1
+				Rectangle:
+					pos: self.pos
+					size: self.size
+			size_hint: 1, None
+			text_size: self.size
+			halign: "left"
+			valign: "top"
+			height: 120
+		
+		Button:
+			text: "add event"
+			size_hint_y: None
+			height: 45
+
 
 <WeatherScreen>:
 	name: "Weather"
@@ -100,36 +114,104 @@
 				
 <TwitterScreen>:
 	name: "Twitter"
-	Label:
-		text: "Twitter screen"
+	BoxLayout:
+		orientation: "vertical"
 		canvas.before:
 			Color:
 				rgba: .1, .8, 1, 1
 			Rectangle:
 				pos: self.pos
 				size: self.size
+		
+		Label:
+			text: "Twitter screen"
+			size_hint_y: None
+			height: 30
+			
+		UserInput:
+			id: _twitter_username
+			size_hint_x: .9
+			hint_text: "enter a twitter username here"
+			
+		TextInput:
+			id: _twitter_results
+			text: "users most recent posts will go here" + "\nhyperlinks would be nice"
+			readonly: True
+			
+	Image:
+		source: "images/TwitterLogo.png"
+		size_hint_y: None
+		height: self.width
+		color: 1, 1, 1, 0.2
+		
 
 <RedditScreen>:
 	name: "Reddit"
-	Label:
-		text: "Reddit screen"
+	BoxLayout:
+		orientation: "vertical"
 		canvas.before:
 			Color:
 				rgba: 1, .2, 0, 1
 			Rectangle:
 				pos: self.pos
-				size: self.size
+				size: self.size		
+			
+		Label:
+			text: "Reddit screen"
+			size_hint_y: None
+			height: 30
+		
+		UserInput:
+			id: _subreddit_input
+			size_hint_x: 0.9
+			hint_text: "Enter a subreddit name here"
+			
+		TextInput:
+			readonly: True
+			text: "The top post(s) from the subreddit go here" + "\nhyperlinks would be pretty cool"
+			
+	
+	Image:
+		source: "images/RedditLogo.png"
+		size_hint_y: None
+		height: self.width
+		color: 1, 1, 1, 0.2
 				
 <FishScreen>:
 	name: "Fishing"
-	Label:
-		text: "Fish screen"
+	
+	BoxLayout:
+		orientation: "vertical"
 		canvas.before:
 			Color:
 				rgba: 0, 0, 1, 1
 			Rectangle:
 				pos: self.pos
 				size: self.size
+			
+		Label:
+			id: _catch_label
+			text: "You caught seaweed, Nice job...."
+
+		AnchorLayout:
+			size_hint_y: None
+			height: 45
+			
+			anchor_x: "center"
+			anchor_y: "top"
+			Button:
+				text: "Cast your line"
+				size_hint_x: .5
+				pos_hint_x: .5
+				on_press: root.castLine()
+	
+	Image:
+		id: _fish_image
+		source: "images/Seaweed.png"
+		size_hint: None, None
+		size: 100, 100
+		pos_hint: {"center_x": 0.5, "top": .9}
+		
 				
 <SettingsScreen>:
 	name: "Settings"
@@ -141,11 +223,87 @@
 			Rectangle:
 				pos: self.pos
 				size: self.size
+			
+<PizzaScreen>:
+	name: "Pizza"
+	BoxLayout:
+		orientation: "vertical"
+		canvas.before:
+			Color:
+				rgba: 1, 0, 0, 1
+			Rectangle:
+				pos: self.pos
+				size: self.size
+	Label:
+		text: "Pizza screen"
+
+	
+<RecipeScreen>:
+	name: "Recipes"
+	
+	BoxLayout:
+		orientation: "vertical"
+		canvas.before:
+			Color:
+				rgba: 0, 0, 1, 1
+			Rectangle:
+				pos: self.pos
+				size: self.size
+		
+		Label:
+			text: "Recipe Finder"
+			size_hint_y: None
+			height: 30
+			
+		UserInput:
+			id: _news_keyword
+			size_hint_x: .9
+			hint_text: "Enter the meal you want to make here"
+			
+		Label:
+			text: "Name of recipe here"
+			size_hint_y: None
+			height: 120		
+			
+		TextInput:
+			text: "ingredients here"
+			readonly: True
+		
+		TextInput:
+			text: "instructions here"
+			readonly: True
+			
+
+<NewsScreen>:
+	name: "News"
+	BoxLayout:
+		orientation: "vertical"
+		canvas.before:
+			Color:
+				rgba: .5, .5, .5, 1
+			Rectangle:
+				pos: self.pos
+				size: self.size
+				
+		Label:
+			text: "News Screen"
+			size_hint_y: None
+			height: 30
+	
+		UserInput:
+			id: _meal_input
+			size_hint_x: .9
+			hint_text: "Enter your news keyword here"
+			
+		Label:
+			text: "news results here"
+
 				
 <LoginPopup>:
 	title: 'Log In' 
 	size_hint: None, None
 	size: 400, 400
+	auto_dismiss: False
 	BoxLayout:
 		orientation: "vertical"
 		GridLayout:
@@ -180,6 +338,8 @@
 	title: 'Sign Up' 
 	size_hint: None, None
 	size: 400, 400
+	auto_dismiss: False
+	
 	GridLayout:
 		cols: 2
 		

@@ -13,9 +13,13 @@ from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
 from kivy.clock import Clock
 from functools import partial
 from kivy.uix.popup import Popup
+from kivy.properties import ListProperty
 
 from sampleParser import memeParserXD as mp
 import time
+from fish import Fish
+import random
+import calendar_events as events
 
 Builder.load_file('menubar.kv')
 Builder.load_file('chatwindow.kv')
@@ -36,8 +40,27 @@ class MenuManager(ScreenManager):
     def switchScreens(self, name):
         self.current = name
 
+# TODO maybe it would be better to make a screens.py file
+# where all of teh screens functions can be stored.
 class CalendarScreen(Screen):
-    pass
+
+    #a list of the currently toggled date. format = [day, month year]
+    toggled_date =  ListProperty([0,0,0])
+
+    #when the "date" property is changed, update the event label to reflect the events for the toggled date
+    def on_toggled_date(self, instance, value):
+        
+        #if the toggled date is [0,0,0], print a default string
+        if self.toggled_date == [0,0,0]:
+            self.event_label.text = "Select a date to view/add an event"
+
+        #if an actual date is selected, update the event label
+        else:
+            dateString = str(self.toggled_date[1]) + "-" + str(self.toggled_date[0]) + "-" + str(self.toggled_date[2])
+            self.event_label.text = "events for " + dateString + ":\n" \
+                                    + "    TODO: add event here"
+        
+        
 
 class WeatherScreen(Screen):
     pass
@@ -49,9 +72,40 @@ class RedditScreen(Screen):
     pass
 
 class FishScreen(Screen):
-    pass
+
+    def castLine(self):
+        fishID = random.randint(0, 20)
+        catch = Fish(fishID)
+        species, wikiURL = catch.getSpecies()
+
+        if (species != "You fail to catch a fish"):
+            species = "You caught a " + species
+        self.ids._catch_label.text = species
+
+        #dictionary of the image URL's
+        #TODO find a better way to implement these
+
+        imageURLs = {1: "Trout.png", 2: "Salmon.png", 5: "Boots.png", 7: "Cod.png", 0: "Seaweed.png"} 
+
+        #get the url for the image
+        url = imageURLs.get(fishID)
+
+        #if the fishID doesn't have an image, just default to seaweed for now
+        if url == None:
+            url = "Seaweed.png"
+
+        self.ids._fish_image.source = "images/" + url
 
 class SettingsScreen(Screen):
+    pass
+
+class PizzaScreen(Screen):
+    pass
+
+class RecipeScreen(Screen):
+    pass
+
+class NewsScreen(Screen):
     pass
 
 
