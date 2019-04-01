@@ -26,20 +26,12 @@ class RedditScrape():
                 #add the current post to the dictionary
                 posts[str(submission.title)] = submission.url
         else:
-            #Case for random subreddit
-            if self.subReddit == 'random':
-                #set the sub to a random one
-                sub = reddit.random_subreddit()
-            #Case for given subreddit
-            else:
-                #set the sub to the one in the parameters
-                sub = reddit.subReddit(self.subReddit)
-            #look for the top posts
-            print("Searching through " + sub.display_name + "\n")
-            for submission in reddit.subreddit(sub.display_name).hot(limit = self.numPosts):
-                print(submission.title)
-                print(submission.url + "\n")
-                #add the current post to the dictionary
-                posts[str(submission.title)] = submission.url
-        #return the dictionary
-        return posts
+            #set the sub to the one in the parameters
+            sub = reddit.subreddit(subreddit)
+        #look for the top posts
+        for submission in reddit.subreddit(sub.display_name).hot(limit = numPosts):
+            #add the current post to the dictionary
+            posts[str(submission.title)] = submission.url
+    #return the dictionary
+    return posts
+
