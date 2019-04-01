@@ -21,6 +21,8 @@ from kivy.uix.label import Label
 from kivy.core.window import Window
 from kivy.properties import NumericProperty, ReferenceListProperty
 
+import calendar_events as events
+
 ###########################################################
 Builder.load_string("""
 <ArrowButton>:
@@ -167,14 +169,39 @@ class CalendarWidget(RelativeLayout):
                     tbtn = DayNumButton(text=str(day[0]))
                 
                 tbtn.bind(on_press=self.get_btn_value)
-                
+
+                #if the button is from a previous month, unbind its functionality and change its color
+                #code added by John Hall
+                if (day[2] != 1):
+                    tbtn.unbind(on_press=self.get_btn_value)
+                    tbtn.background_color = (.2, .2, .2, 2)
+
+                else:
+                    
+                    #if the date has an event, change the color of the button to gold
+                    # added by John Hall
+                    buttonDate = str(self.active_date[1]) + "-" + str(day[0]) + "-" + str(self.active_date[2] % 100)
+                    if (events.findEvent(buttonDate) != "Event not found with given criteria"):
+                        tbtn.background_color = (1, 1, .4, 1)
+                    elif (buttonDate == "12-2-19"):
+                        tbtn.background_color = (1, 1, .4, 1)
+                          
+                        
                 if toogle_today:
                     # Down today button
                     if day[0] == self.active_date[0] and day[2] == 1:
                         tbtn.state = "down"
+
+                        #if part of the personal assistant program, update the toggled date property
+                        #added by John Hall
+                        try:
+                            self.calendar_screen.toggled_date = self.active_date
+                        except:
+                            pass
+                        
                 # Disable buttons with days from other months
                 if day[2] == 0:
-                    tbtn.disabled = True
+                    tbtn.enabled = False
                 
                 grid_layout.add_widget(tbtn)
 
@@ -190,6 +217,8 @@ class CalendarWidget(RelativeLayout):
         
         # Today date
         self.active_date = today_date_list()
+
+        
         # Set title
         self.title = "%s - %s" % (self.month_names[self.active_date[1] - 1], 
                                   self.active_date[2])
@@ -209,7 +238,18 @@ class CalendarWidget(RelativeLayout):
         """ Get day value from pressed button """
         
         self.active_date[0] = int(inst.text)
-        self.event_label.text = str(self.active_date)
+
+        #button is toggled on, set the toggled_date property to the selected date
+        #if the button is toggled off, set toggled date to [0, 0, 0] (a sentinel value)
+        #added by John Hall
+        try:
+            if inst.state == "down":
+                self.calendar_screen.toggled_date = self.active_date
+            else:
+                self.calendar_screen.toggled_date = [0,0,0]
+        except:
+            pass
+    
                 
         if self.as_popup:
             self.parent_popup.dismiss()
@@ -274,7 +314,7 @@ class CalendarWidget(RelativeLayout):
             # Right - next
             elif touch.dpos[0] > 30:
                 self.go_next(None)
-        
+                
 class ArrowButton(Button):
     pass
 
