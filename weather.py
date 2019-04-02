@@ -106,4 +106,3 @@ def main(lat, lng):
 
     return temperature, summary
 
-print(main(41.4476, -71.5247))
