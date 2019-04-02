@@ -15,22 +15,22 @@ class forecasts:
 
     # method to take in the location, date, and timedelta and will put back the weekly forcast, aka 7 day forcast
     def hourlyForcast(self):
-        # calls the darksky api giving it the location(latitude and longitude) and the api key
+        
         # formats the weeks data into a dictionary for easy information access
-        # day becomes the dictionary of the current date, the summary of the day
-        # the min temp of the day and the max temp of the day
+        # Hour becomes the dictionary of the current date, the summary of the hour
         hour = dict(hour=self.date.strftime(str(self.date)),
-                    sum=self.location.summary,
-                    temp=self.location.temperature,
-                    dewpoint = self.location.dewPoint,
-                    humid = self.location.humidity,
-                    wind = self.location.windSpeed,
-                    windBearing = self.location.windBearing,
-                    pressure = self.location.pressure,
-                    ozone = self.location.ozone,
-                    precipitation = self.location.precipProbability
-                    )
-            # the dictionaries information is formatted and printed out to the user
+                    #each dictionary key corresponds to the data taken from the DarkSky API.
+                    sum=self.location.summary, #summarry of weather for the hour
+                    temp=self.location.temperature, #the temperature at the current time
+                    dewpoint = self.location.dewPoint, #the current dewpoint
+                    humid = self.location.humidity, #the current humidity
+                    wind = self.location.windSpeed, #the current wind speed
+                    windBearing = self.location.windBearing, #the direction that the wind is blowing in (36o degrees)
+                    pressure = self.location.pressure, #the pressure in mm HG
+                    ozone = self.location.ozone, #the current ozone level
+                    precipitation = self.location.precipProbability #the likelyhood it will rain
+                    )            
+        #formats the information in the dictionary keys and sets them to variables
         curr_temp = '{temp}'.format(**hour).lower()
         curr_sum = '{sum}'.format(**hour).lower()
         curr_dew = '{dewpoint}'.format(**hour).lower()
@@ -40,25 +40,46 @@ class forecasts:
         curr_pressure = '{pressure}'.format(**hour).lower()
         curr_ozone = '{ozone}'.format(**hour).lower()
 
-            # increments the date by the timedelta
+        #returns the data back for use.
         return curr_temp, curr_sum, curr_dew, curr_humid, curr_wind, curr_windBearing, curr_pressure, curr_ozone
 
+
+    #this method will supply data with 4 hour intervals, it will supply the weather and certain important metrics on a 4 hour basis.
     def dailyIntervals(self):
+        #takes the data and puts it into a dictionary
+        curr_temps = []
+        curr_humids = []
+        curr_winds = []
+        curr_windBearings = []
+        curr_precipitations = []
+        
+        i = 0
+        while(i < 24):
+            day = dict(day = self.date.strftime(str(self.date)),
+                        #each of the hourly tags have list indexes as it will be returning the 4 hour loop of information, the next value will be 3 6 9 and so on 
+                        temp=self.location.hourly[i].temperature,
+                        humid = self.location.hourly[i].humidity,
+                        wind = self.location.hourly[i].windSpeed,
+                        windBearing = self.location.hourly[i].windBearing,
+                        precipitation = self.location.hourly[i].precipProbability
+                        )
+            #sets variables of formated text from the dictionary
+            curr_temp = '{temp}'.format(**day).lower()
+            curr_humid = '{humid}'.format(**day).lower()
+            curr_wind = '{wind}'.format(**day).lower()
+            curr_windBearing = '{windBearing}'.format(**day).lower()
+            curr_precipitation = '{precipitation}'.format(**day).lower()
 
-        day = dict(day = self.date.strftime(str(self.date)),
-                    temp=self.location.hourly[0].temperature,
-                    humid = self.location.hourly[0].humidity,
-                    wind = self.location.hourly[0].windSpeed,
-                    windBearing = self.location.hourly[0].windBearing,
-                    precipitation = self.location.hourly[0].precipProbability
-                    )
-        curr_temp = '{temp}'.format(**day).lower()
-        curr_humid = '{humid}'.format(**day).lower()
-        curr_wind = '{wind}'.format(**day).lower()
-        curr_windBearing = '{windBearing}'.format(**day).lower()
-        curr_precipitation = '{precipitation}'.format(**day).lower()
+            curr_temps.append(curr_temp)
+            curr_humids.append(curr_humid)
+            curr_winds.append(curr_wind)
+            curr_windBearings.append(curr_windBearing)
+            curr_precipitations.append(curr_precipitation)
+            i += 4
 
-        return curr_temp, curr_humid, curr_wind, curr_windBearing, curr_precipitation
+
+        #sends the data back for use.
+        return curr_temps, curr_humids, curr_winds, curr_windBearings, curr_precipitations
     
 
     def weeklySummary(self):
@@ -101,8 +122,13 @@ def main(lat, lng):
 
     temperature, summary, dewPoint, humidity, wind, windBearing, pressure, ozone = forecast.hourlyForcast()
 
-    forecast.dailyIntervals()
-    forecast.weeklySummary()
+    temps, humids, winds, bearings, precips = forecast.dailyIntervals()
+
+
+    #this is a possible format for printing out the text of the intervals.
+    #for i in range(len(temps)):
+    #    print(temps[i] + " " + humids[i] +  " " + winds[i] + " " +  bearings[i] +  " " + precips[i])
 
     return temperature, summary
 
+main(41.1, -71.1)
