@@ -131,4 +131,3 @@ def main(lat, lng):
 
     return temperature, summary
 
-main(41.1, -71.1)
