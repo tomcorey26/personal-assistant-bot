@@ -30,11 +30,9 @@ def redditPosts(numPosts, subreddit):
             #set the sub to the one in the parameters
             sub = reddit.subreddit(subreddit)
         #look for the top posts
-        print("Searching through " + sub.display_name + "\n")
         for submission in reddit.subreddit(sub.display_name).hot(limit = numPosts):
-            print(submission.title)
-            print(submission.url + "\n")
             #add the current post to the dictionary
             posts[str(submission.title)] = submission.url
     #return the dictionary
-    return posts 
+    return posts
+

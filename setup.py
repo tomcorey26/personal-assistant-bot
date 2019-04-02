@@ -67,7 +67,20 @@ def update_modules():
     except ImportError:
         install("git+git://github.com/hhursev/recipe-scrapers.git")
     try:
+        import geocoder
+    except ImportError:
+        install('geocoder')
+    try:
         import nltk
+        install('nltk')
+        nltk.download('punkt')
+        nltk.download('stopwords')
+        nltk.download('averaged_perceptron_tagger')
+        nltk.download('maxent_ne_chunker')
+        nltk.download('words')
+        nltk.download('brown')
+        nltk.download('maxent_treebank_pos_tagger')
+        nltk.download('wordnet')
     except ImportError:
         install('nltk')
         import nltk

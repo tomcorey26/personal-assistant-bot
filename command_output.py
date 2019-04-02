@@ -14,6 +14,18 @@ def say(response):
     engine.runAndWait() #Run voice and wait for it to finish
     return engine
 
+#function to tell some jokes
+def tell_joke():
+    from random import randint
+    joke_list = ["Your social life.", "Something about a cow.", "Your mom."]
+    joke = joke_list[randint(0,len(joke_list)-1)]
+    return joke
+
+#function to catch a fish
+def catch_fish():
+    result = "You caught a fish"
+    return result
+
 #function to order a pizza
 def order_pizza():
     import init_order
@@ -119,6 +131,7 @@ def get_weather(command_input):
     # construct a single output string from this input
     return "In " + city + " " + state + ", it is currently " + temp + " degrees and " + summ + "."
 
+#function to search top reddit posts
 def reddit_posts(command_input):
     import RedditApi
     #pull the subreddit from the input
@@ -137,15 +150,17 @@ def reddit_posts(command_input):
     #remove r/
     sub = sub.replace("r/", "")
     print("sub: ",sub)
-    say("Here are the top posts from r/" + sub + ": ")
-    return str(RedditApi.redditPosts(5, sub))
+    say("Here are the top posts from r/" + sub + ":\n")
+    output = RedditApi.redditPosts(5, sub)
+    #format the string to make it look nicer
+    result = ""
+    for key, value in output.items():
+        result += key + ":\n" + value + "\n\n"
+    print(result)
+    #return the final string result
+    return result
 
-def tell_joke():
-    from random import randint
-    joke_list = ["Your social life.", "Something about a cow.", "Your mom."]
-    joke = joke_list[randint(0,len(joke_list)-1)]
-    return joke
-
+#function to utilize the calendar
 def get_calendar(command_input):
     import calendar_events
     if "view" in command_input:
@@ -158,6 +173,13 @@ def get_calendar(command_input):
         choice = "search"
     #perform a different calendar action based on the choice given
     return calendar_events.choices(choice)
+
+#function to get directions to a location
+def get_directions(command_input):
+    from directions import directions
+    destination = command_input
+    dir_text = directions.locate()
+    return dir_text
 
 #do different actions based on the given input
 def commands(command_input):
@@ -175,10 +197,14 @@ def commands(command_input):
         key = "weather"
     elif "joke" in command_input:
         key = "joke"
+    elif any(c in command_input for c in ("fish", "catch", "cast", "snag")):
+        key = "fish"
     elif "reddit" in command_input or "posts" in command_input:
         key = "reddit"
     elif any(c in command_input for c in ("add", "remove", "search", "find", "view")) and any(d in command_input for d in ("event", "calendar")):
         key = "calendar"
+    elif any(c in command_input for c in ("directions", "route", "direct", "locate")):
+        key = "directions"
 
     #define an output variable for later
     output = "Invalid Command."
@@ -209,6 +235,9 @@ def commands(command_input):
     #tell a joke
     elif "joke" in key:
         output = tell_joke()
+    #catch a fish
+    elif "fish" in key:
+        output = catch_fish()
     #access top reddit posts
     elif "reddit" in key:
         #parse the text for this feature
@@ -218,5 +247,10 @@ def commands(command_input):
     #manipulate or view calendar events
     elif "calendar" in key:
         output = get_calendar(command_input)
+    elif "directions" in key:
+        # parse the text for this feature
+        parsed_command = input_converter.convert_text(command_input.lower())
+        # use the parsed text to get the desired output
+        output = get_directions(parsed_command)
 
-    say(output)
+    return output
