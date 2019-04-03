@@ -29,6 +29,3 @@ def locate(destination):
         output += "In " + str(route["distance"]) + " miles, " + route["instruction"] + ".\n"
 
     return output
-
-print(locate("Narragansett Beach"))
-
