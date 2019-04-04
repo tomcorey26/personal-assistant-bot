@@ -1,13 +1,14 @@
 import geocoder
+from api_keys import geo_key
 
 def locate(destination):
     import openrouteservice
-    geo_key = "2kqkK0njHHY1OZIQyqGpb3JAB83migj6"
+    
 
     #find user's current location
-    sg = geocoder.ip('me')
-    s_lat = sg.lat
-    s_lng = sg.lng
+    startGeocoder = geocoder.ip('me')
+    s_lat = startGeocoder.lat
+    s_lng = startGeocoder.lng
     start_pos = (s_lng, s_lat)
 
     #find the coordinates of the desired location
