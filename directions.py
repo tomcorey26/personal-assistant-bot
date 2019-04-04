@@ -1,5 +1,5 @@
 import geocoder
-from api_keys import geo_key
+from api_keys import geo_key, route_key
 
 def locate(destination):
     import openrouteservice
@@ -20,7 +20,6 @@ def locate(destination):
     coords = (start_pos, end_pos)
     print(coords)
 
-    route_key = '5b3ce3597851110001cf62483b4bbad3ed8247c3b973b8a1471cac8e'
     client = openrouteservice.Client(route_key)
     routes = client.directions(coords, units="mi")
 
