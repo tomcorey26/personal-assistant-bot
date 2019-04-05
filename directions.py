@@ -21,7 +21,7 @@ def locate(destination):
     print(coords)
 
     client = openrouteservice.Client(route_key)
-    routes = client.directions(coords, units="mi")
+    routes = client.directions(coords, units="mi", profile="driving-car")
 
     #format direction output
     output = ""
@@ -29,3 +29,5 @@ def locate(destination):
         output += "In " + str(route["distance"]) + " miles, " + route["instruction"] + ".\n"
 
     return output
+
+#print(locate("Memorial Union University of Rhode Island"))

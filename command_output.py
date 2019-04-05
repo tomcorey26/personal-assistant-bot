@@ -23,7 +23,8 @@ def tell_joke():
 
 #function to catch a fish
 def catch_fish():
-    result = "You caught a fish"
+    import fish
+    result = fish.main()
     return result
 
 #function to order a pizza
@@ -181,9 +182,12 @@ def get_calendar(command_input):
 
 #function to get directions to a location
 def get_directions(command_input):
-    from directions import directions
-    destination = command_input
-    dir_text = directions.locate()
+    import directions
+    destination = ""
+    if " to " in command_input:
+        destination = command_input[command_input.index(" to ")+4:]
+    print("Location: ", destination)
+    dir_text = directions.locate(destination)
     return dir_text
 
 #do different actions based on the given input
@@ -253,10 +257,6 @@ def commands(command_input):
     elif "calendar" in key:
         output = get_calendar(command_input)
     elif "directions" in key:
-        # parse the text for this feature
-        parsed_command = input_converter.convert_text(command_input.lower())
-        # use the parsed text to get the desired output
-        output = get_directions(parsed_command)
+        output = get_directions(command_input)
 
-    say(output)
     return output
