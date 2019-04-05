@@ -54,6 +54,11 @@ def update_modules():
         import pizzapi
     except ImportError:
         install('pizzapi')
+
+    try:
+        import pizzapy
+    except ImportError:
+        install('git+https://github.com/Magicjarvis/pizzapi.git')
     try:
         import newspaper
     except ImportError:
