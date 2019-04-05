@@ -21,7 +21,7 @@ def locate(destination):
 
     route_key = '5b3ce3597851110001cf62483b4bbad3ed8247c3b973b8a1471cac8e'
     client = openrouteservice.Client(route_key)
-    routes = client.directions(coords, units="mi")
+    routes = client.directions(coords, units="mi", profile="driving-car")
 
     #format direction output
     output = ""
@@ -30,5 +30,4 @@ def locate(destination):
 
     return output
 
-print(locate("Narragansett Beach"))
-
+#print(locate("Memorial Union University of Rhode Island"))
