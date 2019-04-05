@@ -45,10 +45,18 @@
 			valign: "top"
 			height: 120
 		
-		Button:
-			text: "add event"
+		BoxLayout:
+			orientation: "horizontal"
 			size_hint_y: None
 			height: 45
+			
+			Button:
+				text: "Add Event"
+				on_release: root.addEvent()
+			
+			Button:
+				text: "Remove Event"
+				on_release: root.removeEvents()
 
 
 <WeatherScreen>:
@@ -121,18 +129,6 @@
 				id: imageButton
 				text: "Image"
 				background_color: .5, .5, 1, 1
-			
-
-<SettingsScreen>:
-	name: "Settings"
-	Label:
-		text: "Settings Screen"
-		canvas.before:
-			Color:
-				rgba: 1, 0, 0, 1
-			Rectangle:
-				pos: self.pos
-				size: self.size
 				
 <TwitterScreen>:
 	name: "Twitter"
@@ -241,18 +237,67 @@
 				
 <SettingsScreen>:
 	name: "Settings"
-	Label:
-		text: "settings screen"
+		
+	BoxLayout:
+		orientation: "vertical"
 		canvas.before:
 			Color:
 				rgba: 1, 0, 0, 1
 			Rectangle:
 				pos: self.pos
 				size: self.size
+		
+		Label:
+			text: "settings screen"
+			size_hint_y: None
+			height: 45
+			
+		#GridLayout of all the user input lines for the settings
+		GridLayout:
+			cols: 2
+			spacing: 10
+			
+			Label:
+				text: "First Name:"
+				size_hint: (None, None)
+				size: (100, 30)
+			
+			UserInput:
+				id: _first_name
+				
+			Label:
+				text: "Last Name:"
+				size_hint: (None, None)
+				size: (100, 30)
+				
+			UserInput:
+				id: _last_name
+				
+			Label:
+				text: "Zip Code:"
+				size_hint: (None, None)
+				size: (100, 30)
+				
+			UserInput
+				id: _zip_code
+				size_hint_x: None
+				width: 100
+		
+		Label:
+			id: _city_state_label
+			text: ""
+			
+		Button:
+			text: "Update Settings"
+			on_release: root.updateSettings()
 			
 <PizzaScreen>:
 	name: "Pizza"
-	id: _pizza_screen
+	
+	#variables for the python file
+	customer: None
+	pizzaOrder: None
+	creditCard: None
 	
 	BoxLayout:
 		orientation: "vertical"
@@ -267,22 +312,96 @@
 			#variables so that the screens can interact with eachother
 			order_screen: _order_screen
 			checkout_screen: _checkout_screen
+			address_screen: _address_screen
 			
+			AddressScreen:
+				id: _address_screen
 			OrderScreen:
 				id: _order_screen
 			CheckoutScreen:
 				id: _checkout_screen
+			
+				
+<AddressScreen>:
+	name: "Address"
+	
+	#variables for the python file
+	first_name: _first_name
+	last_name: _last_name
+	user_email: _user_email
+	user_phone: _user_phone
+	user_address: _user_address
+	error_label: _error_label
+	
+	#variable that holds the main PizzaScreen object
+	main_pizza_screen: self.manager.parent.parent
+	
+	#get the info for the customer object
+	BoxLayout:
+		orientation: "vertical"
+		
+		#gridlayout of the user inputs
+		GridLayout:
+			cols: 2
+			spacing: 10
+			
+			Label:
+				text: "First Name:"
+				size_hint: (None, None)
+				size: (100, 30)
+			
+			UserInput:
+				id: _first_name
+				
+			Label:
+				text: "Last Name:"
+				size_hint: (None, None)
+				size: (100, 30)
+			
+			UserInput:
+				id: _last_name
+				
+			Label:
+				text: "Email:"
+				size_hint: (None, None)
+				size: (100, 30)
+				
+			UserInput:
+				id: _user_email
+				
+			Label:
+				text: "Phone #:"
+				size_hint: (None, None)
+				size: (100, 30)
+				
+			UserInput:
+				id: _user_phone
+				
+			Label:
+				text: "Address:"
+				size_hint: (None, None)
+				size: (100, 30)
+				
+			UserInput
+				id: _user_address
+		
+		Label:
+			id: _error_label
+		Button:
+			text: "Proceed to Order"
+			size_hint_y: None
+			height: 60
+			on_release: root.goToOrder()
+	
 <OrderScreen>:
 	name: "Order"
 	
 	#attributes for the order screen for use in the .py files
-	size_btn: _size_btn
-	toppings_btn: _topping_btn
+	pizza_btn: _pizza_btn
 	side_btn: _side_btn
 	drink_btn: _drink_btn
 	order_label: _order_label
  
-	
 	BoxLayout:
 		orientation: "vertical"
 		spacing: 10
@@ -299,15 +418,9 @@
 				width: 45
 			
 			Spinner:
-				id: _size_btn
-				text: "Small"
-				values: ["Small", "Medium", "Large"]
-				
-			# This button oepn the pizza toppings dropdown
-			Spinner:
-				id: _topping_btn
-				text: "Cheese"
-				values: ["Cheese", "Pepperoni", "Mushroom", "Onion", "Olive", "Extra Cheese"]
+				id: _pizza_btn
+				text: "Pizza"
+				values: ["Small Hand Tossed Pizza", "Medium Hand Tossed Pizza", "Large Hand Tossed Pizza", "Medium Pan Pizza"]
 				
 			Button:
 				id: _add_pizza
@@ -315,7 +428,7 @@
 				size_hint_x: None
 				width: 100
 				background_color: 1, .5, .5, 1
-				on_release: root.addPizza()
+				on_release: root.addToOrder(root.pizza_btn.text)
 		
 		BoxLayout:
 			size_hint_y: None
@@ -331,25 +444,40 @@
 			Spinner:
 				id: _side_btn
 				text: "Side"
-				values: ["Breadsticks", "Cinnamon Sticks", "Lava Cake", "None"]
+				values: ["Boneless wings (14pc)", "Hot Wings (14pc)","Stuffed Cheesy Bread", " Marbled Cookie Brownie"]
 				
-					
-			#this opens the sides dropdown
-			Spinner:
-				id: _drink_btn
-				text: "Drink"
-				values: ["Coke (2 Liter)", "Coke (20 Oz)", "Sprite (2 liter)", "Sprite (20 Oz)", "None"]
-					
-			#This Button adds the sides/drink to the order
+			#This Button adds the sides to the order
 			Button:
-				id: _add_sides
+				id: _add_side
 				text: "add to order"
 				size_hint_x: None
 				width: 100
 				background_color: 1, .5, .5, 1
-				on_release: root.addSides()
-					
-					
+				on_release: root.addToOrder(root.side_btn.text)
+		
+		BoxLayout:
+			size_hint_y: None
+			height: 30
+			orientation: "horizontal"
+			
+			Label:
+				text: "Drink"
+				size_hint_x: None
+				width: 45
+				
+			Spinner:
+				id: _drink_btn
+				text: "Drink"
+				values: ["Coke(2 Liter)","Diet Coke(2 Liter)","Sprite(2 Liter)","Coke(2 Liter)","Diet Coke(2 Liter)","Sprite(2 Liter)"]
+			
+			Button:
+				id: _add_side
+				text: "add to order"
+				size_hint_x: None
+				width: 100
+				background_color: 1, .5, .5, 1
+				on_release: root.addToOrder(root.drink_btn.text)
+				
 		TextInput:
 			id: _order_label
 			text: "Your Order: \n\n"
@@ -364,6 +492,8 @@
 			
 <CheckoutScreen>:
 	name: "Checkout"
+	
+	# order_list is a List Property, initialized to []
 	
 	Label:
 		id: _main_label
@@ -393,7 +523,7 @@
 			height: 30
 			
 		UserInput:
-			id: _news_keyword
+			id: _meal_keyword
 			size_hint_x: .9
 			hint_text: "Enter the meal you want to make here"
 			
@@ -403,10 +533,12 @@
 			height: 120		
 			
 		TextInput:
+			id: _ingredient_box
 			text: "ingredients here"
 			readonly: True
 		
 		TextInput:
+			id: _instructions_box
 			text: "instructions here"
 			readonly: True
 			
@@ -428,7 +560,7 @@
 			height: 30
 	
 		UserInput:
-			id: _meal_input
+			id: _news_input
 			size_hint_x: .9
 			hint_text: "Enter your news keyword here"
 			

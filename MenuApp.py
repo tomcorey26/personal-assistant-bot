@@ -24,6 +24,8 @@ import calendar_events as events
 import RedditApi
 import weather
 import location_to_coords
+from front_order import *
+import input_converter
 
 
 Builder.load_file('menubar.kv')
@@ -64,6 +66,14 @@ class CalendarScreen(Screen):
             dateString = str(self.toggled_date[1]) + "-" + str(self.toggled_date[0]) + "-" + str(self.toggled_date[2])
             self.event_label.text = "events for " + dateString + ":\n" \
                                     + "    TODO: add event here"
+
+    def addEvent(self):
+        #TODO add an event to the data file
+        return
+
+    def removeEvents(self):
+        #TODO remove an event (or all events on that day) from the calendar
+        return
         
 class WeatherScreen(Screen):
 
@@ -127,7 +137,6 @@ class FishScreen(Screen):
 
         #dictionary of the image URL's
         #TODO find a better way to implement these
-
         imageURLs = {1: "Trout.png", 2: "Salmon.png", 5: "Boots.png", 7: "Cod.png", 0: "Seaweed.png"} 
 
         #get the url for the image
@@ -141,11 +150,48 @@ class FishScreen(Screen):
 
     
 class SettingsScreen(Screen):
-    pass
+
+    #this function will update the user's personal data
+    def updateSettings(self):
+        #TODO
+
+        #add names to user data file
+
+        #convert zipcode to city/state, and add city and state to data file
+        #make sure that this conversion works before you try to add anything to the file
+
+        #print the user's city/state to the city_state_label
+        return
 
 class PizzaScreen(Screen):
     pass
 
+class AddressScreen(Screen):
+
+    def goToOrder(self):
+
+        try:
+            #get the customer data and conver to a customer object
+            first = self.first_name.text
+            last = self.last_name.text
+            email = self.user_email.text
+            phone = self.user_phone.text
+            address = self.user_address.text
+
+
+            #retrieve the Customer and Pizza object variables from the PizzaScreen
+            customer = self.main_pizza_screen.customer
+            pizzaOrder = self.main_pizza_screen.pizzaOrder
+
+            #create a Customer object, then create a Pizza object with that Customer
+            customer = Customer(first, last, email, phone, address)
+            pizzaOrder = Pizza(customer)
+
+            #if successful, move to the next screen
+            self.manager.current = "Order"
+        except:
+            self.error_label.text = "Error: invalid user input. Try again"
+        
 class OrderScreen(Screen):
 
     # tracks the contents of your order
@@ -153,23 +199,11 @@ class OrderScreen(Screen):
     order_list = ListProperty([])
 
     # when the "add to order" button is pressed, adds the pizza to the order list
-    def addPizza(self):
-        self.order_list.append(self.size_btn.text + " " + self.toppings_btn.text + " Pizza")
+    def addToOrder(self, order):
 
-    def addSides(self):
-        side = self.side_btn.text
-        drink = self.drink_btn.text
-
-        #add the side/drink if the user has selected one
-        if (side != "Side" and side != "None"):
-            self.order_list.append(side)
-
-        if (drink != "Drink" and drink != "None"):
-            self.order_list.append(drink)
-
-        #reset the side/drink buttons to the default
-        self.side_btn.text = "Side"
-        self.drink_btn.text = "Drink"
+        #if the user chose an item, add it to teh list
+        if not (order in ["Pizza", "Side", "Drink"]):
+            self.order_list.append(order)
 
     # When the order list property changes, update the order label to reflect the list
     def on_order_list(self, instance, value):
@@ -231,11 +265,25 @@ class ChatWindow(AnchorLayout):
         #get the user's response 1 second after they enter the input
         Clock.schedule_once(partial(self.getResponse, inputString), 1)
 
+    def processSpeech(self):
 
+        #get the speech from the user and attempt to convert it to text
+        try:
+            command = input_converter.myCommand()
+            self.text_input.text = command
+            self.processText()
+
+        #if speech doesn't work, warn the user
+        except AttributeError:
+            self.text_input.hint_text = "error: speech not supported atm"
+
+
+        
     #get the chatbot's response from the backend
-    #TODO no backend functionality yet
+    #TODO no backend functionality yet,
+    #use output_command here instead of the MemeParserXD class
     def getResponse(self, inputString, dt):
-        self.text_log.text = self.text_log.text + "bot: " + mp.parse(self, inputString) + '\n\n'
+        self.text_log.text += ("bot: " + mp.parse(self, inputString) + '\n\n')
         self.text_input.focus = True
 
     
