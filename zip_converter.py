@@ -3,9 +3,7 @@ from uszipcode import SearchEngine
 #declare a basic global search variable
 search = SearchEngine(simple_zipcode=True)
 
-def zip_to_coords(zipInput):
-
-    zipcode = search.by_zipcode(zipInput)
+def zip_to_coords(zipcode):
     zip_dict = zipcode.to_dict()
     #print("dict: ", zip_dict)
 
