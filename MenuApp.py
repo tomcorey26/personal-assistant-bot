@@ -18,7 +18,7 @@ from kivy.uix.dropdown import DropDown
 
 from sampleParser import memeParserXD as mp
 import time
-from fish import Fish
+import fish
 import random
 import calendar_events as events
 import RedditApi
@@ -127,26 +127,32 @@ class RedditScreen(Screen):
 class FishScreen(Screen):
 
     def castLine(self):
-        fishID = random.randint(0, 20)
-        catch = Fish(fishID)
-        species, wikiURL = catch.getSpecies()
 
+        #retrieve a fish object and get its species/wikipedia page
+        catch = fish.castLine()
+        species = catch.species
+        wikiURL = catch.wiki_url
+        fishID = catch.number
+
+        #format the string for the screen's label
         if (species != "You fail to catch a fish"):
             species = "You caught a " + species
         self.ids._catch_label.text = species
 
         #dictionary of the image URL's
         #TODO find a better way to implement these
-        imageURLs = {1: "Trout.png", 2: "Salmon.png", 5: "Boots.png", 7: "Cod.png", 0: "Seaweed.png"} 
+        fishImages = {1: "Trout.png", 2: "Salmon.png", 3:"Crayfish.png", 4:"Minnow.png",
+                      5: "Boots.png", 6: "Lobster.png", 7: "Sardine.png", 8: "Mackerel.png",
+                      9: "sadFace.png",0: "Seaweed.png"} 
 
         #get the url for the image
-        url = imageURLs.get(fishID)
+        image = fishImages.get(fishID)
 
         #if the fishID doesn't have an image, just default to seaweed for now
-        if url == None:
-            url = "Seaweed.png"
+        if image == None:
+            image = "sadFace.png"
 
-        self.ids._fish_image.source = "images/" + url
+        self.ids._fish_image.source = "images/" + image
 
     
 class SettingsScreen(Screen):

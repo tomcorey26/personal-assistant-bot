@@ -1,8 +1,33 @@
-import openrouteservice
+import geocoder
+from api_keys import geo_key, route_key
 
-coords = ((8.34234,48.23424),(8.34423,48.26424))
+def locate(destination):
+    import openrouteservice
+    
 
-client = openrouteservice.Client(key='5b3ce3597851110001cf62483b4bbad3ed8247c3b973b8a1471cac8e') # Specify your personal API key
-routes = client.directions(coords)
+    #find user's current location
+    startGeocoder = geocoder.ip('me')
+    s_lat = startGeocoder.lat
+    s_lng = startGeocoder.lng
+    start_pos = (s_lng, s_lat)
 
-print(routes)
+    #find the coordinates of the desired location
+    eg = geocoder.mapquest(destination, key=geo_key)
+    e_lat = eg[0].lat
+    e_lng = eg[0].lng
+    end_pos = (e_lng, e_lat)
+
+    coords = (start_pos, end_pos)
+    print(coords)
+
+    client = openrouteservice.Client(route_key)
+    routes = client.directions(coords, units="mi", profile="driving-car")
+
+    #format direction output
+    output = ""
+    for route in routes["routes"][0]["segments"][0]["steps"]:
+        output += "In " + str(route["distance"]) + " miles, " + route["instruction"] + ".\n"
+
+    return output
+
+#print(locate("Memorial Union University of Rhode Island"))

@@ -53,8 +53,7 @@ class forecasts:
         curr_windBearings = []
         curr_precipitations = []
         
-        i = 0
-        while(i < 24):
+        for i in range(0,24,4):
             day = dict(day = self.date.strftime(str(self.date)),
                         #each of the hourly tags have list indexes as it will be returning the 4 hour loop of information, the next value will be 3 6 9 and so on 
                         temp=self.location.hourly[i].temperature,
@@ -75,13 +74,14 @@ class forecasts:
             curr_winds.append(curr_wind)
             curr_windBearings.append(curr_windBearing)
             curr_precipitations.append(curr_precipitation)
-            i += 4
+
 
 
         #sends the data back for use.
         return curr_temps, curr_humids, curr_winds, curr_windBearings, curr_precipitations
     
-
+    #gives the summary of the weeks weather
+    #it will print out the information for each day including the minimum temp, max temp the summary and the precipitation percentage.
     def weeklySummary(self):
 
         weekday = self.date.today()

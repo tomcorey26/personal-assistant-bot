@@ -23,7 +23,11 @@ def tell_joke():
 
 #function to catch a fish
 def catch_fish():
-    result = "You caught a fish"
+    import fish
+
+    catch = fish.castLine()
+    result = catch.toString()
+    
     return result
 
 #function to order a pizza
@@ -34,13 +38,18 @@ def order_pizza():
 
 #function to scrape for a recipe
 def get_recipe(command_input):
+    import recipe_finder
     #get the food that is being requested
     try:
         food = command_input[command_input.index("recipe") + 1]
     except IndexError:
         food = command_input[command_input.index("recipe") - 1]
-    #call the recipe finder
-    ingredients = recipe_finder.main(food)
+    try:
+        #call the recipe finder
+        ingredients = recipe_finder.main(food)
+    except ValueError:
+        #there is not a recipe listed for this food
+        return "Not specific enough"
     #get the recipe back to the user
     return "Here's a recipe for " + food + ": \n " + str(ingredients)
 
@@ -176,9 +185,12 @@ def get_calendar(command_input):
 
 #function to get directions to a location
 def get_directions(command_input):
-    from directions import directions
-    destination = command_input
-    dir_text = directions.locate()
+    import directions
+    destination = ""
+    if " to " in command_input:
+        destination = command_input[command_input.index(" to ")+4:]
+    print("Location: ", destination)
+    dir_text = directions.locate(destination)
     return dir_text
 
 #do different actions based on the given input
@@ -248,9 +260,6 @@ def commands(command_input):
     elif "calendar" in key:
         output = get_calendar(command_input)
     elif "directions" in key:
-        # parse the text for this feature
-        parsed_command = input_converter.convert_text(command_input.lower())
-        # use the parsed text to get the desired output
-        output = get_directions(parsed_command)
+        output = get_directions(command_input)
 
     return output
