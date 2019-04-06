@@ -24,6 +24,8 @@ def update_modules():
     try:
         import kivy
     except ImportError:
+        install('docutils pygments pypiwin32 kivy.deps.sdl2 kivy.deps.glew')
+        install('kivy.deps.angle')
         install('kivy')
     try:
         import pyaudio
@@ -54,6 +56,11 @@ def update_modules():
         import pizzapi
     except ImportError:
         install('pizzapi')
+
+    try:
+        import pizzapy
+    except ImportError:
+        install('git+https://github.com/Magicjarvis/pizzapi.git')
     try:
         import newspaper
     except ImportError:

@@ -6,7 +6,7 @@ class memeParserXD:
         output = ''
         if textInput == "fish":
             chatWindow.screen_manager.current = "Fishing"
-            output = "sup, my dudes"
+            output = "ahoy, mateys"
         elif textInput == "weather":
             output = "it\'s pretty good outside"
             chatWindow.screen_manager.current = "Weather"

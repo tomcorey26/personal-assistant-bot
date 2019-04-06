@@ -96,7 +96,6 @@ class forecasts:
             print('{day}: {sum} Temp range: {tempMin} - {tempMax}, Precipitation Chance : {precipitation}'.format(**day))
             weekday += self.timedelta(days=1)
 
-
     # returns the location we are currently concerned with
     def getLocation(self):
         return self.LOCATION
@@ -109,6 +108,15 @@ class forecasts:
     def getTimeDelta(self):
         return self.timedelta
 
+def getCurrentWeather(lat, lon):
+    currentForecast = forecast(DARK_SKY_KEY, lat, lon)
+
+    temp = currentForecast.temperature
+    summ = currentForecast.summary
+    icon = currentForecast.icon
+    humidity = currentForecast.humidity
+
+    return temp, summ, icon, humidity
 
 def main(lat, lng):
     # imports the datetime library with the fields date and timedelta
@@ -119,11 +127,8 @@ def main(lat, lng):
 
     # creates a forcasts object from the forcasts class
     forecast = forecasts(lat, lng, date, timedelta)
-
     temperature, summary, dewPoint, humidity, wind, windBearing, pressure, ozone = forecast.hourlyForcast()
-
     temps, humids, winds, bearings, precips = forecast.dailyIntervals()
-
 
     #this is a possible format for printing out the text of the intervals.
     #for i in range(len(temps)):

@@ -24,7 +24,10 @@ def tell_joke():
 #function to catch a fish
 def catch_fish():
     import fish
-    result = fish.main()
+
+    catch = fish.castLine()
+    result = catch.toString()
+    
     return result
 
 #function to order a pizza
