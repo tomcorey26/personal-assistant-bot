@@ -508,6 +508,10 @@
 <RecipeScreen>:
 	name: "Recipes"
 	
+	meal_keyword: _meal_keyword
+	ingredient_box: _ingredient_box
+	meal_label: _meal_label
+	
 	BoxLayout:
 		orientation: "vertical"
 		canvas.before:
@@ -526,8 +530,10 @@
 			id: _meal_keyword
 			size_hint_x: .9
 			hint_text: "Enter the meal you want to make here"
+			on_text_validate: root.getRecipe()
 			
 		Label:
+			id: _meal_label
 			text: "Name of recipe here"
 			size_hint_y: None
 			height: 120		
@@ -535,11 +541,6 @@
 		TextInput:
 			id: _ingredient_box
 			text: "ingredients here"
-			readonly: True
-		
-		TextInput:
-			id: _instructions_box
-			text: "instructions here"
 			readonly: True
 			
 

@@ -2,6 +2,7 @@
 from kivy.config import Config
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
+#import the required kivy dependencies
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.button import Button
@@ -16,6 +17,7 @@ from kivy.uix.popup import Popup
 from kivy.properties import ListProperty
 from kivy.uix.dropdown import DropDown
 
+#import all of the local python files that the group created
 from sampleParser import memeParserXD as mp
 import time
 import fish
@@ -26,6 +28,7 @@ import weather
 import location_to_coords
 from front_order import *
 import input_converter
+import recipe_finder
 
 
 Builder.load_file('menubar.kv')
@@ -72,7 +75,7 @@ class CalendarScreen(Screen):
         return
 
     def removeEvents(self):
-        #TODO remove an event (or all events on that day) from the calendar
+        #TODO remove an event (or all events on that day) from the data file
         return
         
 class WeatherScreen(Screen):
@@ -235,7 +238,21 @@ class CheckoutScreen(Screen):
         self.ids._main_label.text = str(self.order_list)
     
 class RecipeScreen(Screen):
-    pass
+
+    def getRecipe(self):
+
+        #get the ingredients for the recipe
+        ingredients = recipe_finder.main(self.meal_keyword.text)
+
+        #update the panel with teh recipe info
+        self.meal_label.text = "Recipe for " + self.meal_keyword.text + ":"
+        self.ingredient_box.text = ingredients
+        self.meal_keyword.hint_text = ("Enter the meal you want to make here")
+
+        #except:
+         #   self.meal_keyword.text= ""
+          #  self.meal_keyword.hint_text = "Error: not specific enough"
+        
 
 class NewsScreen(Screen):
     pass
@@ -282,8 +299,6 @@ class ChatWindow(AnchorLayout):
         #if speech doesn't work, warn the user
         except AttributeError:
             self.text_input.hint_text = "error: speech not supported atm"
-
-
         
     #get the chatbot's response from the backend
     #TODO no backend functionality yet,
