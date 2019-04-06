@@ -24,6 +24,8 @@ def update_modules():
     try:
         import kivy
     except ImportError:
+        install('docutils pygments pypiwin32 kivy.deps.sdl2 kivy.deps.glew')
+        install('kivy.deps.angle')
         install('kivy')
     try:
         import pyaudio
