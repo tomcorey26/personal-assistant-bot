@@ -7,6 +7,10 @@ from input_converter import myCommand
 #define an variable to check for user input
 input_type = "text"
 
+
+
+
+
 #check if the calendar json exists
 def appCheck():
     #check if the file exists
@@ -33,7 +37,8 @@ def get_data():
     else:
         data = open("calendar.json", "w+")
         with data as outfile:
-            json.dump("{}", outfile)
+            events = {}
+            json.dump(events, outfile)
         data.close()
 
 #Write dictionary to json file
@@ -41,7 +46,7 @@ def write_data(user_data):
     data = open("calendar.json","w+")
 
     with data as outfile:
-        json.dump(user_data,outfile)
+        json.dump(data,outfile)
     data.close()
 
 def convert_date(date):
