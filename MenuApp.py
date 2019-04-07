@@ -14,7 +14,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
 from kivy.clock import Clock
 from functools import partial
 from kivy.uix.popup import Popup
-from kivy.properties import ListProperty
+from kivy.properties import ListProperty, NumericProperty
 from kivy.uix.dropdown import DropDown
 
 #import all of the local python files that the group created
@@ -67,17 +67,56 @@ class CalendarScreen(Screen):
         #if an actual date is selected, update the event label
         else:
             dateString = str(self.toggled_date[1]) + "-" + str(self.toggled_date[0]) + "-" + str(self.toggled_date[2])
-            self.event_label.text = "events for " + dateString + ":\n" \
-                                    + "    TODO: add event here"
+            self.event_label.text = "events for " + dateString + ":\n\n" \
+                                    + "TODO: add event here"
 
     def addEvent(self):
-        #TODO add an event to the data file
-        return
+
+        #only open the popup if a date is selected
+        if (self.toggled_date != [0,0,0]):
+
+            #the functions in the AddEventPopup class will take
+            #care of adding the event to the data file
+            eventPopup = AddEventPopup(self)
+            eventPopup.open()
 
     def removeEvents(self):
         #TODO remove an event (or all events on that day) from the data file
         return
+
+class AddEventPopup(Popup):
+
+    # takes a reference to the calendarScreen, so that the popup can easily
+    # pass back the data
+    def __init__(self, parent, **kwargs):
+        super(AddEventPopup, self).__init__(**kwargs)
+
+        #sets the parent CalendarScreen as an attribute of
+        #and get the selected date from the calendar screen
+        self.parentScreen = parent
+        self.date = parent.toggled_date
+
+    def addEvent(self, time, name):
+
+        #if either of the textInput boxes are empty, then display an error
+        if time == '' or name == '':
+            self.error_label.text = "error: please enter both a time and a name"
+        else:
+            print (self.date)
+            print (" time = " + self.time_input.text)
+            print (" name = " + self.name_input.text)
+            
+            # TODO add the event to the json file
+
+            #TODO update the calendar screen's event label
+
+            #close the popup window
+            self.dismiss()
+
+    def __del__(self):
+        print('popup was garbage collected')
         
+    
 class WeatherScreen(Screen):
 
     def getWeather(self):
@@ -110,8 +149,6 @@ class WeatherScreen(Screen):
             self.summary_button.text = "Summary:\n" + str(summ)
             self.image_button.text = "imageurl:\n" + str(icon) + ".png"
             self.humidity_button.text = "Humidity:\n" + str(humid * 100) + "%"
-
-
 
 class TwitterScreen(Screen):
     pass
@@ -187,71 +224,87 @@ class AddressScreen(Screen):
             phone = self.user_phone.text
             address = self.user_address.text
 
-
-            #retrieve the Customer and Pizza object variables from the PizzaScreen
-            customer = self.main_pizza_screen.customer
-            pizzaOrder = self.main_pizza_screen.pizzaOrder
-
-            #create a Customer object, then create a Pizza object with that Customer
+            #create customer and pizza objects using the customer info
             customer = Customer(first, last, email, phone, address)
             pizzaOrder = Pizza(customer)
 
+            #send the customer and pizza objects to the main pizza screen
+            self.main_pizza_screen.customer = customer
+            self.main_pizza_screen.pizzaOrder = pizzaOrder
+
             #if successful, move to the next screen
             self.manager.current = "Order"
+            
         except:
             self.error_label.text = "Error: invalid user input. Try again"
         
 class OrderScreen(Screen):
-
+      
     # tracks the contents of your order
-    # when something gets added to the list, the order label will  be updated
+    # when something gets added to the list, the order labels will  be updated
     order_list = ListProperty([])
+    order_price = NumericProperty(0)
 
-    # when the "add to order" button is pressed, adds the pizza to the order list
-    def addToOrder(self, order):
-
-        #if the user chose an item, add it to teh list
-        if not (order in ["Pizza", "Side", "Drink"]):
-            self.order_list.append(order)
-
-    # When the order list property changes, update the order label to reflect the list
+    itemCodes = {"Small Hand Tossed Pizza": "10SCREEN", "Medium Hand Tossed Pizza": "12SCREEN",
+                 "Large Hand Tossed Pizza": "14SCREEN", "Medium Pan Pizza": "P12IPAZA",
+                 "Boneless wings (14pc)": "W14PBNLW", "Hot Wings (14pc)": "W14PHOTW",
+                 "Stuffed Cheesy Bread": "B8PCSCB", " Marbled Cookie Brownie": "MARBRWNE",
+                 "Coke(2 Liter)": "2LCOKE", "Diet Coke(2 Liter)": "2LDCOKE", "Sprite(2 Liter)": "2LSPRITE"}
+                 
+    
+    # When the order list property changes, update the order label
     def on_order_list(self, instance, value):
         self.order_label.text = "Your Order: \n\n"
-
+        
         for i in self.order_list:
             self.order_label.text += i + "\n"
 
+    #when the order price property changes, update the price label
+    def on_order_price(self, instance, value):
+        self.price_label.text = "Total Cost: ${0:.2f}".format(value)
+        
+    def addToOrder(self, order):
+        #if the user chose an item, add it to the list
+        if not (order in ["Pizza", "Side", "Drink"]):
+            #print the name of the pizza to the order list
+            self.order_list.append(order)
+            
+            #retrieve the itemcodes from the dictionary and add
+            #to the pizza object's order
+            self.main_pizza_screen.pizzaOrder.addtoOrder(OrderScreen.itemCodes[order])
+
+            #add the item's value to the total price
+            self.order_price = 0
+            for i in self.main_pizza_screen.pizzaOrder.order.data["Products"]:
+                self.order_price += float(i['Price'])
+
     # goes to the checkout screen if the user is done with their order
     def go_to_checkout(self):
-
-        #send the order list to the checkout screen
-        checkout_screen = self.manager.checkout_screen
-        checkout_screen.order_list = self.order_list
-
+        
         #change the current screen to the checkout screen
         self.manager.current = "Checkout"
+
+        #send the checkokut screen any info it needs
         
 class CheckoutScreen(Screen):
-    order_list = ListProperty([])
-
-    def on_order_list(self, instance, value):
-        self.ids._main_label.text = str(self.order_list)
+    pass
     
 class RecipeScreen(Screen):
 
     def getRecipe(self):
 
-        #get the ingredients for the recipe
-        ingredients = recipe_finder.main(self.meal_keyword.text)
+        try:
+            #get the ingredients for the recipe
+            ingredients = recipe_finder.main(self.meal_keyword.text)
 
-        #update the panel with teh recipe info
-        self.meal_label.text = "Recipe for " + self.meal_keyword.text + ":"
-        self.ingredient_box.text = ingredients
-        self.meal_keyword.hint_text = ("Enter the meal you want to make here")
+            #update the panel with teh recipe info
+            self.meal_label.text = "Recipe for " + self.meal_keyword.text + ":"
+            self.ingredient_box.text = ingredients
+            self.meal_keyword.hint_text = ("Enter the meal you want to make here")
 
-        #except:
-         #   self.meal_keyword.text= ""
-          #  self.meal_keyword.hint_text = "Error: not specific enough"
+        except:
+            self.meal_keyword.text= ""
+            self.meal_keyword.hint_text = "Error: not specific enough"
         
 
 class NewsScreen(Screen):
