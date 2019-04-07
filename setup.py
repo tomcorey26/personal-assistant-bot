@@ -10,7 +10,7 @@ def install(name):
 
 def update_modules():
     #update pip if necessary
-    subprocess.call("python -m pip install --upgrade pip", shell=True)
+    install("pip")
 
     #install various necessary modules
     try:
@@ -24,6 +24,8 @@ def update_modules():
     try:
         import kivy
     except ImportError:
+        install('docutils pygments pypiwin32 kivy.deps.sdl2 kivy.deps.glew')
+        install('kivy.deps.angle')
         install('kivy')
     try:
         import pyaudio
@@ -70,6 +72,10 @@ def update_modules():
         import geocoder
     except ImportError:
         install('geocoder')
+    try:
+        import openrouteservice
+    except ImportError:
+        install("openrouteservice")
     try:
         import nltk
         install('nltk')
