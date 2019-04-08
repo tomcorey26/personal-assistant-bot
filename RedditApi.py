@@ -8,9 +8,9 @@ def redditPosts(numPosts, subreddit):
     #Initialize reddit request info
     reddit = praw.Reddit(client_id='cAABwwx3KhnYiw',
                      client_secret='y2y0kH0hQLIwaWpkGOaMlM3Rtvc',
-                     user_agent='Personal Assistant1 by /u/recievebacon',
-                     password='graem161',
-                     username='recievebacon')
+                     user_agent='Personal Assistant1 by /u/',
+                     password='',
+                     username='')
     #make a dictionary for post titles and links
     posts = {}
     #Case for default
