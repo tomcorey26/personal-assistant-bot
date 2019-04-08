@@ -282,7 +282,12 @@
 				
 <SettingsScreen>:
 	name: "Settings"
-		
+	
+	#attributes for the python file
+	first_name: _first_name
+	last_name: _last_name
+	zipcode: _zip_code
+	city_state_label: _city_state_label
 	BoxLayout:
 		orientation: "vertical"
 		canvas.before:
@@ -547,6 +552,7 @@
 			
 <CheckoutScreen>:
 	name: "Checkout"
+	
 	
 	Label:
 		id: _checkout_label

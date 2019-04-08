@@ -76,7 +76,6 @@ def main():
 
   #Have a button for each of these methods
   pizza.changeToPickup()
-  pizza.changeToDeliv()
 
   print(pizza.order.data['ServiceMethod'])
   print(pizza.order.store)
@@ -86,7 +85,7 @@ def main():
 
   #Place order button that runs this
   #pizza.placeOrder(card)
-  #pizza.testOrder(card)
+  print(pizza.testOrder(card))
 
   #pizza.menu.display()
 

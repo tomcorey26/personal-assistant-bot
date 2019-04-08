@@ -29,6 +29,8 @@ import location_to_coords
 from front_order import *
 import input_converter
 import recipe_finder
+import zip_converter
+import setup
 
 
 Builder.load_file('menubar.kv')
@@ -199,13 +201,32 @@ class SettingsScreen(Screen):
 
     #this function will update the user's personal data
     def updateSettings(self):
-        #TODO
 
-        #add names to user data file
+        user_data = {}
+        
+        #add the user data to the dictionary if the user entered into the textbox
+        if (self.first_name.text != ""):
+            user_data["first_name"] = self.first_name.text
+        if (self.last_name.text != ""):
+            user_data["last_name"] = self.last_name.text
 
-        #convert zipcode to city/state, and add city and state to data file
-        #make sure that this conversion works before you try to add anything to the file
+        #try to locate the city/state from the given zipcode
+        #if it fails, don't write to the data file
+        try:
+            int(self.zipcode.text)
+            city, state = zip_converter.zip_to_city_state(self.zipcode.text)
 
+            user_data['zip'] = self.zipcode.text
+            user_data['city'] = city
+            user_data['state'] = state
+
+            #add the user's data to the file
+            setup.write_data(user_data)
+
+            self.city_state_label.text = "Location: " + city + ", " + state
+        except:
+            self.city_state_label.text = "Error: invalid zip code"
+    
         #print the user's city/state to the city_state_label
         return
 
@@ -280,7 +301,7 @@ class OrderScreen(Screen):
 
     # goes to the checkout screen if the user is done with their order
     def go_to_checkout(self):
-        
+
         #change the current screen to the checkout screen
         self.manager.current = "Checkout"
 
