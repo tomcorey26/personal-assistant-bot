@@ -60,9 +60,9 @@ def get_recipe(command_input):
 #function to current system time
 def get_time():
     # get substring from system datetime
-    time = (str(datetime.now().time())[0:5])
+    time_str = (str(datetime.now().time())[0:5])
     # convert to 24-hour format object
-    time_24 = time.strptime(time, "%H:%M")
+    time_24 = time.strptime(time_str, "%H:%M")
     # convert that to 12-hour format
     time_12 = time.strftime("%I:%M %p", time_24)
     return "It is currently " + time_12
