@@ -1,11 +1,6 @@
 import json
 import os.path
 
-#TODO uncomment these later
-#from command_output import say
-#from input_converter import myCommand
-
-input_type = "text"
 
 
 #Check if the calendar json exists
