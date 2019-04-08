@@ -132,6 +132,8 @@
 				
 <TwitterScreen>:
 	name: "Twitter"
+	twitter_input: _twitter_username
+	recent_tweets: _twitter_results
 	BoxLayout:
 		orientation: "vertical"
 		canvas.before:
@@ -150,6 +152,7 @@
 			id: _twitter_username
 			size_hint_x: .9
 			hint_text: "enter a twitter username here"
+			on_text_validate: root.getTweets()
 			
 		TextInput:
 			id: _twitter_results
