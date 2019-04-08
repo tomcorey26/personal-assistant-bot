@@ -193,6 +193,28 @@ def get_directions(command_input):
     dir_text = directions.locate(destination)
     return dir_text
 
+def twitter_posts(command_input):
+    import twitter
+    user = ""
+    for token in command_input:
+        #if a sub is given
+        if "@" in token:
+            user = token
+    for token in command_input:
+        #if a number of tweets is given
+        if "@" in token:
+            user = token
+    user = user.replace("@", "")
+    say("Here are the recent tweets from @" + user + ":\n")
+    twitterUser = twitter.TwitterScrape(5, user)
+    output = twitterUser.grabRecentPosts()
+    result = ""
+    for key, value in output.items():
+        result += key + ":\n" + value + "\n\n"
+    print(result)
+    #return the final string result
+    return result
+
 #do different actions based on the given input
 def commands(command_input):
     #find which command to execute based on user input
