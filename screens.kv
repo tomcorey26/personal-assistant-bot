@@ -10,7 +10,7 @@
 	SettingsScreen:
 	PizzaScreen:
 	RecipeScreen:
-	NewsScreen:
+	DirectionsScreen:
 
 <CalendarScreen>:
 	name: "Calendar"
@@ -547,8 +547,10 @@
 			readonly: True
 			
 
-<NewsScreen>:
-	name: "News"
+<DirectionsScreen>:
+	name: "Directions"
+	destination: _direction_input
+
 	BoxLayout:
 		orientation: "vertical"
 		canvas.before:
@@ -559,17 +561,17 @@
 				size: self.size
 				
 		Label:
-			text: "News Screen"
+			text: "Directions Screen"
 			size_hint_y: None
 			height: 30
 	
 		UserInput:
-			id: _news_input
+			id: _direction_input
 			size_hint_x: .9
-			hint_text: "Enter your news keyword here"
+			hint_text: "Enter your destination here"
 			
 		Label:
-			text: "news results here"
+			text: "Directions here"
 
 				
 <LoginPopup>:

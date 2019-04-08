@@ -20,7 +20,7 @@ from kivy.uix.dropdown import DropDown
 #import all of the local python files that the group created
 from sampleParser import memeParserXD as mp
 import time
-import fish
+from fish import Fish
 import random
 import calendar_events as events
 import RedditApi
@@ -142,6 +142,8 @@ class FishScreen(Screen):
     def castLine(self):
 
         #retrieve a fish object and get its species/wikipedia page
+        num = random.randint(0,20)
+        fish = Fish(num)
         catch = fish.castLine()
         species = catch.species
         wikiURL = catch.wiki_url
@@ -264,7 +266,7 @@ class RecipeScreen(Screen):
           #  self.meal_keyword.hint_text = "Error: not specific enough"
         
 
-class NewsScreen(Screen):
+class DirectionsScreen(Screen):
     pass
 
 

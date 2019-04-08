@@ -3,6 +3,7 @@ from datetime import datetime
 import time
 import input_converter
 import nltk
+from random import randint
 
 #speaks text back to the user
 def say(response):
@@ -23,10 +24,13 @@ def tell_joke():
 
 #function to catch a fish
 def catch_fish():
-    import fish
+    from fish import Fish
 
-    catch = fish.castLine()
-    result = catch.toString()
+    number = randint(0,20)
+
+    fish = Fish(number)
+
+    result = fish.toString()
     
     return result
 
