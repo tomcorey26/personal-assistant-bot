@@ -266,7 +266,7 @@ class RecipeScreen(Screen):
           #  self.meal_keyword.hint_text = "Error: not specific enough"
         
 
-class NewsScreen(Screen):
+class DirectionsScreen(Screen):
     pass
 
 

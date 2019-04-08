@@ -135,4 +135,3 @@ def main(lat, lng):
     #    print(temps[i] + " " + humids[i] +  " " + winds[i] + " " +  bearings[i] +  " " + precips[i])
 
     return temperature, summary
-
