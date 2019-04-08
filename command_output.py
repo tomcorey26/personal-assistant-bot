@@ -194,7 +194,7 @@ def get_directions(command_input):
     return dir_text
 
 def twitter_posts(command_input):
-    import twitter
+    import TwitterApi
     user = ""
     for token in command_input:
         #if a sub is given
@@ -206,7 +206,7 @@ def twitter_posts(command_input):
             user = token
     user = user.replace("@", "")
     say("Here are the recent tweets from @" + user + ":\n")
-    twitterUser = twitter.TwitterScrape(5, user)
+    twitterUser = TwitterApi.TwitterScrape(5, user)
     output = twitterUser.grabRecentPosts()
     result = ""
     for key, value in output.items():
@@ -222,7 +222,7 @@ def commands(command_input):
     if "settings" in command_input:
         key = "settings"
     if any(c in command_input for c in ("pizza", "domino's")) and not ("recipe" in command_input):
-        key = "pizza";
+        key = "pizza"
     elif "recipe" in command_input:
         key = "recipe"
     elif "time" in command_input:
@@ -233,6 +233,8 @@ def commands(command_input):
         key = "joke"
     elif any(c in command_input for c in ("fish", "catch", "cast", "snag")):
         key = "fish"
+    elif any(c in token for token in command_input for c in "@") or (c in command_input for c in ("tweet", "twitter")):
+        key = "twitter"
     elif "reddit" in command_input or "posts" in command_input:
         key = "reddit"
     elif any(c in command_input for c in ("add", "remove", "search", "find", "view")) and any(d in command_input for d in ("event", "calendar")):
