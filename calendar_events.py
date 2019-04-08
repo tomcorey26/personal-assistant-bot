@@ -1,8 +1,6 @@
 import json
 import os.path
 
-
-
 #Check if the calendar json exists
 def appCheck():
     if os.path.isfile("calendar.json"):
@@ -62,6 +60,7 @@ def addEvent(date,time,name):
 
     return eventName, "has been added to your calendar"
 
+#Finds an event using dateArr as paramenter or dateStr
 def findEvent(calEvent):
     x = getData()
     if isinstance(calEvent,list) == True:
@@ -82,6 +81,7 @@ def findEvent(calEvent):
     print("Event could not be found")
     return
 
+#TODO Finish this function to remove an event
 def removeEvent(name):
     name = name.lower()
     x = getData()
