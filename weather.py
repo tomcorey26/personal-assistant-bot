@@ -3,7 +3,7 @@ import zip_converter
 from api_keys import *
 
 
-class forecasts:
+class Forecasts:
 
     # class constructor to get values
     def __init__(self, lat, lng, date, timedelta):
@@ -13,8 +13,8 @@ class forecasts:
         self.location = forecast(DARK_SKY_KEY, *self.LOCATION)
 
 
-    # method to take in the location, date, and timedelta and will put back the weekly forcast, aka 7 day forcast
-    def hourlyForcast(self):
+    # method to take in the location, date, and timedelta and will put back the weekly forecast, aka 7 day forecast
+    def hourlyForecast(self):
         
         # formats the weeks data into a dictionary for easy information access
         # Hour becomes the dictionary of the current date, the summary of the hour
@@ -28,7 +28,8 @@ class forecasts:
                     windBearing = self.location.windBearing, #the direction that the wind is blowing in (36o degrees)
                     pressure = self.location.pressure, #the pressure in mm HG
                     ozone = self.location.ozone, #the current ozone level
-                    precipitation = self.location.precipProbability #the likelyhood it will rain
+                    precipitation = self.location.precipProbability, #the likelyhood it will rain
+                    icon = self.location.icon
                     )            
         #formats the information in the dictionary keys and sets them to variables
         curr_temp = '{temp}'.format(**hour).lower()
@@ -39,9 +40,10 @@ class forecasts:
         curr_windBearing = '{windBearing}'.format(**hour).lower()
         curr_pressure = '{pressure}'.format(**hour).lower()
         curr_ozone = '{ozone}'.format(**hour).lower()
+        curr_icon = '{icon}'.format(**hour).lower()
 
         #returns the data back for use.
-        return curr_temp, curr_sum, curr_dew, curr_humid, curr_wind, curr_windBearing, curr_pressure, curr_ozone
+        return curr_temp, curr_sum, curr_dew, curr_humid, curr_wind, curr_windBearing, curr_pressure, curr_ozone, curr_icon
 
 
     #this method will supply data with 4 hour intervals, it will supply the weather and certain important metrics on a 4 hour basis.
@@ -125,9 +127,9 @@ def main(lat, lng):
     # sets the date to today's date
     date = date.today()
 
-    # creates a forcasts object from the forcasts class
-    forecast = forecasts(lat, lng, date, timedelta)
-    temperature, summary, dewPoint, humidity, wind, windBearing, pressure, ozone = forecast.hourlyForcast()
+    # creates a forecasts object from the forecasts class
+    forecast = Forecasts(lat, lng, date, timedelta)
+    temperature, summary, dewPoint, humidity, wind, windBearing, pressure, ozone = forecast.hourlyForecast()
     temps, humids, winds, bearings, precips = forecast.dailyIntervals()
 
     #this is a possible format for printing out the text of the intervals.
