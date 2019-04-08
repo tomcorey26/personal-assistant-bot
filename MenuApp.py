@@ -29,6 +29,7 @@ import location_to_coords
 from front_order import *
 import input_converter
 import recipe_finder
+import TwitterApi
 
 
 Builder.load_file('menubar.kv')
@@ -114,7 +115,16 @@ class WeatherScreen(Screen):
 
 
 class TwitterScreen(Screen):
-    pass
+
+    def getTweets(self):
+        user = self.twitter_input.text
+
+        self.recent_tweets.text = ""
+
+        twitter = TwitterApi.TwitterScrape(5, user)
+        posts = twitter.grabRecentPosts()
+        for status in posts:
+            self.recent_tweets.text += status.text
 
 class RedditScreen(Screen):
 
