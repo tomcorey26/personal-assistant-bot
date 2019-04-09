@@ -32,6 +32,7 @@ import recipe_finder
 import zip_converter
 import setup
 import TwitterApi
+import command_output
 
 
 Builder.load_file('menubar.kv')
@@ -402,6 +403,12 @@ class ChatWindow(AnchorLayout):
     #use output_command here instead of the MemeParserXD class
     def getResponse(self, inputString, dt):
         self.text_log.text += ("bot: " + mp.parse(self, inputString) + '\n\n')
+
+        self.text_log.text += ("command_output: " + command_output.commands(inputString) + "\n\n")
+
+            #self.text_log.hint_text = "Error: command not recognized"
+            #self.text_input.text = ""
+            
         self.text_input.focus = True
 
     

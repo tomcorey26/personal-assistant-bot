@@ -129,7 +129,7 @@ def main(lat, lng):
 
     # creates a forecasts object from the forecasts class
     forecast = Forecasts(lat, lng, date, timedelta)
-    temperature, summary, dewPoint, humidity, wind, windBearing, pressure, ozone = forecast.hourlyForecast()
+    temperature, summary, dewPoint, humidity, wind, windBearing, pressure, ozone, icon = forecast.hourlyForecast()
     temps, humids, winds, bearings, precips = forecast.dailyIntervals()
 
     #this is a possible format for printing out the text of the intervals.
