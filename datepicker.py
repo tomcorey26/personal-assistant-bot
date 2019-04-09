@@ -136,7 +136,7 @@ class CalendarWidget(RelativeLayout):
         self.sm = MonthsManager()
         self.add_widget(self.sm)
         
-        self.create_month_scr(self.quarter[1], toogle_today=True)
+        self.create_month_scr(self.quarter[1])
 
 
     
@@ -180,10 +180,10 @@ class CalendarWidget(RelativeLayout):
                     
                     #if the date has an event, change the color of the button to gold
                     # added by John Hall
-                    buttonDate = str(self.active_date[1]) + "-" + str(day[0]) + "-" + str(self.active_date[2] % 100)
-                    if (events.findEvent(buttonDate) != "Event not found with given criteria"):
-                        tbtn.background_color = (1, 1, .4, 1)
-                    elif (buttonDate == "12-2-19"):
+
+                    #the date of the butten that is currently being created
+                    buttonDate = [day[0], self.active_date[1], self.active_date[2]]
+                    if (events.findEvent(buttonDate) != "Event could not be found"):
                         tbtn.background_color = (1, 1, .4, 1)
                           
                         
@@ -191,13 +191,6 @@ class CalendarWidget(RelativeLayout):
                     # Down today button
                     if day[0] == self.active_date[0] and day[2] == 1:
                         tbtn.state = "down"
-
-                        #if part of the personal assistant program, update the toggled date property
-                        #added by John Hall
-                        try:
-                            self.calendar_screen.toggled_date = self.active_date
-                        except:
-                            pass
                         
                 # Disable buttons with days from other months
                 if day[2] == 0:

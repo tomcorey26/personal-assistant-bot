@@ -40,15 +40,17 @@ class Fish():
 
         return output_string
 
-def castLine():
-    number = random.randint(0,20)
-    catch = Fish(number)
+    def castLine(self):
+        catch = Fish(self.number)
 
-    return catch
+        return catch
 
 def main():
+
+    number = random.randint(0,20)
+    fish = Fish(number)
     #gets the random number to pass to the fishGame
-    catch = castLine()
+    catch = fish.castLine()
     
     #returns a string of 
     print (catch.toString())

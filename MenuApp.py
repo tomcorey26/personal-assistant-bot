@@ -20,7 +20,7 @@ from kivy.uix.dropdown import DropDown
 #import all of the local python files that the group created
 from sampleParser import memeParserXD as mp
 import time
-import fish
+from fish import Fish
 import random
 import calendar_events as events
 import RedditApi
@@ -31,6 +31,7 @@ import input_converter
 import recipe_finder
 import zip_converter
 import setup
+import TwitterApi
 
 
 Builder.load_file('menubar.kv')
@@ -69,8 +70,9 @@ class CalendarScreen(Screen):
         #if an actual date is selected, update the event label
         else:
             dateString = str(self.toggled_date[1]) + "-" + str(self.toggled_date[0]) + "-" + str(self.toggled_date[2])
-            self.event_label.text = "events for " + dateString + ":\n\n" \
-                                    + "TODO: add event here"
+
+            self.event_label.text = "events for " + dateString + "\n\n"
+            self.event_label.text += events.findEvent(self.toggled_date)  
 
     def addEvent(self):
 
@@ -93,10 +95,11 @@ class AddEventPopup(Popup):
     def __init__(self, parent, **kwargs):
         super(AddEventPopup, self).__init__(**kwargs)
 
-        #sets the parent CalendarScreen as an attribute of
+        #sets the parent CalendarScreen as an attribute of the popup
         #and get the selected date from the calendar screen
         self.parentScreen = parent
         self.date = parent.toggled_date
+        self.event_label = parent.event_label
 
     def addEvent(self, time, name):
 
@@ -104,13 +107,22 @@ class AddEventPopup(Popup):
         if time == '' or name == '':
             self.error_label.text = "error: please enter both a time and a name"
         else:
-            print (self.date)
-            print (" time = " + self.time_input.text)
-            print (" name = " + self.name_input.text)
-            
-            # TODO add the event to the json file
 
+            #convert the date array into a string of mm/dd/yy
+            dayString = str(self.date[0])
+            monthString = str(self.date[1])
+            yearString = str(self.date[2] % 100)
+            if self.date[0] < 10:
+                dayString = "0" + dayString
+            if self.date[1] < 10:
+                monthString = "0" + monthString
+
+            dateString = monthString + "/" + dayString + "/" + yearString
+            
+            events.addEvent(dateString, self.time_input.text, self.name_input.text)
             #TODO update the calendar screen's event label
+            self.event_label.text = "events for " + dateString + "\n\n"
+            self.event_label.text += events.findEvent(self.date)
 
             #close the popup window
             self.dismiss()
@@ -153,7 +165,16 @@ class WeatherScreen(Screen):
             self.humidity_button.text = "Humidity:\n" + str(humid * 100) + "%"
 
 class TwitterScreen(Screen):
-    pass
+
+    def getTweets(self):
+        user = self.twitter_input.text
+
+        self.recent_tweets.text = ""
+
+        twitter = TwitterApi.TwitterScrape(5, user)
+        posts = twitter.grabRecentPosts()
+        for status in posts:
+            self.recent_tweets.text += status.text + '\n'
 
 class RedditScreen(Screen):
 
@@ -171,6 +192,8 @@ class FishScreen(Screen):
     def castLine(self):
 
         #retrieve a fish object and get its species/wikipedia page
+        num = random.randint(0,20)
+        fish = Fish(num)
         catch = fish.castLine()
         species = catch.species
         wikiURL = catch.wiki_url
@@ -328,7 +351,7 @@ class RecipeScreen(Screen):
             self.meal_keyword.hint_text = "Error: not specific enough"
         
 
-class NewsScreen(Screen):
+class DirectionsScreen(Screen):
     pass
 
 
