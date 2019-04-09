@@ -16,6 +16,7 @@ from functools import partial
 from kivy.uix.popup import Popup
 from kivy.properties import ListProperty, NumericProperty
 from kivy.uix.dropdown import DropDown
+from kivy.uix.label import Label
 
 #import all of the local python files that the group created
 from sampleParser import memeParserXD as mp
@@ -54,8 +55,9 @@ class MenuManager(ScreenManager):
     def switchScreens(self, name):
         self.current = name
 
-# TODO maybe it would be better to make a screens.py file
-# where all of teh screens functions can be stored.
+# TODO split these classes up into multiple different files, for readability
+# where all of the screens functions can be stored.
+
 class CalendarScreen(Screen):
 
     #a list of the currently toggled date. format = [day, month year]
@@ -121,6 +123,7 @@ class AddEventPopup(Popup):
             dateString = monthString + "/" + dayString + "/" + yearString
             
             events.addEvent(dateString, self.time_input.text, self.name_input.text)
+
             #TODO update the calendar screen's event label
             self.event_label.text = "events for " + dateString + "\n\n"
             self.event_label.text += events.findEvent(self.date)
@@ -190,6 +193,10 @@ class RedditScreen(Screen):
 
 class FishScreen(Screen):
 
+    # a list that holds the total amt of fish caught in a session
+    # the tally only hold data for when the program is open
+    fish_tally = ListProperty([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+
     def castLine(self):
 
         #retrieve a fish object and get its species/wikipedia page
@@ -214,13 +221,36 @@ class FishScreen(Screen):
         #get the url for the image
         image = fishImages.get(fishID)
 
+        #update the fish tally
+        if (catch.number < 10):
+            self.fish_tally[catch.number] += 1
+
         #if the fishID doesn't have an image, just default to seaweed for now
         if image == None:
             image = "sadFace.png"
 
+        # TODO add a link to the wikipedia page when you click on the image
         self.ids._fish_image.source = "images/" + image
 
-    
+    def view_fish_tally(self):
+
+        tally_string = "Seaweed: " + str(self.fish_tally[0]) \
+                        + "\nTrout: " + str(self.fish_tally[1]) \
+                        + "\nSalmon: " + str(self.fish_tally[2]) \
+                        + "\nCrayfish: " + str(self.fish_tally[3]) \
+                        + "\nMinnow: " + str(self.fish_tally[4]) \
+                        + "\nBoots: " + str(self.fish_tally[5]) \
+                        + "\nLobster: " + str(self.fish_tally[6]) \
+                        + "\nSardine: " + str(self.fish_tally[7]) \
+                        + "\nMackerel: " + str(self.fish_tally[8]) \
+                        + "\nFinger: " + str(self.fish_tally[9])
+
+        #TODO create a popup that prints this string
+        popup = Popup(size_hint=(None, None), size=(300, 300), title="Total Fish Tally")
+        popup.content = Label(text=tally_string)
+
+        popup.open()
+
 class SettingsScreen(Screen):
 
     #this function will update the user's personal data
@@ -401,13 +431,16 @@ class ChatWindow(AnchorLayout):
     #get the chatbot's response from the backend
     #TODO no backend functionality yet,
     #use output_command here instead of the MemeParserXD class
+
     def getResponse(self, inputString, dt):
         self.text_log.text += ("bot: " + mp.parse(self, inputString) + '\n\n')
 
-        self.text_log.text += ("command_output: " + command_output.commands(inputString) + "\n\n")
-
-            #self.text_log.hint_text = "Error: command not recognized"
-            #self.text_input.text = ""
+        # TODO only use the command_output file once all commands work
+        # try:
+        #     self.text_log.text += ("command_output: " + command_output.commands(inputString) + "\n\n")
+        # except:
+        #     self.text_log.hint_text = "Error: command not recognized"
+        #     self.text_input.text = ""
             
         self.text_input.focus = True
 

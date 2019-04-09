@@ -263,17 +263,18 @@
 			id: _catch_label
 			text: "You caught seaweed, Nice job...."
 
-		AnchorLayout:
+		BoxLayout:
+			orientation: "horizontal"
 			size_hint_y: None
 			height: 45
 			
-			anchor_x: "center"
-			anchor_y: "top"
 			Button:
 				text: "Cast your line"
-				size_hint_x: .5
-				pos_hint_x: .5
 				on_press: root.castLine()
+				
+			Button:
+				text: "View Totals"
+				on_press: root.view_fish_tally()
 	
 	Image:
 		id: _fish_image
