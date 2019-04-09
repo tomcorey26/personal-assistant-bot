@@ -1,7 +1,6 @@
 import json
 import os.path
 
-#keegan is a dork
 
 
 #Check if the calendar json exists
