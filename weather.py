@@ -23,7 +23,7 @@ class Forecasts:
                     sum=self.getCurrentSummary(), #summarry of weather for the hour
                     temp=self.getTemperature(), #the temperature at the current time
                     dewpoint = self.getDewPoint(), #the current dewpoint
-                    humid = self.getHumidity(), #the current humidity
+                    humid = self.getHumidity() * 100, #the current humidity
                     wind = self.getWindSpeed(), #the current wind speed
                     windBearing = self.getWindBearing(), #the direction that the wind is blowing in (36o degrees)
                     pressure = self.getPressure(), #the pressure in mm HG
@@ -153,16 +153,16 @@ class Forecasts:
     def getPressure(self):
         return self.location.currently.pressure
     
-
-def getCurrentWeather(lat, lon):
-    currentForecast = forecast(DARK_SKY_KEY, lat, lon)
-
-    temp = currentForecast.temperature
-    summ = currentForecast.summary
-    icon = currentForecast.icon
-    humidity = currentForecast.humidity
-
-    return temp, summ, icon, humidity
+#Function has been replaced. Deprecated.
+#def getCurrentWeather(lat, lon):
+#    currentForecast = forecast(DARK_SKY_KEY, lat, lon)
+#
+#    temp = currentForecast.temperature
+#    summ = currentForecast.summary
+#    icon = currentForecast.icon
+#    humidity = currentForecast.humidity
+#
+#    return temp, summ, icon, humidity
 
 def main(lat, lng):
     # imports the datetime library with the fields date and timedelta
@@ -181,3 +181,5 @@ def main(lat, lng):
     #    print(temps[i] + " " + humids[i] +  " " + winds[i] + " " +  bearings[i] +  " " + precips[i])
 
     return temperature, summary
+
+
