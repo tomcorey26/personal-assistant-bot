@@ -1,27 +1,26 @@
 import openrouteservice
 import zip_converter
+from api_keys import route_key, geo_key
 
-def locate(destination):
-    import openrouteservice
-    
+def locate(destination):    
 
     #find user's current location
-    startGeocoder = geocoder.ip('me')
-    s_lat = startGeocoder.lat
-    s_lng = startGeocoder.lng
-    start_pos = (s_lng, s_lat)
+    startingGeocoder = geocoder.ip('me')
+    startingLatitude = startingGeocoder.lat
+    startingLongitude = startingGeocoder.lng
+    startingPosition = (startingLatitude, startingLongitude)
 
     #find the coordinates of the desired location
-    eg = geocoder.mapquest(destination, key=geo_key)
-    e_lat = eg[0].lat
-    e_lng = eg[0].lng
-    end_pos = (e_lng, e_lat)
+    endingGeocoder = geocoder.mapquest(destination, key=geo_key)
+    endingLatitude = endingGeocoder[0].lat
+    endingLongitude = endingGeocoder[0].lng
+    endPosition = (endingLongitude, endingLatitude)
 
-    coords = (start_pos, end_pos)
-    print(coords)
+    coordinates = (startingPosition, endPosition)
+    print(coordinates)
 
     client = openrouteservice.Client(route_key)
-    routes = client.directions(coords, units="mi", profile="driving-car")
+    routes = client.directions(coordinates, units="mi", profile="driving-car")
 
     #format direction output
     output = ""
