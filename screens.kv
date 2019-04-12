@@ -31,7 +31,7 @@
 
 		Label:
 			id: _event_label
-			text: "events here\nanother Line\n    A third line with a tab"
+			text: "Select a date to view/add an event"
 			halign: "left"
 			canvas.before:
 				Color:
@@ -58,6 +58,50 @@
 				text: "Remove Event"
 				on_release: root.removeEvents()
 
+<AddEventPopup>:
+	title: 'Add New Event' 
+	size_hint: None, None
+	size: 300, 200
+	auto_dismiss: False
+	
+	#attributes for the python file
+	time_input: _time_input
+	name_input: _name_input
+	error_label: _error_label
+	
+	BoxLayout:
+		orientation: "vertical"
+		
+		GridLayout:
+			cols: 2
+			size_hint_y: None
+			height: 60
+			
+			Label:
+				text: "Time"
+			UserInput:
+				id: _time_input
+			Label:
+				text: "Name"
+			UserInput:
+				id: _name_input
+		
+		Label:
+			id: _error_label
+			#display something here if there is an input error
+		
+		BoxLayout:
+			orientation: "horizontal"
+			size_hint_y: None
+			height: 45
+			
+			Button:
+				text: "Add Event"
+				on_release: root.addEvent(root.time_input.text, root.name_input.text)
+			Button:
+				text: "Cancel"
+				on_release: root.dismiss()
+	
 <WeatherScreen>:
 	name: "Weather"
 
@@ -217,18 +261,19 @@
 			id: _catch_label
 			text: "You caught seaweed, Nice job...."
 
-		AnchorLayout:
+		BoxLayout:
+			orientation: "horizontal"
 			size_hint_y: None
 			height: 45
 
-			anchor_x: "center"
-			anchor_y: "top"
 			Button:
 				text: "Cast your line"
-				size_hint_x: .5
-				pos_hint_x: .5
 				on_press: root.castLine()
 
+			Button:
+				text: "View Totals"
+				on_press: root.view_fish_tally()
+	
 	Image:
 		id: _fish_image
 		source: "images/Seaweed.png"
@@ -239,6 +284,12 @@
 
 <SettingsScreen>:
 	name: "Settings"
+
+	#attributes for the python file
+	first_name: _first_name
+	last_name: _last_name
+	zipcode: _zip_code
+	city_state_label: _city_state_label
 
 	BoxLayout:
 		orientation: "vertical"
@@ -297,10 +348,11 @@
 <PizzaScreen>:
 	name: "Pizza"
 	#variables for the python file
-	customer: None
-	pizzaOrder: None
-	creditCard: None
 
+	customer: 
+	pizzaOrder: 
+	creditCard: 
+	
 	BoxLayout:
 		orientation: "vertical"
 		Label:
@@ -405,7 +457,11 @@
 	side_btn: _side_btn
 	drink_btn: _drink_btn
 	order_label: _order_label
-
+	price_label: _price_label
+	
+	#attribute that points to the parent PizzaScreen
+	main_pizza_screen: self.manager.parent.parent
+	
 	BoxLayout:
 		orientation: "vertical"
 		spacing: 10
@@ -472,8 +528,8 @@
 			Spinner:
 				id: _drink_btn
 				text: "Drink"
-				values: ["Coke(2 Liter)","Diet Coke(2 Liter)","Sprite(2 Liter)","Coke(2 Liter)","Diet Coke(2 Liter)","Sprite(2 Liter)"]
-
+				values: ["Coke(2 Liter)","Diet Coke(2 Liter)","Sprite(2 Liter)"]
+			
 			Button:
 				id: _add_side
 				text: "add to order"
@@ -487,20 +543,25 @@
 			text: "Your Order: \n\n"
 			readonly: True
 
-		Button:
-			text: "Proceed to checkout"
+		BoxLayout:
 			size_hint_y: None
 			height: 45
-			on_release: root.go_to_checkout()
-      
+			
+			Label:
+				id: _price_label
+				text: "Total Cost: $0.00"
+				
+			Button:
+				text: "Proceed to checkout"
+
+				on_release: root.go_to_checkout()
+			
 <CheckoutScreen>:
 	name: "Checkout"
-
-	# order_list is a List Property, initialized to []
-
+	
 	Label:
-		id: _main_label
-		text: str(root.order_list)
+		id: _checkout_label
+		text: "checkout screen here"
 		canvas.before:
 			Color:
 				rgba: 1, 0, 1, 1
