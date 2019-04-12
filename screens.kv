@@ -49,6 +49,14 @@
 			orientation: "horizontal"
 			size_hint_y: None
 			height: 45
+			
+			Button:
+				text: "Add Event"
+				on_release: root.addEvent()
+			
+			Button:
+				text: "Remove Event"
+				on_release: root.removeEvents()
 
 			Button:
 				text: "Add Event"
@@ -304,6 +312,7 @@
 			UserInput:
 				id: _first_name
 
+
 			Label:
 				text: "Last Name:"
 				size_hint: (None, None)
@@ -332,7 +341,6 @@
 
 <PizzaScreen>:
 	name: "Pizza"
-
 	#variables for the python file
 	customer: None
 	pizzaOrder: None
@@ -408,6 +416,7 @@
 			UserInput:
 				id: _user_email
 
+
 			Label:
 				text: "Phone #:"
 				size_hint: (None, None)
@@ -434,6 +443,7 @@
 
 <OrderScreen>:
 	name: "Order"
+
 
 	#attributes for the order screen for use in the .py files
 	pizza_btn: _pizza_btn
@@ -527,8 +537,7 @@
 			size_hint_y: None
 			height: 45
 			on_release: root.go_to_checkout()
-
-
+      
 <CheckoutScreen>:
 	name: "Checkout"
 
@@ -581,6 +590,33 @@
 			id: _ingredient_box
 			text: "ingredients here"
 			readonly: True
+			
+
+<DirectionsScreen>:
+	name: "Directions"
+	destination: _direction_input
+
+	BoxLayout:
+		orientation: "vertical"
+		canvas.before:
+			Color:
+				rgba: .5, .5, .5, 1
+			Rectangle:
+				pos: self.pos
+				size: self.size
+				
+		Label:
+			text: "Directions Screen"
+			size_hint_y: None
+			height: 30
+	
+		UserInput:
+			id: _direction_input
+			size_hint_x: .9
+			hint_text: "Enter your destination here"
+			
+		Label:
+			text: "Directions here"
 
 				
 <LoginPopup>:
