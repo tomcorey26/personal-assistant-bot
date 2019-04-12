@@ -40,6 +40,7 @@ import zip_converter
 import setup
 import TwitterApi
 import command_output
+import directions
 
 Builder.load_file('menubar.kv')
 Builder.load_file('chatwindow.kv')
@@ -396,7 +397,9 @@ class RecipeScreen(Screen):
             self.meal_keyword.hint_text = "Error: not specific enough"
         
 class DirectionsScreen(Screen):
-    pass
+    def getDirections(self):
+        dir_str = directions.locate(self.destination_input.text)
+        self.direction_box.text = dir_str
 
 class LoginPopup(Popup):
 
