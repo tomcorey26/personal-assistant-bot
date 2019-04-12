@@ -6,17 +6,17 @@
 	WeatherScreen:
 	TwitterScreen:
 	RedditScreen:
+	DirectionsScreen:
 	FishScreen:
 	SettingsScreen:
 	PizzaScreen:
 	RecipeScreen:
-	DirectionsScreen:
 
 <CalendarScreen>:
 	name: "Calendar"
 	event_label: _event_label
 	calendar_widget: _calendar_widget
-	
+
 	BoxLayout:
 		orientation: "vertical"
 
@@ -28,7 +28,7 @@
 			anchor_y: 'top'
 			size_hint: 1, None
 			height: root.height - 165
-			
+
 		Label:
 			id: _event_label
 			text: "events here\nanother Line\n    A third line with a tab"
@@ -44,7 +44,7 @@
 			halign: "left"
 			valign: "top"
 			height: 120
-		
+
 		BoxLayout:
 			orientation: "horizontal"
 			size_hint_y: None
@@ -58,10 +58,18 @@
 				text: "Remove Event"
 				on_release: root.removeEvents()
 
+			Button:
+				text: "Add Event"
+				on_release: root.addEvent()
+
+			Button:
+				text: "Remove Event"
+				on_release: root.removeEvents()
+
 
 <WeatherScreen>:
 	name: "Weather"
-	
+
 	#variables for the buttons/labels/images
 	location_input: _loc_Input
 	humidity_button: humidButton
@@ -69,7 +77,7 @@
 	summary_button: summButton
 	image_button: imageButton
 	city_label: _city_label
-	
+
 	BoxLayout:
 		canvas.before:
 			Color:
@@ -78,17 +86,17 @@
 				pos: self.pos
 				size: self.size
 		orientation: 'vertical'
-		
+
 		Label:
 			text: "Weather Screen"
 			size_hint_y: None
 			height: 30
-			
+
 		BoxLayout:
 			orientation: "horizontal"
 			size_hint: 1, None
 			height: 30
-			
+
 			Label:
 				text: "Location"
 				size_hint_x: None
@@ -97,27 +105,27 @@
 				id: _loc_Input
 				hint_text: "Enter zipcode, city, or city/state here"
 				on_text_validate: root.getWeather()
-		
+
 		Button:
 			text: "Get Weather"
 			size_hint: 1, None
 			height: 30
 			on_release: root.getWeather()
-			
+
 		Label:
 			id: _city_label
 			text: "Enter a location above to get the weather"
 			size_hint_y: None
 			height: 60
-			
+
 		GridLayout:
 			rows: 2
-			
+
 			Button:
 				id: tempButton
 				background_color: .5, .5, 1, 1
 				text: "Temperature"
-			Button: 
+			Button:
 				id: summButton
 				text: "Summary"
 				background_color: .5, .5, 1, 1
@@ -129,7 +137,7 @@
 				id: imageButton
 				text: "Image"
 				background_color: .5, .5, 1, 1
-				
+
 <TwitterScreen>:
 	name: "Twitter"
 	twitter_input: _twitter_username
@@ -142,29 +150,29 @@
 			Rectangle:
 				pos: self.pos
 				size: self.size
-		
+
 		Label:
 			text: "Twitter screen"
 			size_hint_y: None
 			height: 30
-			
+
 		UserInput:
 			id: _twitter_username
 			size_hint_x: .9
 			hint_text: "enter a twitter username here"
 			on_text_validate: root.getTweets()
-			
+
 		TextInput:
 			id: _twitter_results
 			text: "users most recent posts will go here" + "\nhyperlinks would be nice"
 			readonly: True
-			
+
 	Image:
 		source: "images/TwitterLogo.png"
 		size_hint_y: None
 		height: self.width
 		color: 1, 1, 1, 0.2
-		
+
 
 <RedditScreen>:
 	name: "Reddit"
@@ -177,34 +185,70 @@
 				rgba: 1, .2, 0, 1
 			Rectangle:
 				pos: self.pos
-				size: self.size		
-			
+				size: self.size
+
 		Label:
 			text: "Reddit screen"
 			size_hint_y: None
 			height: 30
-		
+
 		UserInput:
 			id: _subreddit_input
 			size_hint_x: 0.9
 			hint_text: "Enter a subreddit name here"
 			on_text_validate: root.getPosts()
-			
+
 		TextInput:
 			id: _top_posts
 			readonly: True
 			text: "The top post(s) from the subreddit go here" + "\nhyperlinks would be pretty cool"
-			
-	
+
+
 	Image:
 		source: "images/RedditLogo.png"
 		size_hint_y: None
 		height: self.width
 		color: 1, 1, 1, 0.2
-				
+
+<DirectionsScreen>:
+	name: "Directions"
+	destination_input: _destination_input
+	direction_box: _direction_box
+	BoxLayout:
+		orientation: "vertical"
+		canvas.before:
+			Color:
+				rgba: 0.6, .2, 1, 1
+			Rectangle:
+				pos: self.pos
+				size: self.size
+
+		Label:
+			text: "Directions screen"
+			size_hint_y: None
+			height: 30
+
+		UserInput:
+			id: _destination_input
+			size_hint_x: 0.9
+			hint_text: "Enter a destination here"
+			on_text_validate: root.getDirections()
+
+		TextInput:
+			id: _direction_box
+			readonly: True
+			text: "The directions to the destination go here."
+
+
+	Image:
+		source: "images/DirectionsLogo.png"
+		size_hint_y: None
+		height: self.width
+		color: 1, 1, 1, 0.2
+
 <FishScreen>:
 	name: "Fishing"
-	
+
 	BoxLayout:
 		orientation: "vertical"
 		canvas.before:
@@ -213,7 +257,7 @@
 			Rectangle:
 				pos: self.pos
 				size: self.size
-			
+
 		Label:
 			id: _catch_label
 			text: "You caught seaweed, Nice job...."
@@ -221,7 +265,7 @@
 		AnchorLayout:
 			size_hint_y: None
 			height: 45
-			
+
 			anchor_x: "center"
 			anchor_y: "top"
 			Button:
@@ -229,18 +273,18 @@
 				size_hint_x: .5
 				pos_hint_x: .5
 				on_press: root.castLine()
-	
+
 	Image:
 		id: _fish_image
 		source: "images/Seaweed.png"
 		size_hint: None, None
 		size: 100, 100
 		pos_hint: {"center_x": 0.5, "top": .9}
-		
-				
+
+
 <SettingsScreen>:
 	name: "Settings"
-		
+
 	BoxLayout:
 		orientation: "vertical"
 		canvas.before:
@@ -249,85 +293,85 @@
 			Rectangle:
 				pos: self.pos
 				size: self.size
-		
+
 		Label:
 			text: "settings screen"
 			size_hint_y: None
 			height: 45
-			
+
 		#GridLayout of all the user input lines for the settings
 		GridLayout:
 			cols: 2
 			spacing: 10
-			
+
 			Label:
 				text: "First Name:"
 				size_hint: (None, None)
 				size: (100, 30)
-			
+
 			UserInput:
 				id: _first_name
-				
+
+
 			Label:
 				text: "Last Name:"
 				size_hint: (None, None)
 				size: (100, 30)
-				
+
 			UserInput:
 				id: _last_name
-				
+
 			Label:
 				text: "Zip Code:"
 				size_hint: (None, None)
 				size: (100, 30)
-				
+
 			UserInput
 				id: _zip_code
 				size_hint_x: None
 				width: 100
-		
+
 		Label:
 			id: _city_state_label
 			text: ""
-			
+
 		Button:
 			text: "Update Settings"
 			on_release: root.updateSettings()
-			
+
 <PizzaScreen>:
 	name: "Pizza"
-	
 	#variables for the python file
 	customer: None
 	pizzaOrder: None
 	creditCard: None
-	
+
 	BoxLayout:
 		orientation: "vertical"
 		Label:
 			text: "Pizza Screen"
 			size_hint_y: None
 			height: 45
-			
+
 		ScreenManager:
 			id: _pizza_manager
-			
+
 			#variables so that the screens can interact with eachother
 			order_screen: _order_screen
 			checkout_screen: _checkout_screen
 			address_screen: _address_screen
-			
+
 			AddressScreen:
 				id: _address_screen
 			OrderScreen:
 				id: _order_screen
 			CheckoutScreen:
 				id: _checkout_screen
-			
-				
+
+
 <AddressScreen>:
 	name: "Address"
-	
+
 	#variables for the python file
 	first_name: _first_name
 	last_name: _last_name
@@ -335,59 +379,60 @@
 	user_phone: _user_phone
 	user_address: _user_address
 	error_label: _error_label
-	
+
 	#variable that holds the main PizzaScreen object
 	main_pizza_screen: self.manager.parent.parent
-	
+
 	#get the info for the customer object
 	BoxLayout:
 		orientation: "vertical"
-		
+
 		#gridlayout of the user inputs
 		GridLayout:
 			cols: 2
 			spacing: 10
-			
+
 			Label:
 				text: "First Name:"
 				size_hint: (None, None)
 				size: (100, 30)
-			
+
 			UserInput:
 				id: _first_name
-				
+
 			Label:
 				text: "Last Name:"
 				size_hint: (None, None)
 				size: (100, 30)
-			
+
 			UserInput:
 				id: _last_name
-				
+
 			Label:
 				text: "Email:"
 				size_hint: (None, None)
 				size: (100, 30)
-				
+
 			UserInput:
 				id: _user_email
-				
+
+
 			Label:
 				text: "Phone #:"
 				size_hint: (None, None)
 				size: (100, 30)
-				
+
 			UserInput:
 				id: _user_phone
-				
+
 			Label:
 				text: "Address:"
 				size_hint: (None, None)
 				size: (100, 30)
-				
+
 			UserInput
 				id: _user_address
-		
+
 		Label:
 			id: _error_label
 		Button:
@@ -395,36 +440,37 @@
 			size_hint_y: None
 			height: 60
 			on_release: root.goToOrder()
-	
+
 <OrderScreen>:
 	name: "Order"
-	
+
+
 	#attributes for the order screen for use in the .py files
 	pizza_btn: _pizza_btn
 	side_btn: _side_btn
 	drink_btn: _drink_btn
 	order_label: _order_label
- 
+
 	BoxLayout:
 		orientation: "vertical"
 		spacing: 10
-		
+
 		#bar for getting pizza information
 		BoxLayout:
 			size_hint_y: None
 			height: 30
 			orientation: "horizontal"
-			
+
 			Label:
 				text: "Pizza"
 				size_hint_x: None
 				width: 45
-			
+
 			Spinner:
 				id: _pizza_btn
 				text: "Pizza"
 				values: ["Small Hand Tossed Pizza", "Medium Hand Tossed Pizza", "Large Hand Tossed Pizza", "Medium Pan Pizza"]
-				
+
 			Button:
 				id: _add_pizza
 				text: "add to order"
@@ -432,23 +478,23 @@
 				width: 100
 				background_color: 1, .5, .5, 1
 				on_release: root.addToOrder(root.pizza_btn.text)
-		
+
 		BoxLayout:
 			size_hint_y: None
 			height: 30
 			orientation: "horizontal"
-			
+
 			Label:
 				text: "Sides"
 				size_hint_x: None
 				width: 45
-				
+
 			#this opens the sides dropdown
 			Spinner:
 				id: _side_btn
 				text: "Side"
 				values: ["Boneless wings (14pc)", "Hot Wings (14pc)","Stuffed Cheesy Bread", " Marbled Cookie Brownie"]
-				
+
 			#This Button adds the sides to the order
 			Button:
 				id: _add_side
@@ -457,22 +503,22 @@
 				width: 100
 				background_color: 1, .5, .5, 1
 				on_release: root.addToOrder(root.side_btn.text)
-		
+
 		BoxLayout:
 			size_hint_y: None
 			height: 30
 			orientation: "horizontal"
-			
+
 			Label:
 				text: "Drink"
 				size_hint_x: None
 				width: 45
-				
+
 			Spinner:
 				id: _drink_btn
 				text: "Drink"
 				values: ["Coke(2 Liter)","Diet Coke(2 Liter)","Sprite(2 Liter)","Coke(2 Liter)","Diet Coke(2 Liter)","Sprite(2 Liter)"]
-			
+
 			Button:
 				id: _add_side
 				text: "add to order"
@@ -480,24 +526,23 @@
 				width: 100
 				background_color: 1, .5, .5, 1
 				on_release: root.addToOrder(root.drink_btn.text)
-				
+
 		TextInput:
 			id: _order_label
 			text: "Your Order: \n\n"
 			readonly: True
-				
+
 		Button:
 			text: "Proceed to checkout"
 			size_hint_y: None
 			height: 45
 			on_release: root.go_to_checkout()
-
-			
+      
 <CheckoutScreen>:
 	name: "Checkout"
-	
+
 	# order_list is a List Property, initialized to []
-	
+
 	Label:
 		id: _main_label
 		text: str(root.order_list)
@@ -507,14 +552,14 @@
 			Rectangle:
 				pos: self.pos
 				size: self.size
-	
+
 <RecipeScreen>:
 	name: "Recipes"
-	
+
 	meal_keyword: _meal_keyword
 	ingredient_box: _ingredient_box
 	meal_label: _meal_label
-	
+
 	BoxLayout:
 		orientation: "vertical"
 		canvas.before:
@@ -523,24 +568,24 @@
 			Rectangle:
 				pos: self.pos
 				size: self.size
-		
+
 		Label:
 			text: "Recipe Finder"
 			size_hint_y: None
 			height: 30
-			
+
 		UserInput:
 			id: _meal_keyword
 			size_hint_x: .9
 			hint_text: "Enter the meal you want to make here"
 			on_text_validate: root.getRecipe()
-			
+
 		Label:
 			id: _meal_label
 			text: "Name of recipe here"
 			size_hint_y: None
-			height: 120		
-			
+			height: 120
+
 		TextInput:
 			id: _ingredient_box
 			text: "ingredients here"
