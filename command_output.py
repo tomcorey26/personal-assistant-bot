@@ -3,7 +3,6 @@ from datetime import datetime
 import time
 import input_converter
 import nltk
-from random import randint
 
 #speaks text back to the user
 def say(response):
@@ -24,14 +23,9 @@ def tell_joke():
 
 #function to catch a fish
 def catch_fish():
-    from fish import Fish
-
-    number = randint(0,20)
-
-    fish = Fish(number)
-
-    result = fish.toString()
-    
+    import fish
+    fish_name, wiki_url = fish.main()
+    result = fish_name + "\n" + wiki_url
     return result
 
 #function to order a pizza
@@ -142,7 +136,7 @@ def get_weather(command_input):
     print("")
     temp, summ = weather.main(latitude, longitude)
     # construct a single output string from this input
-    return "In " + city + " " + state + ", it is currently " + temp + " degrees and " + summ + "."
+    return "In " + city + " " + state + ", it is currently " + temp + '\u00b0' + "F and " + summ + "."
 
 #function to search top reddit posts
 def reddit_posts(command_input):
@@ -197,28 +191,6 @@ def get_directions(command_input):
     dir_text = directions.locate(destination)
     return dir_text
 
-def twitter_posts(command_input):
-    import TwitterApi
-    user = ""
-    for token in command_input:
-        #if a sub is given
-        if "@" in token:
-            user = token
-    for token in command_input:
-        #if a number of tweets is given
-        if "@" in token:
-            user = token
-    user = user.replace("@", "")
-    say("Here are the recent tweets from @" + user + ":\n")
-    twitterUser = TwitterApi.TwitterScrape(5, user)
-    output = twitterUser.grabRecentPosts()
-    result = ""
-    for key, value in output.items():
-        result += key + ":\n" + value + "\n\n"
-    print(result)
-    #return the final string result
-    return result
-
 #do different actions based on the given input
 def commands(command_input):
     #find which command to execute based on user input
@@ -226,7 +198,7 @@ def commands(command_input):
     if "settings" in command_input:
         key = "settings"
     if any(c in command_input for c in ("pizza", "domino's")) and not ("recipe" in command_input):
-        key = "pizza"
+        key = "pizza";
     elif "recipe" in command_input:
         key = "recipe"
     elif "time" in command_input:
@@ -237,8 +209,6 @@ def commands(command_input):
         key = "joke"
     elif any(c in command_input for c in ("fish", "catch", "cast", "snag")):
         key = "fish"
-    elif any(c in token for token in command_input for c in "@") or (c in command_input for c in ("tweet", "twitter")):
-        key = "twitter"
     elif "reddit" in command_input or "posts" in command_input:
         key = "reddit"
     elif any(c in command_input for c in ("add", "remove", "search", "find", "view")) and any(d in command_input for d in ("event", "calendar")):
