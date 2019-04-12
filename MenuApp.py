@@ -39,7 +39,6 @@ import input_converter
 import recipe_finder
 import TwitterApi
 
-
 Builder.load_file('menubar.kv')
 Builder.load_file('chatwindow.kv')
 Builder.load_file('screens.kv')
@@ -151,12 +150,6 @@ class RedditScreen(Screen):
         
         for (name, url) in posts.items():
             self.top_posts.text += (name + "\n" + url + "\n\n")
-
-class DirectionsScreen(Screen):
-    def getDirections(self):
-        dir_str = directions.locate(self.destination_input.text)
-        self.direction_box.text = dir_str
-
 
 class FishScreen(Screen):
 
@@ -271,35 +264,7 @@ class CheckoutScreen(Screen):
         self.ids._main_label.text = str(self.order_list)
     
 class RecipeScreen(Screen):
-
-
-    def getRecipe(self):
-
-        #get the ingredients for the recipe
-        ingredients = recipe_finder.main(self.meal_keyword.text)
-
-        #update the panel with teh recipe info
-        self.meal_label.text = "Recipe for " + self.meal_keyword.text + ":"
-        self.ingredient_box.text = ingredients
-        self.meal_keyword.hint_text = ("Enter the meal you want to make here")
-
-        #except:
-         #   self.meal_keyword.text= ""
-          #  self.meal_keyword.hint_text = "Error: not specific enough"
-
-    def getRecipe(self):
-
-        #get the ingredients for the recipe
-        ingredients = recipe_finder.main(self.meal_keyword.text)
-
-        #update the panel with teh recipe info
-        self.meal_label.text = "Recipe for " + self.meal_keyword.text + ":"
-        self.ingredient_box.text = ingredients
-        self.meal_keyword.hint_text = ("Enter the meal you want to make here")
-
-        #except:
-         #   self.meal_keyword.text= ""
-          #  self.meal_keyword.hint_text = "Error: not specific enough"
+    pass
         
 
 class DirectionsScreen(Screen):

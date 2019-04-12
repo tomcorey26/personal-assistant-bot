@@ -201,42 +201,6 @@
 		height: self.width
 		color: 1, 1, 1, 0.2
 
-<DirectionsScreen>:
-	name: "Directions"
-	destination_input: _destination_input
-	direction_box: _direction_box
-	BoxLayout:
-		orientation: "vertical"
-		canvas.before:
-			Color:
-				rgba: 0.6, .2, 1, 1
-			Rectangle:
-				pos: self.pos
-				size: self.size
-
-		Label:
-			text: "Directions screen"
-			size_hint_y: None
-			height: 30
-
-		UserInput:
-			id: _destination_input
-			size_hint_x: 0.9
-			hint_text: "Enter a destination here"
-			on_text_validate: root.getDirections()
-
-		TextInput:
-			id: _direction_box
-			readonly: True
-			text: "The directions to the destination go here."
-
-
-	Image:
-		source: "images/DirectionsLogo.png"
-		size_hint_y: None
-		height: self.width
-		color: 1, 1, 1, 0.2
-
 <FishScreen>:
 	name: "Fishing"
 
