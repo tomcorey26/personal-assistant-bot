@@ -610,29 +610,39 @@
 
 <DirectionsScreen>:
 	name: "Directions"
-	destination: _direction_input
-
+	destination_input: _destination_input
+	direction_box: _direction_box
 	BoxLayout:
 		orientation: "vertical"
 		canvas.before:
 			Color:
-				rgba: .5, .5, .5, 1
+				rgba: 0.6, .2, 1, 1
 			Rectangle:
 				pos: self.pos
 				size: self.size
-				
+
 		Label:
-			text: "Directions Screen"
+			text: "Directions screen"
 			size_hint_y: None
 			height: 30
-	
+
 		UserInput:
-			id: _direction_input
-			size_hint_x: .9
-			hint_text: "Enter your destination here"
-			
-		Label:
-			text: "Directions here"
+			id: _destination_input
+			size_hint_x: 0.9
+			hint_text: "Enter a destination here"
+			on_text_validate: root.getDirections()
+
+		TextInput:
+			id: _direction_box
+			readonly: True
+			text: "The directions to the destination go here."
+
+
+	Image:
+		source: "images/DirectionsLogo.png"
+		size_hint_y: None
+		height: self.width
+		color: 1, 1, 1, 0.2
 
 				
 <LoginPopup>:
