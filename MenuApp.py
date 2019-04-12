@@ -21,12 +21,18 @@ from kivy.uix.label import Label
 #import all of the local python files that the group created
 from sampleParser import memeParserXD as mp
 import time
+
+#imports for fish file
 from fish import Fish
 import random
 import calendar_events as events
 import RedditApi
-import weather
+
+#weather import statements
+from weather import Forecasts
+from datetime import date, timedelta
 import location_to_coords
+
 from front_order import *
 import input_converter
 import recipe_finder
@@ -34,7 +40,6 @@ import zip_converter
 import setup
 import TwitterApi
 import command_output
-
 
 Builder.load_file('menubar.kv')
 Builder.load_file('chatwindow.kv')
@@ -144,7 +149,9 @@ class WeatherScreen(Screen):
         self.location_input.text = ""
 
         #convert the location into latitude and longitude
-        lat, lon, cityname = location_to_coords.main(location)
+
+        latitude, longitude, cityname = location_to_coords.main(location)
+
 
         #if the city isn't found, let the user know of the error
         if cityname == 'Unrecognized location':
@@ -162,11 +169,19 @@ class WeatherScreen(Screen):
             self.city_label.text = "Weather for " + cityname + ":"
             
             #display the city's weather
-            temp, summ, icon, humid = weather.getCurrentWeather(lat, lon)
-            self.temp_button.text = "Temperature:\n" + str(temp)
-            self.summary_button.text = "Summary:\n" + str(summ)
+
+            forecast = Forecasts(latitude, longitude, date, timedelta)
+            
+            temperature, summary, dewPoint, humidity, wind, windBearing, pressure, ozone, icon = forecast.hourlyForecast()
+
+            print(humidity)
+
+            degree_sign= u'\N{DEGREE SIGN}'
+            
+            self.temp_button.text = "Temperature:\n" + str(temperature) + degree_sign + "F"
+            self.summary_button.text = "Summary:\n" + str(summary)
             self.image_button.text = "imageurl:\n" + str(icon) + ".png"
-            self.humidity_button.text = "Humidity:\n" + str(humid * 100) + "%"
+            self.humidity_button.text = "Humidity:\n" + humidity + "%"
 
 class TwitterScreen(Screen):
 
@@ -189,7 +204,6 @@ class RedditScreen(Screen):
         
         for (name, url) in posts.items():
             self.top_posts.text += (name + "\n" + url + "\n\n")
-        
 
 class FishScreen(Screen):
 
@@ -381,10 +395,8 @@ class RecipeScreen(Screen):
             self.meal_keyword.text= ""
             self.meal_keyword.hint_text = "Error: not specific enough"
         
-
 class DirectionsScreen(Screen):
     pass
-
 
 class LoginPopup(Popup):
 

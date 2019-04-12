@@ -7,10 +7,10 @@ class Forecasts:
 
     # class constructor to get values
     def __init__(self, lat, lng, date, timedelta):
-        self.LOCATION = lat, lng
+        self.coorinatePoints = lat, lng
         self.date = date.today()
         self.timedelta = timedelta
-        self.location = forecast(DARK_SKY_KEY, *self.LOCATION)
+        self.location = forecast(DARK_SKY_KEY, *self.coorinatePoints)
 
 
     # method to take in the location, date, and timedelta and will put back the weekly forecast, aka 7 day forecast
@@ -20,16 +20,16 @@ class Forecasts:
         # Hour becomes the dictionary of the current date, the summary of the hour
         hour = dict(hour=self.date.strftime(str(self.date)),
                     #each dictionary key corresponds to the data taken from the DarkSky API.
-                    sum=self.location.summary, #summarry of weather for the hour
-                    temp=self.location.temperature, #the temperature at the current time
-                    dewpoint = self.location.dewPoint, #the current dewpoint
-                    humid = self.location.humidity, #the current humidity
-                    wind = self.location.windSpeed, #the current wind speed
-                    windBearing = self.location.windBearing, #the direction that the wind is blowing in (36o degrees)
-                    pressure = self.location.pressure, #the pressure in mm HG
-                    ozone = self.location.ozone, #the current ozone level
-                    precipitation = self.location.precipProbability, #the likelyhood it will rain
-                    icon = self.location.icon
+                    sum=self.getCurrentSummary(), #summarry of weather for the hour
+                    temp=self.getTemperature(), #the temperature at the current time
+                    dewpoint = self.getDewPoint(), #the current dewpoint
+                    humid = self.getHumidity() * 100, #the current humidity
+                    wind = self.getWindSpeed(), #the current wind speed
+                    windBearing = self.getWindBearing(), #the direction that the wind is blowing in (36o degrees)
+                    pressure = self.getPressure(), #the pressure in mm HG
+                    ozone = self.getOzone(), #the current ozone level
+                    precipitation = self.getPrecipitation(), #the likelyhood it will rain
+                    icon = self.getIcon()
                     )            
         #formats the information in the dictionary keys and sets them to variables
         curr_temp = '{temp}'.format(**hour).lower()
@@ -100,7 +100,7 @@ class Forecasts:
 
     # returns the location we are currently concerned with
     def getLocation(self):
-        return self.LOCATION
+        return self.coorinatePoints
 
     # returns the date we are currently concerned with
     def getDate(self):
@@ -110,15 +110,59 @@ class Forecasts:
     def getTimeDelta(self):
         return self.timedelta
 
-def getCurrentWeather(lat, lon):
-    currentForecast = forecast(DARK_SKY_KEY, lat, lon)
+    #these functions are here so that if someone wants just a single aspect of the weahter
+    #they will be able to request it through the chat bot window.
+    #it is unlikely that the feature will be implemented via the GUI.
+    #returns the current temperature
+    def getTemperature(self):
+        return self.location.currently.temperature
+    
+    #returns the current humidity
+    def getHumidity(self):
+        return self.location.currently.humidity
 
-    temp = currentForecast.temperature
-    summ = currentForecast.summary
-    icon = currentForecast.icon
-    humidity = currentForecast.humidity
+    #returns the current precipitation
+    def getPrecipitation(self):
+        return self.location.currently.precipProbability
 
-    return temp, summ, icon, humidity
+    #returns the current wind speed
+    def getWindSpeed(self):
+        return self.location.currently.windSpeed
+
+    #gets the bearing of the wind
+    def getWindBearing(self):
+        return self.location.currently.windBearing
+    
+    #returns the current weather summary
+    def getCurrentSummary(self):
+        return self.location.currently.summary
+
+    #returns the current ozone level
+    def getOzone(self):
+        return self.location.currently.ozone
+
+    #returns the current dewpoint 
+    def getDewPoint(self):
+        return self.location.currently.dewPoint
+
+    #returns the icon for the current weather conditions
+    def getIcon(self):
+        return self.location.currently.icon
+
+    #returns the pressure in mm hg
+    def getPressure(self):
+        return self.location.currently.pressure
+    
+#Function has been replaced. Deprecated.
+#def getCurrentWeather(lat, lon):
+#    currentForecast = forecast(DARK_SKY_KEY, lat, lon)
+#
+#    temp = currentForecast.temperature
+#    summ = currentForecast.summary
+#    icon = currentForecast.icon
+#    humidity = currentForecast.humidity
+#
+#    return temp, summ, icon, humidity
 
 def main(lat, lng):
     # imports the datetime library with the fields date and timedelta
@@ -137,3 +181,5 @@ def main(lat, lng):
     #    print(temps[i] + " " + humids[i] +  " " + winds[i] + " " +  bearings[i] +  " " + precips[i])
 
     return temperature, summary
+
+

@@ -87,5 +87,35 @@ def removeEvent(name):
     del x[name]
     writeData(x)
 
-appCheck()
+
+def main():
+    appCheck()
+    x = True
+    print("1 = add event, 2 = search event, 3 = view events, 4 = quit")
+    while x:
+        choice = int(input("Enter your choice: "))
+        if choice == 1:
+            date = str(input("Enter a date(mm/dd/yyyy): "))
+            time = str(input("Enter a time: "))
+            name = str(input("Enter a name for the event: "))
+            addEvent(date,time,name)
+        elif choice == 2:
+            name = str(input("Enter the name of your event: "))
+            findEvent(name)
+        elif choice == 3:
+            jim = getData()
+            print(jim)
+        else:
+            print("Thank you")
+            x = False
+    return
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
+
 
