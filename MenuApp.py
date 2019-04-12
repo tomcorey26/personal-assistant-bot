@@ -368,6 +368,17 @@ class OrderScreen(Screen):
             for i in self.main_pizza_screen.pizzaOrder.order.data["Products"]:
                 self.order_price += float(i['Price'])
 
+    def clear_order(self):
+        
+        #reset the pizza object order to an empty list
+        self.main_pizza_screen.pizzaOrder.order.data["Products"] = []
+        
+        #reset the local order_list back to an empty list
+        self.order_list = []
+
+        #reset the order price back to 0
+        self.order_price = 0
+
     # goes to the checkout screen if the user is done with their order
     def go_to_checkout(self):
 
@@ -377,7 +388,18 @@ class OrderScreen(Screen):
         #send the checkokut screen any info it needs
         
 class CheckoutScreen(Screen):
-    pass
+
+    #switches betwen carryout and deliver, use the front_order method
+    def change_deliv_method(self, deliv_type):
+        return
+
+    #goes back to the OrderScreen so the user cna change their order
+    def change_order(self):
+        return
+
+    #attempt to complete the order, if not, display an error
+    def complete_order(self):
+        return
     
 class RecipeScreen(Screen):
 
