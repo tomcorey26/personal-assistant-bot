@@ -382,24 +382,50 @@ class OrderScreen(Screen):
     # goes to the checkout screen if the user is done with their order
     def go_to_checkout(self):
 
+        pizzaOrder = self.main_pizza_screen.pizzaOrder
+        
         #change the current screen to the checkout screen
         self.manager.current = "Checkout"
 
-        #send the checkokut screen any info it needs
+        #update the store and order labels in the checkout screen
+        self.checkout_screen.store_label.text = str(pizzaOrder.store)
+        self.checkout_screen.order_label.text = "Order:\n"
+        for i in self.order_list:
+            self.checkout_screen.order_label.text += i + "\n"
         
 class CheckoutScreen(Screen):
 
     #switches betwen carryout and deliver, use the front_order method
     def change_deliv_method(self, deliv_type):
-        return
+        pizzaOrder = self.main_pizza_screen.pizzaOrder
+        if (deliv_type == "Carryout"):
+            pizzaOrder.changeToPickup()
+        elif (deliv_type == "Delivery"):
+            pizzaOrder.changeToDeliv()
 
     #goes back to the OrderScreen so the user cna change their order
     def change_order(self):
-        return
+        self.manager.current = "Order"
 
     #attempt to complete the order, if not, display an error
     def complete_order(self):
-        return
+        try:
+            #retrieve the Pizza object form the main PizzaScreen
+            pizzaOrder = self.main_pizza_screen.pizzaOrder
+
+            #attempt to checkout using the Pizza objects's method
+            #doesn't actually order the pizza, change the method to placeOrder
+            #be warned, it will actually order a pizza if you do that though
+            pizzaOrder.testOrder(card = False)
+
+            #if successful, display succes in the Error Label
+            self.error_label.text = "Pizza Order Successful! (test only)"
+
+            #TODO add functionality to return to start so they can order again
+
+        except:
+            self.error_label.text = "Error: Unsuccessful, perhaps outside of delivery range?"
+                        
     
 class RecipeScreen(Screen):
 

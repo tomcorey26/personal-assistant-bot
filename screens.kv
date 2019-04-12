@@ -451,13 +451,13 @@
 <OrderScreen>:
 	name: "Order"
 
-
 	#attributes for the order screen for use in the .py files
 	pizza_btn: _pizza_btn
 	side_btn: _side_btn
 	drink_btn: _drink_btn
 	order_label: _order_label
 	price_label: _price_label
+	checkout_screen: self.manager.checkout_screen
 	
 	#attribute that points to the parent PizzaScreen
 	main_pizza_screen: self.manager.parent.parent
@@ -563,7 +563,9 @@
 	name: "Checkout"
 	
 	#attributes for the python file
-	order_screen: self.manager.screens[1]
+	order_screen: self.manager.order_screen
+	main_pizza_screen: self.manager.parent.parent
+	
 	store_label: _store_label
 	order_label: _order_label
 	error_label: _error_label
@@ -616,13 +618,13 @@
 				text: "Carryout"
 				group: "deliv_options"
 				state: 'down'
-				allow_no_selection: True
+				allow_no_selection: False
 				on_press: root.change_deliv_method(self.text)
 			ToggleButton:
 				id: _delivery_button
 				text: "Delivery"
 				group: "deliv_options"
-				allow_no_selection: True
+				allow_no_selection: False
 				on_press: root.change_deliv_method(self.text)
 		
 		Label:
