@@ -451,13 +451,13 @@
 <OrderScreen>:
 	name: "Order"
 
-
 	#attributes for the order screen for use in the .py files
 	pizza_btn: _pizza_btn
 	side_btn: _side_btn
 	drink_btn: _drink_btn
 	order_label: _order_label
 	price_label: _price_label
+	checkout_screen: self.manager.checkout_screen
 	
 	#attribute that points to the parent PizzaScreen
 	main_pizza_screen: self.manager.parent.parent
@@ -552,22 +552,100 @@
 				text: "Total Cost: $0.00"
 				
 			Button:
-				text: "Proceed to checkout"
-
+				text: "Checkout"
 				on_release: root.go_to_checkout()
+			
+			Button:
+				text: "Clear Order"
+				on_release: root.clear_order()
 			
 <CheckoutScreen>:
 	name: "Checkout"
 	
-	Label:
-		id: _checkout_label
-		text: "checkout screen here"
+	#attributes for the python file
+	order_screen: self.manager.order_screen
+	main_pizza_screen: self.manager.parent.parent
+	
+	store_label: _store_label
+	order_label: _order_label
+	error_label: _error_label
+	carryout_button: _carryout_button
+	delivery_button: _delivery_button
+	complete_button: _complete_button
+	back_button: _back_button
+	
+	BoxLayout:
+		orientation: 'vertical'
+		
 		canvas.before:
 			Color:
-				rgba: 1, 0, 1, 1
+				rgba: .2, .2, .2, 1
 			Rectangle:
 				pos: self.pos
-				size: self.size
+				size: self.size	
+		Label:
+			markup: True
+			text: "[u]Checkout[/u]"
+			size_hint_y: None
+			height: 30
+		
+		#these textboxes display the order/store info before checkout
+		BoxLayout:
+			orientation: 'horizontal'
+			size_hint_y: None
+			height: 250
+			
+			TextInput:
+				id: _store_label
+				readonly: True
+				text: "Store:\n"
+			TextInput:
+				id: _order_label
+				readonly: True
+				text: "Order:\n"
+		Label:
+			size_hint_y: None
+			height: 20
+		
+		#chooses delivery method
+		BoxLayout:
+			orientation: 'horizontal'
+			size_hint_y: None
+			height: 45
+			
+			ToggleButton:
+				id: _carryout_button
+				text: "Carryout"
+				group: "deliv_options"
+				state: 'down'
+				allow_no_selection: False
+				on_press: root.change_deliv_method(self.text)
+			ToggleButton:
+				id: _delivery_button
+				text: "Delivery"
+				group: "deliv_options"
+				allow_no_selection: False
+				on_press: root.change_deliv_method(self.text)
+		
+		Label:
+			id: _error_label
+			bold: True
+			
+		#complete (or cancel) order
+		BoxLayout:
+			orientation: 'horizontal'
+			size_hint_y: None
+			height: 45
+			
+			Button:
+				id: _complete_button
+				text: "Complete Order"
+				on_release: root.complete_order()
+				size_hint_x: .8
+			Button:
+				id: _back_button
+				text: "Go Back"
+				on_release: root.change_order()
 
 <RecipeScreen>:
 	name: "Recipes"

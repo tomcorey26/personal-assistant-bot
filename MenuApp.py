@@ -368,16 +368,64 @@ class OrderScreen(Screen):
             for i in self.main_pizza_screen.pizzaOrder.order.data["Products"]:
                 self.order_price += float(i['Price'])
 
+    def clear_order(self):
+        
+        #reset the pizza object order to an empty list
+        self.main_pizza_screen.pizzaOrder.order.data["Products"] = []
+        
+        #reset the local order_list back to an empty list
+        self.order_list = []
+
+        #reset the order price back to 0
+        self.order_price = 0
+
     # goes to the checkout screen if the user is done with their order
     def go_to_checkout(self):
 
+        pizzaOrder = self.main_pizza_screen.pizzaOrder
+        
         #change the current screen to the checkout screen
         self.manager.current = "Checkout"
 
-        #send the checkokut screen any info it needs
+        #update the store and order labels in the checkout screen
+        self.checkout_screen.store_label.text = str(pizzaOrder.store)
+        self.checkout_screen.order_label.text = "Order:\n"
+        for i in self.order_list:
+            self.checkout_screen.order_label.text += i + "\n"
         
 class CheckoutScreen(Screen):
-    pass
+
+    #switches betwen carryout and deliver, use the front_order method
+    def change_deliv_method(self, deliv_type):
+        pizzaOrder = self.main_pizza_screen.pizzaOrder
+        if (deliv_type == "Carryout"):
+            pizzaOrder.changeToPickup()
+        elif (deliv_type == "Delivery"):
+            pizzaOrder.changeToDeliv()
+
+    #goes back to the OrderScreen so the user cna change their order
+    def change_order(self):
+        self.manager.current = "Order"
+
+    #attempt to complete the order, if not, display an error
+    def complete_order(self):
+        try:
+            #retrieve the Pizza object form the main PizzaScreen
+            pizzaOrder = self.main_pizza_screen.pizzaOrder
+
+            #attempt to checkout using the Pizza objects's method
+            #doesn't actually order the pizza, change the method to placeOrder
+            #be warned, it will actually order a pizza if you do that though
+            pizzaOrder.testOrder(card = False)
+
+            #if successful, display succes in the Error Label
+            self.error_label.text = "Pizza Order Successful! (test only)"
+
+            #TODO add functionality to return to start so they can order again
+
+        except:
+            self.error_label.text = "Error: Unsuccessful, perhaps outside of delivery range?"
+                        
     
 class RecipeScreen(Screen):
 
