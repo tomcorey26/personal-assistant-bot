@@ -540,11 +540,11 @@ class ChatWindow(AnchorLayout):
         self.text_log.text += ("bot: " + mp.parse(self, inputString) + '\n\n')
 
         # TODO only use the command_output file once all commands work
-        # try:
-        #     self.text_log.text += ("command_output: " + command_output.commands(inputString) + "\n\n")
-        # except:
-        #     self.text_log.hint_text = "Error: command not recognized"
-        #     self.text_input.text = ""
+        try:
+            self.text_log.text += ("command_output: " + command_output.commands(inputString) + "\n\n")
+        except:
+            self.text_log.hint_text = "Error: command not recognized"
+            self.text_input.text = ""
             
         self.text_input.focus = True
 
