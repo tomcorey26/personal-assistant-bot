@@ -1,185 +1,151 @@
 from darksky import forecast
-import zip_converter
-from api_keys import *
-
+from api_keys import DARK_SKY_KEY
+from datetime import datetime, timedelta
 
 class Forecasts:
-
     # class constructor to get values
-    def __init__(self, lat, lng, date, timedelta):
-        self.coorinatePoints = lat, lng
-        self.date = date.today()
+    def __init__(self, latitude, longitude):
+        self.LOCATION = latitude, longitude
+        self.date = datetime.now()
         self.timedelta = timedelta
-        self.location = forecast(DARK_SKY_KEY, *self.coorinatePoints)
+        self.location = forecast(DARK_SKY_KEY, *self.LOCATION)
 
-
-    # method to take in the location, date, and timedelta and will put back the weekly forecast, aka 7 day forecast
-    def hourlyForecast(self):
-        
-        # formats the weeks data into a dictionary for easy information access
-        # Hour becomes the dictionary of the current date, the summary of the hour
-        hour = dict(hour=self.date.strftime(str(self.date)),
-                    #each dictionary key corresponds to the data taken from the DarkSky API.
-                    sum=self.getCurrentSummary(), #summarry of weather for the hour
-                    temp=self.getTemperature(), #the temperature at the current time
-                    dewpoint = self.getDewPoint(), #the current dewpoint
-                    humid = self.getHumidity() * 100, #the current humidity
-                    wind = self.getWindSpeed(), #the current wind speed
-                    windBearing = self.getWindBearing(), #the direction that the wind is blowing in (36o degrees)
-                    pressure = self.getPressure(), #the pressure in mm HG
-                    ozone = self.getOzone(), #the current ozone level
-                    precipitation = self.getPrecipitation(), #the likelyhood it will rain
-                    icon = self.getIcon()
-                    )            
-        #formats the information in the dictionary keys and sets them to variables
-        curr_temp = '{temp}'.format(**hour).lower()
-        curr_sum = '{sum}'.format(**hour).lower()
-        curr_dew = '{dewpoint}'.format(**hour).lower()
-        curr_humid = '{humid}'.format(**hour).lower()
-        curr_wind = '{wind}'.format(**hour).lower()
-        curr_windBearing = '{windBearing}'.format(**hour).lower()
-        curr_pressure = '{pressure}'.format(**hour).lower()
-        curr_ozone = '{ozone}'.format(**hour).lower()
-        curr_icon = '{icon}'.format(**hour).lower()
-
-        #returns the data back for use.
-        return curr_temp, curr_sum, curr_dew, curr_humid, curr_wind, curr_windBearing, curr_pressure, curr_ozone, curr_icon
-
-
-    #this method will supply data with 4 hour intervals, it will supply the weather and certain important metrics on a 4 hour basis.
-    def dailyIntervals(self):
-        #takes the data and puts it into a dictionary
-        curr_temps = []
-        curr_humids = []
-        curr_winds = []
-        curr_windBearings = []
-        curr_precipitations = []
-        
-        for i in range(0,24,4):
-            day = dict(day = self.date.strftime(str(self.date)),
-                        #each of the hourly tags have list indexes as it will be returning the 4 hour loop of information, the next value will be 3 6 9 and so on 
-                        temp=self.location.hourly[i].temperature,
-                        humid = self.location.hourly[i].humidity,
-                        wind = self.location.hourly[i].windSpeed,
-                        windBearing = self.location.hourly[i].windBearing,
-                        precipitation = self.location.hourly[i].precipProbability
-                        )
-            #sets variables of formated text from the dictionary
-            curr_temp = '{temp}'.format(**day).lower()
-            curr_humid = '{humid}'.format(**day).lower()
-            curr_wind = '{wind}'.format(**day).lower()
-            curr_windBearing = '{windBearing}'.format(**day).lower()
-            curr_precipitation = '{precipitation}'.format(**day).lower()
-
-            curr_temps.append(curr_temp)
-            curr_humids.append(curr_humid)
-            curr_winds.append(curr_wind)
-            curr_windBearings.append(curr_windBearing)
-            curr_precipitations.append(curr_precipitation)
-
-
-
-        #sends the data back for use.
-        return curr_temps, curr_humids, curr_winds, curr_windBearings, curr_precipitations
-    
-    #gives the summary of the weeks weather
-    #it will print out the information for each day including the minimum temp, max temp the summary and the precipitation percentage.
-    def weeklySummary(self):
-
-        weekday = self.date.today()
+    def daily_forecast(self):
+        """Returns a list of dictionary entries, each containing a list of weather attributes to be shown in
+        daily forecast"""
+        weekday = self.date
         print(self.location.daily.summary, end='\n---\n')
+        week_summary_list = []
         for day in self.location.daily:
-            day = dict(day =self.date.strftime(str(weekday)),
-                    sum = day.summary,
-                    precipitation = self.location.precipProbability,
-                    tempMin = day.temperatureMin,
-                    tempMax = day.temperatureMax
-                    )
-            print('{day}: {sum} Temp range: {tempMin} - {tempMax}, Precipitation Chance : {precipitation}'.format(**day))
+            # the %a is strftime's Weekday as locale’s abbreviated name, eg. "Mon".  See http://strftime.org/
+            day = dict(day=datetime.strftime(weekday, '%a'),
+                       summary=day.summary,
+                       tempLow=round(day.temperatureLow),
+                       tempHigh=round(day.temperatureHigh),
+                       tempLowTime=day.temperatureLowTime,
+                       tempeHighTime=day.temperatureHighTime,
+                       windSpeed=round(day.windSpeed),
+                       windBearing=degrees_to_cardinal(day.windBearing),
+                       windGust=round(day.windGust),
+                       precipProb=int(day.precipProbability*100),
+                       uvIndex=day.uvIndex,
+                       icon=day.icon
+                       )
+            #  print('{day}: {summary} Temp range: {tempLow} - {tempHigh}'.format(**day))
+            week_summary_list.append(day)
             weekday += self.timedelta(days=1)
+        # print(f"The weekly forecast is {summaryList}")
+        return week_summary_list
 
-    # returns the location we are currently concerned with
-    def getLocation(self):
-        return self.coorinatePoints
+    def hourly_forecast(self):
+        """Returns a list of dictionary entries, each containing a list of weather attributes to be shown in
+        hourly forecast."""
+        # Set the hour to the current hour plus one, eg, if it is 10:15pm, we want the hourly forecast to begin at 11pm
+        hour = self.date + self.timedelta(hours=1)
+        # print(self.location.hourly.summary, end='\n---\n')
+        hour_summary_list = []
+        for time in self.location.hourly:
+            time = dict(hour=datetime.strftime(hour, '%H'),  # The %H formats the date as the hour in 24-hour format.
+                        summary=time.summary,
+                        temp=round(time.temperature),
+                        windSpeed=round(time.windSpeed),
+                        windBearing=degrees_to_cardinal(time.windBearing),
+                        windGust=round(time.windGust),
+                        uvIndex=time.uvIndex
+                        )
+            # Add the current hour's forecast to the dictionary
+            hour_summary_list.append(time)
+            # Add 3 hours to the time since the user doesn't need to see the summary for every single hour
+            hour += self.timedelta(hours=3)
+        return hour_summary_list
 
-    # returns the date we are currently concerned with
-    def getDate(self):
-        return self.date
+    def current_conditions(self):
+        """Returns the current conditions"""
+        time = self.date
+        #for time in self.location.currently:
+        current_weather = dict(time=datetime.strftime(time, '%c'),  # The %c formats the date as the full date and time.
+                               summary=self.location.currently.summary,
+                               hourSummary=self.location.minutely.summary,
+                               temp=round(self.location.currently.temperature),
+                               feelsLike=round(self.location.currently.apparentTemperature),
+                               humidity=round(self.location.currently.humidity),
+                               dewPoint=round(self.location.currently.dewPoint),
+                               windSpeed=round(self.location.currently.windSpeed),
+                               windBearing=degrees_to_cardinal(self.location.currently.windBearing),
+                               windGust=round(self.location.currently.windGust),
+                               uvIndex=self.location.currently.uvIndex,
+                               visibility=self.location.currently.visibility,
+                               cloudCover=int((self.location.currently.cloudCover)*100),
+                               ozone=self.location.currently.ozone,
+                               icon=self.location.currently.icon
+                               )
+        return current_weather
 
-    # returns the timedelta we are currently concerned with
-    def getTimeDelta(self):
-        return self.timedelta
 
-    #these functions are here so that if someone wants just a single aspect of the weahter
-    #they will be able to request it through the chat bot window.
-    #it is unlikely that the feature will be implemented via the GUI.
-    #returns the current temperature
-    def getTemperature(self):
-        return self.location.currently.temperature
-    
-    #returns the current humidity
-    def getHumidity(self):
-        return self.location.currently.humidity
+def degrees_to_cardinal(windBearing):
+    """Converts directional degrees into cardinal directions, rounding to the nearest cardinal direction"""
+    dirs = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']
+    wind_direction = dirs[(round(windBearing / (360 / 8)) % 8)]
 
-    #returns the current precipitation
-    def getPrecipitation(self):
-        return self.location.currently.precipProbability
+    return wind_direction
 
-    #returns the current wind speed
-    def getWindSpeed(self):
-        return self.location.currently.windSpeed
 
-    #gets the bearing of the wind
-    def getWindBearing(self):
-        return self.location.currently.windBearing
-    
-    #returns the current weather summary
-    def getCurrentSummary(self):
-        return self.location.currently.summary
+def get_weather(latitude, longitude):
+    """Gets all of the weather data"""
 
-    #returns the current ozone level
-    def getOzone(self):
-        return self.location.currently.ozone
+    # creates a forecast object from the Forecasts class
+    forecast = Forecasts(latitude, longitude)
+    daily_forecast = forecast.daily_forecast()
+    hourly_forecast = forecast.hourly_forecast()
+    current_conditions = forecast.current_conditions()
 
-    #returns the current dewpoint 
-    def getDewPoint(self):
-        return self.location.currently.dewPoint
+    return daily_forecast, hourly_forecast, current_conditions
 
-    #returns the icon for the current weather conditions
-    def getIcon(self):
-        return self.location.currently.icon
 
-    #returns the pressure in mm hg
-    def getPressure(self):
-        return self.location.currently.pressure
-    
-#Function has been replaced. Deprecated.
-#def getCurrentWeather(lat, lon):
-#    currentForecast = forecast(DARK_SKY_KEY, lat, lon)
-#
-#    temp = currentForecast.temperature
-#    summ = currentForecast.summary
-#    icon = currentForecast.icon
-#    humidity = currentForecast.humidity
-#
-#    return temp, summ, icon, humidity
+def print_daily_forecast(daily_forecast):
+    for i in daily_forecast:
+        print('{day}: {summary} Temp range: {tempLow} - {tempHigh}'.format(**i))
 
-def main(lat, lng):
-    # imports the datetime library with the fields date and timedelta
-    from datetime import date, timedelta
 
+"""
+# Main function for testing purposes:
+
+def main(latitude, longitude):
     # sets the date to today's date
-    date = date.today()
+    # creates a forecast object from the Forecasts class
+    forecast = Forecasts(latitude, longitude)
+    #temperature, summary, dewPoint, humidity, wind, windBearing, pressure, ozone = forecast.hourly_forecast()
 
-    # creates a forecasts object from the forecasts class
-    forecast = Forecasts(lat, lng, date, timedelta)
-    temperature, summary, dewPoint, humidity, wind, windBearing, pressure, ozone, icon = forecast.hourlyForecast()
-    temps, humids, winds, bearings, precips = forecast.dailyIntervals()
+    daily_forecast = forecast.daily_forecast()
+    #print_daily_forecast(daily_forecast)
+    for i in daily_forecast:
+        print("{day}: {summary} high of {tempHigh}°F and low of {tempLow}. Winds {windBearing} at {windSpeed} mph with gusts of {windGust} mph.".format(**i))
 
-    #this is a possible format for printing out the text of the intervals.
-    #for i in range(len(temps)):
-    #    print(temps[i] + " " + humids[i] +  " " + winds[i] + " " +  bearings[i] +  " " + precips[i])
+        # print("{day}: {summary} High of {round(float(tempHigh,0))}°F and low of {round(float(tempLow,0))} at {datetime.strftime(tempLowTime, '%c')}.  Winds {windBearing} at {round(float(windSpeed,0))} mph and gusts of {round(float(windGust),0)} mph.".format(**i))
 
-    return temperature, summary
+    #print(daily_forecast)
+
+    #hourly_forecast = forecast.hourly_forecast()
+    #print(hourly_forecast)
+    #curr = forecast.current_conditions()
+    #print(curr)
+
+    #print("-------------")
+    #a1, a2, a3 = get_weather(latitude, longitude)
+    #print(a1)
+    #print(a2)
+    #print(a3)
+    #hourlyForecast__OLD()
+    #print(hourly_forecast())
+    #print(forecast.hourlySummary())
+    #print('{day}: {sum} Temp range: {tempLow} - {tempHigh}'.format(**day))
 
 
+    #return temperature, summary
+
+
+main(41.431468, -71.467989)
+
+# print(f"In {location_with_citystate[2]}, the temperature is {round(float(temperature),1)} F and it is {summary}.")
+
+"""
