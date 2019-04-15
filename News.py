@@ -1,5 +1,16 @@
 import newspaper
 
+def getTheNews(newsSource):
+    source = newspaper.build(newsSource)
+
+    articleTitles = []
+    articleAuthors = []
+
+    for i in range(5):
+        article = source.articles[i]
+        articleTitles.append(article.title)
+        articleAuthors.append(article.author)
+
 def FakeNews(party = "Democrat"):
     if party == "Democrat":
         fake = newspaper.build("http://www.cnn.com", memoize_articles=False)

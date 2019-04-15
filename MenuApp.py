@@ -490,6 +490,9 @@ class DirectionsScreen(Screen):
         dir_str = directions.locate(self.destination_input.text)
         self.direction_box.text = dir_str
 
+class newsScreen(Screen):
+    pass
+
 class LoginPopup(Popup):
 
     #open the signup screen and close the current login screen

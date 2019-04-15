@@ -726,6 +726,41 @@
 		height: self.width
 		color: 1, 1, 1, 0.2
 
+<NewsScreen>:
+	name: "News"
+	news_input: _news_source
+	top_articles: _news_results
+	BoxLayout:
+		orientation: "vertical"
+		canvas.before:
+			Color:
+				rgba: 1, .2, 0, 1
+			Rectangle:
+				pos: self.pos
+				size: self.size		
+
+		Label:
+			text: "News screen"
+			size_hint_y: None
+			height: 30
+
+		UserInput:
+			id: _news_source
+			size_hint_x: 0.9
+			hint_text: "Enter a news source here"
+			on_text_validate: root.getPosts()
+
+		TextInput:
+			id: _news_results
+			readonly: True
+			text: "The recent articles go here"
+
+
+	Image:
+		source: "images/newsLogo.png"
+		size_hint_y: None
+		height: self.width
+		color: 1, 1, 1, 0.2
 				
 <LoginPopup>:
 	title: 'Log In' 
