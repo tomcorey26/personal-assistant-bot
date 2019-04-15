@@ -39,8 +39,11 @@ import recipe_finder
 import zip_converter
 import setup
 import TwitterApi
+import tweepy
 import command_output
 import directions
+
+
 
 Builder.load_file('menubar.kv')
 Builder.load_file('chatwindow.kv')
@@ -189,12 +192,16 @@ class TwitterScreen(Screen):
     def getTweets(self):
         user = self.twitter_input.text
 
-        self.recent_tweets.text = ""
+        self.recent_tweets.text = "\n"
 
-        twitter = TwitterApi.TwitterScrape(5, user)
-        posts = twitter.grabRecentPosts()
-        for status in posts:
-            self.recent_tweets.text += status.text + '\n'
+        try:
+            twitter = TwitterApi.TwitterScrape(5, user)
+            posts = twitter.grabRecentPosts()
+            for status in posts:
+                self.recent_tweets.text += user + ":\n" + status.text + "\n\n"
+        except tweepy.error.TweepError:
+            self.recent_tweets.text = "user not found"
+        
 
 class RedditScreen(Screen):
 
