@@ -14,8 +14,9 @@ from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
 from kivy.clock import Clock
 from functools import partial
 from kivy.uix.popup import Popup
-from kivy.properties import ListProperty
+from kivy.properties import ListProperty, NumericProperty
 from kivy.uix.dropdown import DropDown
+from kivy.uix.label import Label
 
 #import all of the local python files that the group created
 from sampleParser import memeParserXD as mp
@@ -24,9 +25,7 @@ import time
 #imports for fish file
 from fish import Fish
 import random
-
 import calendar_events as events
-
 import RedditApi
 
 #weather import statements
@@ -37,8 +36,11 @@ import location_to_coords
 from front_order import *
 import input_converter
 import recipe_finder
+import zip_converter
+import setup
 import TwitterApi
-
+import command_output
+import directions
 
 Builder.load_file('menubar.kv')
 Builder.load_file('chatwindow.kv')
@@ -59,8 +61,9 @@ class MenuManager(ScreenManager):
     def switchScreens(self, name):
         self.current = name
 
-# TODO maybe it would be better to make a screens.py file
-# where all of teh screens functions can be stored.
+# TODO split these classes up into multiple different files, for readability
+# where all of the screens functions can be stored.
+
 class CalendarScreen(Screen):
 
     #a list of the currently toggled date. format = [day, month year]
@@ -76,17 +79,68 @@ class CalendarScreen(Screen):
         #if an actual date is selected, update the event label
         else:
             dateString = str(self.toggled_date[1]) + "-" + str(self.toggled_date[0]) + "-" + str(self.toggled_date[2])
-            self.event_label.text = "events for " + dateString + ":\n" \
-                                    + "    TODO: add event here"
+
+            self.event_label.text = "events for " + dateString + "\n\n"
+            self.event_label.text += events.findEvent(self.toggled_date)  
 
     def addEvent(self):
-        #TODO add an event to the data file
-        return
+
+        #only open the popup if a date is selected
+        if (self.toggled_date != [0,0,0]):
+
+            #the functions in the AddEventPopup class will take
+            #care of adding the event to the data file
+            eventPopup = AddEventPopup(self)
+            eventPopup.open()
 
     def removeEvents(self):
         #TODO remove an event (or all events on that day) from the data file
         return
+
+class AddEventPopup(Popup):
+
+    # takes a reference to the calendarScreen, so that the popup can easily
+    # pass back the data
+    def __init__(self, parent, **kwargs):
+        super(AddEventPopup, self).__init__(**kwargs)
+
+        #sets the parent CalendarScreen as an attribute of the popup
+        #and get the selected date from the calendar screen
+        self.parentScreen = parent
+        self.date = parent.toggled_date
+        self.event_label = parent.event_label
+
+    def addEvent(self, time, name):
+
+        #if either of the textInput boxes are empty, then display an error
+        if time == '' or name == '':
+            self.error_label.text = "error: please enter both a time and a name"
+        else:
+
+            #convert the date array into a string of mm/dd/yy
+            dayString = str(self.date[0])
+            monthString = str(self.date[1])
+            yearString = str(self.date[2] % 100)
+            if self.date[0] < 10:
+                dayString = "0" + dayString
+            if self.date[1] < 10:
+                monthString = "0" + monthString
+
+            dateString = monthString + "/" + dayString + "/" + yearString
+            
+            events.addEvent(dateString, self.time_input.text, self.name_input.text)
+
+            #TODO update the calendar screen's event label
+            self.event_label.text = "events for " + dateString + "\n\n"
+            self.event_label.text += events.findEvent(self.date)
+
+            #close the popup window
+            self.dismiss()
+
+    def __del__(self):
+        print('popup was garbage collected')
         
+    
 class WeatherScreen(Screen):
 
     def getWeather(self):
@@ -140,7 +194,7 @@ class TwitterScreen(Screen):
         twitter = TwitterApi.TwitterScrape(5, user)
         posts = twitter.grabRecentPosts()
         for status in posts:
-            self.recent_tweets.text += status.text
+            self.recent_tweets.text += status.text + '\n'
 
 class RedditScreen(Screen):
 
@@ -152,13 +206,11 @@ class RedditScreen(Screen):
         for (name, url) in posts.items():
             self.top_posts.text += (name + "\n" + url + "\n\n")
 
-class DirectionsScreen(Screen):
-    def getDirections(self):
-        dir_str = directions.locate(self.destination_input.text)
-        self.direction_box.text = dir_str
-
-
 class FishScreen(Screen):
+
+    # a list that holds the total amt of fish caught in a session
+    # the tally only hold data for when the program is open
+    fish_tally = ListProperty([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
     def castLine(self):
 
@@ -184,24 +236,66 @@ class FishScreen(Screen):
         #get the url for the image
         image = fishImages.get(fishID)
 
+        #update the fish tally
+        if (catch.number < 10):
+            self.fish_tally[catch.number] += 1
+
         #if the fishID doesn't have an image, just default to seaweed for now
         if image == None:
             image = "sadFace.png"
 
+        # TODO add a link to the wikipedia page when you click on the image
         self.ids._fish_image.source = "images/" + image
 
-    
+    def view_fish_tally(self):
+
+        tally_string = "Seaweed: " + str(self.fish_tally[0]) \
+                        + "\nTrout: " + str(self.fish_tally[1]) \
+                        + "\nSalmon: " + str(self.fish_tally[2]) \
+                        + "\nCrayfish: " + str(self.fish_tally[3]) \
+                        + "\nMinnow: " + str(self.fish_tally[4]) \
+                        + "\nBoots: " + str(self.fish_tally[5]) \
+                        + "\nLobster: " + str(self.fish_tally[6]) \
+                        + "\nSardine: " + str(self.fish_tally[7]) \
+                        + "\nMackerel: " + str(self.fish_tally[8]) \
+                        + "\nFinger: " + str(self.fish_tally[9])
+
+        #TODO create a popup that prints this string
+        popup = Popup(size_hint=(None, None), size=(300, 300), title="Total Fish Tally")
+        popup.content = Label(text=tally_string)
+
+        popup.open()
+
 class SettingsScreen(Screen):
 
     #this function will update the user's personal data
     def updateSettings(self):
-        #TODO
 
-        #add names to user data file
+        user_data = {}
+        
+        #add the user data to the dictionary if the user entered into the textbox
+        if (self.first_name.text != ""):
+            user_data["first_name"] = self.first_name.text
+        if (self.last_name.text != ""):
+            user_data["last_name"] = self.last_name.text
 
-        #convert zipcode to city/state, and add city and state to data file
-        #make sure that this conversion works before you try to add anything to the file
+        #try to locate the city/state from the given zipcode
+        #if it fails, don't write to the data file
+        try:
+            int(self.zipcode.text)
+            city, state = zip_converter.zip_to_city_state(self.zipcode.text)
 
+            user_data['zip'] = self.zipcode.text
+            user_data['city'] = city
+            user_data['state'] = state
+
+            #add the user's data to the file
+            setup.write_data(user_data)
+
+            self.city_state_label.text = "Location: " + city + ", " + state
+        except:
+            self.city_state_label.text = "Error: invalid zip code"
+    
         #print the user's city/state to the city_state_label
         return
 
@@ -220,90 +314,140 @@ class AddressScreen(Screen):
             phone = self.user_phone.text
             address = self.user_address.text
 
-
-            #retrieve the Customer and Pizza object variables from the PizzaScreen
-            customer = self.main_pizza_screen.customer
-            pizzaOrder = self.main_pizza_screen.pizzaOrder
-
-            #create a Customer object, then create a Pizza object with that Customer
+            #create customer and pizza objects using the customer info
             customer = Customer(first, last, email, phone, address)
             pizzaOrder = Pizza(customer)
 
+            #send the customer and pizza objects to the main pizza screen
+            self.main_pizza_screen.customer = customer
+            self.main_pizza_screen.pizzaOrder = pizzaOrder
+
             #if successful, move to the next screen
             self.manager.current = "Order"
+            
         except:
             self.error_label.text = "Error: invalid user input. Try again"
         
 class OrderScreen(Screen):
-
+      
     # tracks the contents of your order
-    # when something gets added to the list, the order label will  be updated
+    # when something gets added to the list, the order labels will  be updated
     order_list = ListProperty([])
+    order_price = NumericProperty(0)
 
-    # when the "add to order" button is pressed, adds the pizza to the order list
-    def addToOrder(self, order):
-
-        #if the user chose an item, add it to teh list
-        if not (order in ["Pizza", "Side", "Drink"]):
-            self.order_list.append(order)
-
-    # When the order list property changes, update the order label to reflect the list
+    itemCodes = {"Small Hand Tossed Pizza": "10SCREEN", "Medium Hand Tossed Pizza": "12SCREEN",
+                 "Large Hand Tossed Pizza": "14SCREEN", "Medium Pan Pizza": "P12IPAZA",
+                 "Boneless wings (14pc)": "W14PBNLW", "Hot Wings (14pc)": "W14PHOTW",
+                 "Stuffed Cheesy Bread": "B8PCSCB", " Marbled Cookie Brownie": "MARBRWNE",
+                 "Coke(2 Liter)": "2LCOKE", "Diet Coke(2 Liter)": "2LDCOKE", "Sprite(2 Liter)": "2LSPRITE"}
+                 
+    
+    # When the order list property changes, update the order label
     def on_order_list(self, instance, value):
         self.order_label.text = "Your Order: \n\n"
-
+        
         for i in self.order_list:
             self.order_label.text += i + "\n"
+
+    #when the order price property changes, update the price label
+    def on_order_price(self, instance, value):
+        self.price_label.text = "Total Cost: ${0:.2f}".format(value)
+        
+    def addToOrder(self, order):
+        #if the user chose an item, add it to the list
+        if not (order in ["Pizza", "Side", "Drink"]):
+            #print the name of the pizza to the order list
+            self.order_list.append(order)
+            
+            #retrieve the itemcodes from the dictionary and add
+            #to the pizza object's order
+            self.main_pizza_screen.pizzaOrder.addtoOrder(OrderScreen.itemCodes[order])
+
+            #add the item's value to the total price
+            self.order_price = 0
+            for i in self.main_pizza_screen.pizzaOrder.order.data["Products"]:
+                self.order_price += float(i['Price'])
+
+    def clear_order(self):
+        
+        #reset the pizza object order to an empty list
+        self.main_pizza_screen.pizzaOrder.order.data["Products"] = []
+        
+        #reset the local order_list back to an empty list
+        self.order_list = []
+
+        #reset the order price back to 0
+        self.order_price = 0
 
     # goes to the checkout screen if the user is done with their order
     def go_to_checkout(self):
 
-        #send the order list to the checkout screen
-        checkout_screen = self.manager.checkout_screen
-        checkout_screen.order_list = self.order_list
-
+        pizzaOrder = self.main_pizza_screen.pizzaOrder
+        
         #change the current screen to the checkout screen
         self.manager.current = "Checkout"
+
+        #update the store and order labels in the checkout screen
+        self.checkout_screen.store_label.text = str(pizzaOrder.store)
+        self.checkout_screen.order_label.text = "Order:\n"
+        for i in self.order_list:
+            self.checkout_screen.order_label.text += i + "\n"
         
 class CheckoutScreen(Screen):
-    order_list = ListProperty([])
 
-    def on_order_list(self, instance, value):
-        self.ids._main_label.text = str(self.order_list)
+    #switches betwen carryout and deliver, use the front_order method
+    def change_deliv_method(self, deliv_type):
+        pizzaOrder = self.main_pizza_screen.pizzaOrder
+        if (deliv_type == "Carryout"):
+            pizzaOrder.changeToPickup()
+        elif (deliv_type == "Delivery"):
+            pizzaOrder.changeToDeliv()
+
+    #goes back to the OrderScreen so the user cna change their order
+    def change_order(self):
+        self.manager.current = "Order"
+
+    #attempt to complete the order, if not, display an error
+    def complete_order(self):
+        try:
+            #retrieve the Pizza object form the main PizzaScreen
+            pizzaOrder = self.main_pizza_screen.pizzaOrder
+
+            #attempt to checkout using the Pizza objects's method
+            #doesn't actually order the pizza, change the method to placeOrder
+            #be warned, it will actually order a pizza if you do that though
+            pizzaOrder.testOrder(card = False)
+
+            #if successful, display succes in the Error Label
+            self.error_label.text = "Pizza Order Successful! (test only)"
+
+            #TODO add functionality to return to start so they can order again
+
+        except:
+            self.error_label.text = "Error: Unsuccessful, perhaps outside of delivery range?"
+                        
     
 class RecipeScreen(Screen):
 
-
     def getRecipe(self):
 
-        #get the ingredients for the recipe
-        ingredients = recipe_finder.main(self.meal_keyword.text)
+        try:
+            #get the ingredients for the recipe
+            ingredients = recipe_finder.main(self.meal_keyword.text)
 
-        #update the panel with teh recipe info
-        self.meal_label.text = "Recipe for " + self.meal_keyword.text + ":"
-        self.ingredient_box.text = ingredients
-        self.meal_keyword.hint_text = ("Enter the meal you want to make here")
+            #update the panel with teh recipe info
+            self.meal_label.text = "Recipe for " + self.meal_keyword.text + ":"
+            self.ingredient_box.text = ingredients
+            self.meal_keyword.hint_text = ("Enter the meal you want to make here")
 
-        #except:
-         #   self.meal_keyword.text= ""
-          #  self.meal_keyword.hint_text = "Error: not specific enough"
-
-    def getRecipe(self):
-
-        #get the ingredients for the recipe
-        ingredients = recipe_finder.main(self.meal_keyword.text)
-
-        #update the panel with teh recipe info
-        self.meal_label.text = "Recipe for " + self.meal_keyword.text + ":"
-        self.ingredient_box.text = ingredients
-        self.meal_keyword.hint_text = ("Enter the meal you want to make here")
-
-        #except:
-         #   self.meal_keyword.text= ""
-          #  self.meal_keyword.hint_text = "Error: not specific enough"
+        except:
+            self.meal_keyword.text= ""
+            self.meal_keyword.hint_text = "Error: not specific enough"
         
-
 class DirectionsScreen(Screen):
-    pass
+    def getDirections(self):
+        dir_str = directions.locate(self.destination_input.text)
+        self.direction_box.text = dir_str
 
 class LoginPopup(Popup):
 
@@ -350,8 +494,17 @@ class ChatWindow(AnchorLayout):
     #get the chatbot's response from the backend
     #TODO no backend functionality yet,
     #use output_command here instead of the MemeParserXD class
+
     def getResponse(self, inputString, dt):
         self.text_log.text += ("bot: " + mp.parse(self, inputString) + '\n\n')
+
+        # TODO only use the command_output file once all commands work
+        # try:
+        #     self.text_log.text += ("command_output: " + command_output.commands(inputString) + "\n\n")
+        # except:
+        #     self.text_log.hint_text = "Error: command not recognized"
+        #     self.text_input.text = ""
+            
         self.text_input.focus = True
 
     

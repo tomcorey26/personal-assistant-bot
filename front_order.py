@@ -49,7 +49,7 @@ class Pizza:
   def printOrder(self):
     print(self.order)
     return
-
+  
 def main():
 
   #create customer instance made from kivy inputs or stored information
@@ -65,19 +65,17 @@ def main():
   
   #Have an array that stores the codes of the items user added to order
   arrayOfItemCodes = ['P12IPAZA','MARINARA','20BCOKE']
-
-  print(pizza.menu.display())
-
   print("added item codes")
 
   #this method loops through an array of item codes and adds them to the order object
   #could run when button is clicked
   pizza.addFromArr(arrayOfItemCodes)
+  print("added item codes")
+  
   pizza.printOrder()
 
   #Have a button for each of these methods
   pizza.changeToPickup()
-  pizza.changeToDeliv()
 
   print(pizza.order.data['ServiceMethod'])
   print(pizza.order.store)
@@ -87,7 +85,7 @@ def main():
 
   #Place order button that runs this
   #pizza.placeOrder(card)
-  #pizza.testOrder(card)
+  print(pizza.testOrder(card))
 
   #pizza.menu.display()
 

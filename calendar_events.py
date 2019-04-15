@@ -67,20 +67,18 @@ def findEvent(calEvent):
     if isinstance(calEvent,list) == True:
         for event, eventInfo in x.items():
             for i in range(len(eventInfo)):
-                print(eventInfo[i]["Event Arr"])
                 if eventInfo[i]["Event Arr"] == calEvent:
                     print("Event found for",event+":", eventInfo[i]["Event Name"], "at", eventInfo[i]["Event Time"])
-                    return
-
+                    return(eventInfo[i]["Event Name"] + " at " + eventInfo[i]["Event Time"])
     else:
         calEvent = str(calEvent).lower()
         for event, eventInfo in x.items():
             for i in range(len(eventInfo)):
                 if eventInfo[i]["Event Name"] == calEvent:
                     print("Event found for", eventInfo[i]["Event Name"]+":", event,"at",eventInfo[i]["Event Time"])
-                    return
-    print("Event could not be found")
-    return
+                    return ("Event found for", eventInfo[i]["Event Name"]+":", event,"at",eventInfo[i]["Event Time"])
+
+    return("Event could not be found")
 
 def removeEvent(name):
     name = name.lower()
@@ -112,7 +110,8 @@ def main():
             x = False
     return
 
-main()
+if __name__ == "__main__":
+    main()
 
 
 
