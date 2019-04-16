@@ -6,7 +6,7 @@ def getTheNews(newsSource="http://www.bbc.com"):
     articleTitles = []
     articleAuthors = []
 
-    for i in range(3):
+    for i in range(5):
         article = source.articles[i]
         article.download()
         article.parse()

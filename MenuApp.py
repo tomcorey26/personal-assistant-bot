@@ -499,7 +499,7 @@ class NewsScreen(Screen):
             source = source + ".com"
         source = "http://www." + source
         articles = News.getTheNews(source)
-        for i in range(3):
+        for i in range(5):
             self.top_articles.text += ("Title: " + articles[0][i] + "\n")
             for author in articles[1][i]:
                 self.top_articles.text += ("Author: " + author + " ")

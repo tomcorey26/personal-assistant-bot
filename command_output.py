@@ -209,7 +209,13 @@ def get_news(command_input):
         if ".com" in token:
             source = token
     articles = News.getTheNews(source)
-    return articles
+    articleText = ""
+    for i in range(5):
+        articleText += ("Title: " + articles[0][i] + "\n")
+        for author in articles[1][i]:
+            articleText += ("Author: " + author + " ")
+        articleText += "\n\n"
+    return articleText
 
 #do different actions based on the given input
 def commands(command_input):
