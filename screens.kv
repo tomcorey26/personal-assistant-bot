@@ -107,10 +107,10 @@
 
 	#variables for the buttons/labels/images
 	location_input: _loc_Input
-	humidity_button: humidButton
-	temp_button: tempButton
-	summary_button: summButton
-	image_button: imageButton
+	daily_button: dailyButton
+	currently_button: currentlyButton
+	hourly_button: hourlyButton
+	##simage_button: imageButton
 	city_label: _city_label
 
 	BoxLayout:
@@ -138,7 +138,7 @@
 				width: 120
 			UserInput:
 				id: _loc_Input
-				hint_text: "Enter zipcode, city, or city/state here"
+				hint_text: "Enter ZIP code, city, or city/state here"
 				on_text_validate: root.getWeather()
 
 		Button:
@@ -149,30 +149,34 @@
 
 		Label:
 			id: _city_label
-			text: "Enter a location above to get the weather"
+			text: "Enter a location above to get the weather\nPowered by Dark Sky"
 			size_hint_y: None
-			height: 60
+			height: 50
 
 		GridLayout:
-			rows: 2
+			rows: 1
 
 			Button:
-				id: tempButton
+				id: currentlyButton
 				background_color: .5, .5, 1, 1
-				text: "Temperature"
+				text: "Current\nConditions"
+				halign: "center"
 			Button:
-				id: summButton
-				text: "Summary"
+				id: hourlyButton
+				text: "Hourly\nForecast"
 				background_color: .5, .5, 1, 1
-			Button:
-				id: humidButton
-				text: "Humidity"
-				background_color: .5, .5, 1, 1
-			Button:
-				id: imageButton
-				text: "Image"
-				background_color: .5, .5, 1, 1
+				halign: "center"
+		GridLayout:
+		    rows: 1
 
+			Button:
+				id: dailyButton
+				halign: "left"
+				valign: "top"
+				text: "Weekly Summary"
+
+				background_color: .5, .5, 1, 1
+				
 <TwitterScreen>:
 	name: "Twitter"
 	twitter_input: _twitter_username

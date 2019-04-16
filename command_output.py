@@ -133,8 +133,9 @@ def get_weather(command_input):
     latitude, longitude = zip_converter.main(city, state)
     # find the conditions in that location
     import weather
-    print("")
-    temp, summ = weather.main(latitude, longitude)
+    daily_forecast, hourly_forecast, current_conditions = weather.get_weather(latitude, longitude)
+    temp = str(current_conditions.get('temp'))
+    summ = current_conditions.get('summary')
     # construct a single output string from this input
     return "In " + city + " " + state + ", it is currently " + temp + '\u00b0' + "F and " + summ + "."
 
