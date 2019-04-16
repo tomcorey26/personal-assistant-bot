@@ -225,7 +225,7 @@ class RedditScreen(Screen):
                 
         except prawcore.exceptions.Redirect:
 
-            #Subreddit not foind
+            #Subreddit not found
             self.top_posts.text = "Subreddit not found"
 
             
