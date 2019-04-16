@@ -39,11 +39,12 @@ import recipe_finder
 import zip_converter
 import setup
 import TwitterApi
-import tweepy
 import command_output
 import directions
 
-
+#Twitter/Reddit error handling
+import tweepy
+import prawcore
 
 Builder.load_file('menubar.kv')
 Builder.load_file('chatwindow.kv')
@@ -190,28 +191,44 @@ class WeatherScreen(Screen):
 class TwitterScreen(Screen):
 
     def getTweets(self):
+        
         user = self.twitter_input.text
-
         self.recent_tweets.text = "\n"
 
+        #try/except handles user not found
         try:
+
+            #Selected users last 5 tweets printed to gui
             twitter = TwitterApi.TwitterScrape(5, user)
             posts = twitter.grabRecentPosts()
             for status in posts:
                 self.recent_tweets.text += user + ":\n" + status.text + "\n\n"
+
         except tweepy.error.TweepError:
+
+            #Twitter user doesn't exist
             self.recent_tweets.text = "user not found"
         
 
 class RedditScreen(Screen):
 
     def getPosts(self):
-        posts = RedditApi.redditPosts(5, self.subreddit_input.text)
 
-        self.top_posts.text = ""
-        
-        for (name, url) in posts.items():
-            self.top_posts.text += (name + "\n" + url + "\n\n")
+        #Try/except handles subreddit not found
+        try:
+
+            #Top 5 selected subeddit posts printed to gui
+            posts = RedditApi.redditPosts(5, self.subreddit_input.text)
+            self.top_posts.text = "\n"
+            for (name, url) in posts.items():
+                self.top_posts.text += (name + "\n" + url + "\n\n")
+                
+        except prawcore.exceptions.Redirect:
+
+            #Subreddit not foind
+            self.top_posts.text = "Subreddit not found"
+
+            
 
 class FishScreen(Screen):
 
