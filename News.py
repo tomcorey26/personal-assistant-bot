@@ -1,29 +1,18 @@
 import newspaper
 
-def getTheNews(newsSource):
-    source = newspaper.build(newsSource)
+def getTheNews(newsSource="http://www.bbc.com"):
+    source = newspaper.build(newsSource, memoize_articles=False)
 
     articleTitles = []
     articleAuthors = []
 
-    for i in range(5):
+    for i in range(3):
         article = source.articles[i]
+        article.download()
+        article.parse()
         articleTitles.append(article.title)
-        articleAuthors.append(article.author)
+        articleAuthors.append(article.authors)
+    
+    articles = [articleTitles, articleAuthors]
 
-def FakeNews(party = "Democrat"):
-    if party == "Democrat":
-        fake = newspaper.build("http://www.cnn.com", memoize_articles=False)
-    elif party == "Republican":
-        fake = newspaper.build("http://www.foxnews.com", memoize_articles=False)
-    else:
-        fake = newspaper.build("http://www.bbc.com", memoize_articles=False)
-
-    for i in range(5):
-        article = fake.articles[i]
-        print(article.title)
-        print("Authors: ")
-        for author in article.authors:
-            print(author)
-
-FakeNews()
+    return articles

@@ -11,6 +11,7 @@
 	SettingsScreen:
 	PizzaScreen:
 	RecipeScreen:
+	NewsScreen:
 
 <CalendarScreen>:
 	name: "Calendar"
@@ -748,12 +749,11 @@
 			id: _news_source
 			size_hint_x: 0.9
 			hint_text: "Enter a news source here"
-			on_text_validate: root.getPosts()
+			on_text_validate: root.getNews()
 
 		TextInput:
 			id: _news_results
 			readonly: True
-			text: "The recent articles go here"
 
 
 	Image:
