@@ -203,6 +203,20 @@ def get_directions(command_input):
     dir_text = directions.locate(destination)
     return dir_text
 
+def get_news(command_input):
+    import News
+    for token in command_input:
+        if ".com" in token:
+            source = token
+    articles = News.getTheNews(source)
+    articleText = ""
+    for i in range(5):
+        articleText += ("Title: " + articles[0][i] + "\n")
+        for author in articles[1][i]:
+            articleText += ("Author: " + author + " ")
+        articleText += "\n\n"
+    return articleText
+
 #do different actions based on the given input
 def commands(command_input):
     #find which command to execute based on user input
@@ -229,6 +243,8 @@ def commands(command_input):
         key = "calendar"
     elif any(c in command_input for c in ("directions", "route", "direct", "locate")):
         key = "directions"
+    elif "news" in command_input:
+        key = "news"
 
     #define an output variable for later
     output = "Invalid Command."
@@ -279,5 +295,7 @@ def commands(command_input):
         output = get_calendar(command_input)
     elif "directions" in key:
         output = get_directions(command_input)
+    elif "news" in key:
+        output = get_news(command_input)
 
     return output

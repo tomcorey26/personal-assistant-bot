@@ -41,6 +41,7 @@ import setup
 import TwitterApi
 import command_output
 import directions
+import News
 
 Builder.load_file('menubar.kv')
 Builder.load_file('chatwindow.kv')
@@ -489,6 +490,20 @@ class DirectionsScreen(Screen):
     def getDirections(self):
         dir_str = directions.locate(self.destination_input.text)
         self.direction_box.text = dir_str
+
+class NewsScreen(Screen):
+
+    def getNews(self):
+        source = self.news_input.text
+        if ".com" not in source:
+            source = source + ".com"
+        source = "http://www." + source
+        articles = News.getTheNews(source)
+        for i in range(5):
+            self.top_articles.text += ("Title: " + articles[0][i] + "\n")
+            for author in articles[1][i]:
+                self.top_articles.text += ("Author: " + author + " ")
+            self.top_articles.text += "\n\n"
 
 class LoginPopup(Popup):
 
