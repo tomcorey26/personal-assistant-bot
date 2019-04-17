@@ -271,7 +271,7 @@ class FishScreen(Screen):
 
         #dictionary of the image URL's
         #TODO find a better way to implement these
-        fishImages = {1: "Trout.png", 2: "Salmon.png", 3:"Crayfish.png", 4:"Minnow.png",
+        fishImages = {1: "Trout.png", 2: "Salmon.png", 3:"Crayfish.png", 4:"Shark.png",
                       5: "Boots.png", 6: "Lobster.png", 7: "Sardine.png", 8: "Mackerel.png",
                       9: "sadFace.png",0: "Seaweed.png"} 
 
@@ -295,7 +295,7 @@ class FishScreen(Screen):
                         + "\nTrout: " + str(self.fish_tally[1]) \
                         + "\nSalmon: " + str(self.fish_tally[2]) \
                         + "\nCrayfish: " + str(self.fish_tally[3]) \
-                        + "\nMinnow: " + str(self.fish_tally[4]) \
+                        + "\nShark: " + str(self.fish_tally[4]) \
                         + "\nBoots: " + str(self.fish_tally[5]) \
                         + "\nLobster: " + str(self.fish_tally[6]) \
                         + "\nSardine: " + str(self.fish_tally[7]) \

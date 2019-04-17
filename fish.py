@@ -5,7 +5,7 @@ class Fish():
     def __init__(self, number):
         
         #dictionary of fish that can be caught by the user
-        self.speciesList = {1:"Trout",2:"Salmon", 3:"Crayfish", 4:"Minnow", 6:"Lobster", 7:"Sardine", 8:"Mackerel", 5:"Boot", 9:"Finger", 0:"Seaweed"}
+        self.speciesList = {1:"Trout",2:"Salmon", 3:"Crayfish", 4:"Shark", 6:"Lobster", 7:"Sardine", 8:"Mackerel", 5:"Boot", 9:"Finger", 0:"Seaweed"}
         
         #the random number generated when ran
         self.number = number
@@ -42,7 +42,6 @@ class Fish():
 
     def castLine(self):
         catch = Fish(self.number)
-
         return catch
 
 def main():
