@@ -295,7 +295,7 @@ class FishScreen(Screen):
                         + "\nTrout: " + str(self.fish_tally[1]) \
                         + "\nSalmon: " + str(self.fish_tally[2]) \
                         + "\nCrayfish: " + str(self.fish_tally[3]) \
-                        + "\Shark: " + str(self.fish_tally[4]) \
+                        + "\nShark: " + str(self.fish_tally[4]) \
                         + "\nBoots: " + str(self.fish_tally[5]) \
                         + "\nLobster: " + str(self.fish_tally[6]) \
                         + "\nSardine: " + str(self.fish_tally[7]) \
