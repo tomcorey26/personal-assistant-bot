@@ -20,7 +20,6 @@ from kivy.uix.label import Label
 from kivy.uix.image import Image
 
 #import all of the local python files that the group created
-from sampleParser import memeParserXD as mp
 import time
 
 #imports for fish file
@@ -588,13 +587,12 @@ class ChatWindow(AnchorLayout):
     #use output_command here instead of the MemeParserXD class
 
     def getResponse(self, inputString, dt):
-        self.text_log.text += ("bot: " + mp.parse(self, inputString) + '\n\n')
 
         # TODO only use the command_output file once all commands work
         try:
             self.text_log.text += ("command_output: " + command_output.commands(inputString) + "\n\n")
         except:
-            self.text_log.hint_text = "Error: command not recognized"
+            self.text_input.hint_text = "Error: command not recognized"
             self.text_input.text = ""
             
         self.text_input.focus = True
