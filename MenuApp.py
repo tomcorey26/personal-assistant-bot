@@ -17,6 +17,7 @@ from kivy.uix.popup import Popup
 from kivy.properties import ListProperty, NumericProperty
 from kivy.uix.dropdown import DropDown
 from kivy.uix.label import Label
+from kivy.uix.image import Image
 
 #import all of the local python files that the group created
 from sampleParser import memeParserXD as mp
@@ -58,7 +59,13 @@ class MenuContainer(AnchorLayout):
         super(MenuContainer, self).__init__(**kwargs)
 
         #load the login popup when the app starts
-        Clock.schedule_once(LoginPopup().open, 0)
+        Clock.schedule_once(self.getStartupPopup, 0)
+
+    def getStartupPopup(self, inst):
+        pop = Popup(title='Welcome to SalmonBot!', content=Image(source='images/MainLogo.png'),
+            size_hint=(None,None), height=400, width=400)
+        pop.open()
+
 
 class MenuManager(ScreenManager):
 
