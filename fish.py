@@ -42,7 +42,6 @@ class Fish():
 
     def castLine(self):
         catch = Fish(self.number)
-
         return catch
 
 def main():

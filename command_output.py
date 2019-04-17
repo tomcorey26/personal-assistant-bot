@@ -23,9 +23,11 @@ def tell_joke():
 
 #function to catch a fish
 def catch_fish():
-    import fish
-    fish_name, wiki_url = fish.main()
-    result = fish_name + "\n" + wiki_url
+    from fish import Fish
+    import random
+
+    catch = Fish(random.randint(0,20))
+    result = catch.toString()
     return result
 
 #function to order a pizza
