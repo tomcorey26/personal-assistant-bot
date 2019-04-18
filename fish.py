@@ -5,7 +5,7 @@ class Fish():
     def __init__(self, number):
         
         #dictionary of fish that can be caught by the user
-        self.speciesList = {1:"Trout",2:"Salmon", 3:"Crayfish", 4:"Shark", 6:"Lobster", 7:"Sardine", 8:"Mackerel", 5:"Boot", 9:"Finger", 0:"Seaweed"}
+        self.speciesList = {1:"Trout",2:"Salmon", 3:"Crayfish", 4:"Shark", 6:"Lobster", 7:"Sardine", 8:"Mackerel", 5:"Boot", 9:"Crab", 0:"Seaweed"}
         
         #the random number generated when ran
         self.number = number
@@ -26,7 +26,18 @@ class Fish():
         else:
             #the fish is set to the corresponding dictionary key value
             fish = self.speciesList[self.number]
-            wiki_url = "https://en.wikipedia.org/wiki/" + fish
+            if(fish == "Crab"):
+                #🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀
+                #🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀
+                #🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀
+                #🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀
+                wiki_url = "https://www.youtube.com/watch?v=LDU_Txk06tM"
+                #🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀
+                #🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀
+                #🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀
+                #🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀
+            else:
+                wiki_url = "https://en.wikipedia.org/wiki/" + fish
             
         #returns the caught fish and the url to the user
         return fish, wiki_url
