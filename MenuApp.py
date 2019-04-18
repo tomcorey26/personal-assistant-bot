@@ -61,7 +61,7 @@ class MenuContainer(AnchorLayout):
         Clock.schedule_once(self.getStartupPopup, 0)
 
     def getStartupPopup(self, inst):
-        pop = Popup(title='Welcome to SalmonBot!', content=Image(source='images/MainLogo.png'),
+        pop = Popup(title='Welcome to SalmonBot!', title_align='center',content=Image(source='images/MainLogo.png'),
             size_hint=(None,None), height=400, width=400)
         pop.open()
 
