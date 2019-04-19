@@ -252,6 +252,8 @@
 
 <FishScreen>:
 	name: "Fishing"
+	
+	wiki_button: _wiki_button
 
 	BoxLayout:
 		orientation: "vertical"
@@ -278,6 +280,9 @@
 			Button:
 				text: "View Totals"
 				on_press: root.view_fish_tally()
+			Button:
+				id: _wiki_button
+				text: "View Wiki"
 	
 	Image:
 		id: _fish_image

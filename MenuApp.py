@@ -18,6 +18,8 @@ from kivy.properties import ListProperty, NumericProperty
 from kivy.uix.dropdown import DropDown
 from kivy.uix.label import Label
 from kivy.uix.image import Image
+import webbrowser
+
 
 #import all of the local python files that the group created
 import time
@@ -316,6 +318,8 @@ class FishScreen(Screen):
         #update the fish tally
         if (catch.number < 10):
             self.fish_tally[catch.number] += 1
+
+        self.wiki_button.bind(on_press= partial(webbrowser.open, wikiURL))
 
         #if the fishID doesn't have an image, just default to seaweed for now
         if image == None:
