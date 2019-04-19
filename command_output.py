@@ -159,14 +159,14 @@ def reddit_posts(command_input):
     sub = sub.replace(" ", "")
     #remove r/
     sub = sub.replace("r/", "")
-    print("sub: ",sub)
-    say("Here are the top posts from r/" + sub + ":\n")
+    #print("sub: ",sub)
+    #say("Here are the top posts from r/" + sub + ":\n")
     output = RedditApi.redditPosts(5, sub)
     #format the string to make it look nicer
     result = ""
     for key, value in output.items():
         result += key + ":\n" + value + "\n\n"
-    print(result)
+    #print(result)
     #return the final string result
     return result
 
