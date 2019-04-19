@@ -594,7 +594,7 @@ class ChatWindow(AnchorLayout):
 
         # TODO only use the command_output file once all commands work
         try:
-            self.text_log.text += ("command_output: " + command_output.commands(inputString) + "\n\n")
+            self.text_log.text += ("Bot: " + command_output.commands(inputString) + "\n\n")
         except:
             self.text_input.hint_text = "Error: command not recognized"
             self.text_input.text = ""
