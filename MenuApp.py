@@ -302,7 +302,7 @@ class FishScreen(Screen):
         #TODO find a better way to implement these
         fishImages = {1: "Trout.png", 2: "Salmon.png", 3:"Crayfish.png", 4:"Shark.png",
                       5: "Boots.png", 6: "Lobster.png", 7: "Sardine.png", 8: "Mackerel.png",
-                      9: "sadFace.png",0: "Seaweed.png"} 
+                      9: "Crab.png",0: "Seaweed.png"} 
 
         #get the url for the image
         image = fishImages.get(fishID)
@@ -329,7 +329,7 @@ class FishScreen(Screen):
                         + "\nLobster: " + str(self.fish_tally[6]) \
                         + "\nSardine: " + str(self.fish_tally[7]) \
                         + "\nMackerel: " + str(self.fish_tally[8]) \
-                        + "\nFinger: " + str(self.fish_tally[9])
+                        + "\nCrab: " + str(self.fish_tally[9])
 
         #TODO create a popup that prints this string
         popup = Popup(size_hint=(None, None), size=(300, 300), title="Total Fish Tally")
