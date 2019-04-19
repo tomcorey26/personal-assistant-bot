@@ -566,20 +566,6 @@ class NewsScreen(Screen):
             #Invalid input
             self.top_articles.text = "Please enter a news topic to search for." 
 
-class NewsScreen(Screen):
-
-    def getNews(self):
-        source = self.news_input.text
-        if ".com" not in source:
-            source = source + ".com"
-        source = "http://www." + source
-        articles = News.getTheNews(source)
-        for i in range(5):
-            self.top_articles.text += ("Title: " + articles[0][i] + "\n")
-            for author in articles[1][i]:
-                self.top_articles.text += ("Author: " + author + " ")
-            self.top_articles.text += "\n\n"
-
 class LoginPopup(Popup):
 
     #open the signup screen and close the current login screen
