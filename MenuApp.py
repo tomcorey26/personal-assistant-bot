@@ -17,6 +17,7 @@ from kivy.uix.popup import Popup
 from kivy.properties import ListProperty, NumericProperty
 from kivy.uix.dropdown import DropDown
 from kivy.uix.label import Label
+import webbrowser
 
 #import all of the local python files that the group created
 from sampleParser import memeParserXD as mp
@@ -310,6 +311,8 @@ class FishScreen(Screen):
         #update the fish tally
         if (catch.number < 10):
             self.fish_tally[catch.number] += 1
+
+        self.wiki_button.bind(on_press= partial(webbrowser.open, wikiURL))
 
         #if the fishID doesn't have an image, just default to seaweed for now
         if image == None:

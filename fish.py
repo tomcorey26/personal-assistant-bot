@@ -22,6 +22,7 @@ class Fish():
         #checks to see if the number generated is above 9, if it is above 9 there are no fish and the program will alert the user of their failure
         if(self.number > 9):
             fish = "You fail to catch a fish"
+            wiki_url = "https://en.wikipedia.org/wiki/Loser_(hand_gesture)"
             
         else:
             #the fish is set to the corresponding dictionary key value
