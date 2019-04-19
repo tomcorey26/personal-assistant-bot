@@ -17,10 +17,11 @@ from kivy.uix.popup import Popup
 from kivy.properties import ListProperty, NumericProperty
 from kivy.uix.dropdown import DropDown
 from kivy.uix.label import Label
+from kivy.uix.image import Image
 import webbrowser
 
+
 #import all of the local python files that the group created
-from sampleParser import memeParserXD as mp
 import time
 
 #imports for fish file
@@ -59,7 +60,13 @@ class MenuContainer(AnchorLayout):
         super(MenuContainer, self).__init__(**kwargs)
 
         #load the login popup when the app starts
-        Clock.schedule_once(LoginPopup().open, 0)
+        Clock.schedule_once(self.getStartupPopup, 0)
+
+    def getStartupPopup(self, inst):
+        pop = Popup(title='Welcome to SalmonBot!', title_align='center',content=Image(source='images/MainLogo.png'),
+            size_hint=(None,None), height=400, width=400)
+        pop.open()
+
 
 class MenuManager(ScreenManager):
 
@@ -584,13 +591,12 @@ class ChatWindow(AnchorLayout):
     #use output_command here instead of the MemeParserXD class
 
     def getResponse(self, inputString, dt):
-        self.text_log.text += ("bot: " + mp.parse(self, inputString) + '\n\n')
 
         # TODO only use the command_output file once all commands work
         try:
             self.text_log.text += ("command_output: " + command_output.commands(inputString) + "\n\n")
         except:
-            self.text_log.hint_text = "Error: command not recognized"
+            self.text_input.hint_text = "Error: command not recognized"
             self.text_input.text = ""
             
         self.text_input.focus = True
