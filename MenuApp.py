@@ -17,9 +17,11 @@ from kivy.uix.popup import Popup
 from kivy.properties import ListProperty, NumericProperty
 from kivy.uix.dropdown import DropDown
 from kivy.uix.label import Label
+from kivy.uix.image import Image
+import webbrowser
+
 
 #import all of the local python files that the group created
-from sampleParser import memeParserXD as mp
 import time
 
 #imports for fish file
@@ -58,7 +60,13 @@ class MenuContainer(AnchorLayout):
         super(MenuContainer, self).__init__(**kwargs)
 
         #load the login popup when the app starts
-        Clock.schedule_once(LoginPopup().open, 0)
+        Clock.schedule_once(self.getStartupPopup, 0)
+
+    def getStartupPopup(self, inst):
+        pop = Popup(title='Welcome to SalmonBot!', title_align='center',content=Image(source='images/MainLogo.png'),
+            size_hint=(None,None), height=400, width=400)
+        pop.open()
+
 
 class MenuManager(ScreenManager):
 
@@ -302,7 +310,7 @@ class FishScreen(Screen):
         #TODO find a better way to implement these
         fishImages = {1: "Trout.png", 2: "Salmon.png", 3:"Crayfish.png", 4:"Shark.png",
                       5: "Boots.png", 6: "Lobster.png", 7: "Sardine.png", 8: "Mackerel.png",
-                      9: "sadFace.png",0: "Seaweed.png"} 
+                      9: "Crab.png",0: "Seaweed.png"} 
 
         #get the url for the image
         image = fishImages.get(fishID)
@@ -310,6 +318,8 @@ class FishScreen(Screen):
         #update the fish tally
         if (catch.number < 10):
             self.fish_tally[catch.number] += 1
+
+        self.wiki_button.bind(on_press= partial(webbrowser.open, wikiURL))
 
         #if the fishID doesn't have an image, just default to seaweed for now
         if image == None:
@@ -329,7 +339,7 @@ class FishScreen(Screen):
                         + "\nLobster: " + str(self.fish_tally[6]) \
                         + "\nSardine: " + str(self.fish_tally[7]) \
                         + "\nMackerel: " + str(self.fish_tally[8]) \
-                        + "\nFinger: " + str(self.fish_tally[9])
+                        + "\nCrab: " + str(self.fish_tally[9])
 
         #TODO create a popup that prints this string
         popup = Popup(size_hint=(None, None), size=(300, 300), title="Total Fish Tally")
@@ -556,6 +566,20 @@ class NewsScreen(Screen):
             #Invalid input
             self.top_articles.text = "Please enter a news topic to search for." 
 
+class NewsScreen(Screen):
+
+    def getNews(self):
+        source = self.news_input.text
+        if ".com" not in source:
+            source = source + ".com"
+        source = "http://www." + source
+        articles = News.getTheNews(source)
+        for i in range(5):
+            self.top_articles.text += ("Title: " + articles[0][i] + "\n")
+            for author in articles[1][i]:
+                self.top_articles.text += ("Author: " + author + " ")
+            self.top_articles.text += "\n\n"
+
 class LoginPopup(Popup):
 
     #open the signup screen and close the current login screen
@@ -603,13 +627,12 @@ class ChatWindow(AnchorLayout):
     #use output_command here instead of the MemeParserXD class
 
     def getResponse(self, inputString, dt):
-        self.text_log.text += ("bot: " + mp.parse(self, inputString) + '\n\n')
 
         # TODO only use the command_output file once all commands work
         try:
             self.text_log.text += ("command_output: " + command_output.commands(inputString) + "\n\n")
         except:
-            self.text_log.hint_text = "Error: command not recognized"
+            self.text_input.hint_text = "Error: command not recognized"
             self.text_input.text = ""
             
         self.text_input.focus = True

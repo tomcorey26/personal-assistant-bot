@@ -23,9 +23,11 @@ def tell_joke():
 
 #function to catch a fish
 def catch_fish():
-    import fish
-    fish_name, wiki_url = fish.main()
-    result = fish_name + "\n" + wiki_url
+    from fish import Fish
+    import random
+
+    catch = Fish(random.randint(0,20))
+    result = catch.toString()
     return result
 
 #function to order a pizza
@@ -133,8 +135,9 @@ def get_weather(command_input):
     latitude, longitude = zip_converter.main(city, state)
     # find the conditions in that location
     import weather
-    print("")
-    temp, summ = weather.main(latitude, longitude)
+    daily_forecast, hourly_forecast, current_conditions = weather.get_weather(latitude, longitude)
+    temp = str(current_conditions.get('temp'))
+    summ = current_conditions.get('summary')
     # construct a single output string from this input
     return "In " + city + " " + state + ", it is currently " + temp + '\u00b0' + "F and " + summ + "."
 
@@ -156,16 +159,27 @@ def reddit_posts(command_input):
     sub = sub.replace(" ", "")
     #remove r/
     sub = sub.replace("r/", "")
-    print("sub: ",sub)
-    say("Here are the top posts from r/" + sub + ":\n")
+    #print("sub: ",sub)
+    #say("Here are the top posts from r/" + sub + ":\n")
     output = RedditApi.redditPosts(5, sub)
     #format the string to make it look nicer
     result = ""
     for key, value in output.items():
         result += key + ":\n" + value + "\n\n"
-    print(result)
+    #print(result)
     #return the final string result
     return result
+
+#function to search top tweets
+def twitter_posts(command_input):
+    user = ""
+    for i in command_input:
+        if "tweets" in i:
+            user = command_input[command_input.index(i)+1]
+    print(user)
+    import TwitterApi
+    tweets = TwitterApi.get_tweets(user)
+    return tweets
 
 #function to utilize the calendar
 def get_calendar(command_input):
@@ -191,6 +205,20 @@ def get_directions(command_input):
     dir_text = directions.locate(destination)
     return dir_text
 
+def get_news(command_input):
+    import News
+    for token in command_input:
+        if ".com" in token:
+            source = token
+    articles = News.getTheNews(source)
+    articleText = ""
+    for i in range(5):
+        articleText += ("Title: " + articles[0][i] + "\n")
+        for author in articles[1][i]:
+            articleText += ("Author: " + author + " ")
+        articleText += "\n\n"
+    return articleText
+
 #do different actions based on the given input
 def commands(command_input):
     #find which command to execute based on user input
@@ -209,12 +237,16 @@ def commands(command_input):
         key = "joke"
     elif any(c in command_input for c in ("fish", "catch", "cast", "snag")):
         key = "fish"
-    elif "reddit" in command_input or "posts" in command_input:
+    elif "reddit" in command_input or "r/" in command_input or "r /" in command_input:
         key = "reddit"
+    elif "twitter" in command_input or "tweets" in command_input:
+        key = "twitter"
     elif any(c in command_input for c in ("add", "remove", "search", "find", "view")) and any(d in command_input for d in ("event", "calendar")):
         key = "calendar"
     elif any(c in command_input for c in ("directions", "route", "direct", "locate")):
         key = "directions"
+    elif "news" in command_input:
+        key = "news"
 
     #define an output variable for later
     output = "Invalid Command."
@@ -254,10 +286,18 @@ def commands(command_input):
         parsed_command = input_converter.convert_text(command_input.lower())
         #use the parsed text to get the desired output
         output = reddit_posts(parsed_command)
+    #access top tweets
+    elif "twitter" in key:
+        # parse the text for this feature
+        parsed_command = input_converter.convert_text(command_input.lower())
+        # use the parsed text to get the desired output
+        output = twitter_posts(parsed_command)
     #manipulate or view calendar events
     elif "calendar" in key:
         output = get_calendar(command_input)
     elif "directions" in key:
         output = get_directions(command_input)
+    elif "news" in key:
+        output = get_news(command_input)
 
     return output

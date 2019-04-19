@@ -18,8 +18,11 @@ class TwitterScrape():
         #return the dictionary
         return tweets
 
-tweet = TwitterScrape(5, 'graem_timmons')
-tweets = tweet.grabRecentPosts()
+def get_tweets(user):
+    tweet = TwitterScrape(5, user)
+    tweets = tweet.grabRecentPosts()
 
-for statuses in tweets:
-    print(statuses.text)
+    output = ""
+    for statuses in tweets:
+        output += statuses.text + "\n"
+    return output
