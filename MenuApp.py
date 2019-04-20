@@ -545,7 +545,7 @@ class NewsScreen(Screen):
         #Construct the source/ TODO is this used?
         source = self.news_input.text
         if ".com" not in source:
-            source = source + ".com"    
+            source = source + ".com"
         source = "http://www." + source
 
         try:
