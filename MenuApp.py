@@ -516,7 +516,7 @@ class RecipeScreen(Screen):
             #get the ingredients for the recipe
             ingredients = recipe_finder.main(self.meal_keyword.text)
 
-            #update the panel with teh recipe info
+            #update the panel with the recipe info
             self.meal_label.text = "Recipe for " + self.meal_keyword.text + ":"
             self.ingredient_box.text = ingredients
             self.meal_keyword.hint_text = ("Enter the meal you want to make here")
@@ -526,23 +526,45 @@ class RecipeScreen(Screen):
             self.meal_keyword.hint_text = "Error: not specific enough"
         
 class DirectionsScreen(Screen):
+    
     def getDirections(self):
-        dir_str = directions.locate(self.destination_input.text)
-        self.direction_box.text = dir_str
+      
+        try:
+            #Get the directions and then update the panel
+            dir_str = directions.locate(self.destination_input.text)
+            self.direction_box.text = dir_str
+  
+        except:
+            #Directions not found/invalid input
+            self.direction_box.text = "Please enter a valid destination."
 
 class NewsScreen(Screen):
 
     def getNews(self):
+
+        #Construct the source/ TODO is this used?
         source = self.news_input.text
         if ".com" not in source:
             source = source + ".com"
         source = "http://www." + source
-        articles = News.getTheNews(source)
-        for i in range(5):
-            self.top_articles.text += ("Title: " + articles[0][i] + "\n")
-            for author in articles[1][i]:
-                self.top_articles.text += ("Author: " + author + " ")
-            self.top_articles.text += "\n\n"
+
+        try:
+            #Get the news
+            articles = News.getTheNews(source)
+
+            #Clear the panel
+            self.top_articles.text = ""
+
+            #Update the panel
+            for i in range(5):
+                self.top_articles.text += ("Title: " + articles[0][i] + "\n")
+                for author in articles[1][i]:
+                    self.top_articles.text += ("Author: " + author + " ")
+                self.top_articles.text += "\n\n"
+
+        except:
+            #Invalid input
+            self.top_articles.text = "Please enter a news topic to search for." 
 
 class LoginPopup(Popup):
 
