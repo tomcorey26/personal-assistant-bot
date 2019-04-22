@@ -32,9 +32,8 @@ def catch_fish():
 
 #function to order a pizza
 def order_pizza():
-    import init_order
-    #go through the order process
-    return init_order.main()
+    return "pizza ordering via chatbot not available right now. " + \
+           "go to the 'pizza' tab below to order a pizza"
 
 #function to scrape for a recipe
 def get_recipe(command_input):
@@ -183,17 +182,19 @@ def twitter_posts(command_input):
 
 #function to utilize the calendar
 def get_calendar(command_input):
-    import calendar_events
-    if "view" in command_input:
-        choice = "view"
-    elif "add" in command_input:
-        choice = "add"
-    elif "remove" in command_input:
-        choice = "remove"
-    elif "search" in command_input or "find" in command_input:
-        choice = "search"
-    #perform a different calendar action based on the choice given
-    return calendar_events.choices(choice)
+##    import calendar_events
+##    if "view" in command_input:
+##        choice = "view"
+##    elif "add" in command_input:
+##        choice = "add"
+##    elif "remove" in command_input:
+##        choice = "remove"
+##    elif "search" in command_input or "find" in command_input:
+##        choice = "search"
+##    #perform a different calendar action based on the choice given
+##    return calendar_events.choices(choice)
+    return "events not available in chatbot right now. " + \
+           "go to the calendar tab below to add/remove/view events"
 
 #function to get directions to a location
 def get_directions(command_input):
