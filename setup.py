@@ -1,5 +1,6 @@
 import subprocess
 import json
+from sys import version_info
 
 #create guest variable
 is_guest = False
@@ -16,71 +17,108 @@ def update_modules():
     try:
         import darksky
     except ImportError:
+        print("darksky not found")
         install('darkskylib')
+        
     try:
         import uszipcode
     except ImportError:
+        print("uszipcode not found")
         install('uszipcode')
+        
     try:
-        import kivy
+        from kivy.uix.label import Label
     except ImportError:
+        print("error, kivy not found")
         install('docutils pygments pypiwin32 kivy.deps.sdl2 kivy.deps.glew')
         install('kivy.deps.angle')
         install('kivy')
+        print("done installing kivy")
+        
     try:
         import pyaudio
     except ImportError:
-        install('pyaudio')
+        print("pyaudio not found")
+        
+        #need to install from a custom wheel if python version 3.7
+        if (version_info[0] == 3 and version_info[1] == 7):
+            install('PyAudio-0.2.11-cp37-cp37m-win32.whl')
+        else:
+            install('pyaudio')
+            
     try:
         import speech_recognition
     except ImportError:
+        print("speech_recognition not found")
         install('SpeechRecognition')
+        
     try:
         import gtts
     except ImportError:
+        print("gtts not found")
         install('gtts')
+        
     try:
         import pyttsx3
     except ImportError:
+        print("pyttsx3 not found")
         install('pyttsx3')
+        
     try:
         import keyboard
     except ImportError:
+        print("keyboard not found")
         install('keyboard')
+        
     try:
         import googlesearch
     except ImportError:
+        print("googlesearch not found")
         install("beautifulsoup4")
         install("google")
+        
     try:
         import pizzapi
     except ImportError:
+        print("pizzapi not found")
         install('pizzapi')
 
     try:
         import pizzapy
     except ImportError:
+        print("pizzapy not found")
         install('git+https://github.com/Magicjarvis/pizzapi.git')
+        
     try:
         import newspaper
     except ImportError:
+        print("newspaper not found")
         install('newspaper3k')
+        
     try:
         import praw
     except ImportError:
+        print("praw not found")
         install('praw')
+        
     try:
         import recipe_scrapers
     except ImportError:
+        print("recipe_scrapers not found")
         install("git+git://github.com/hhursev/recipe-scrapers.git")
+        
     try:
         import geocoder
     except ImportError:
+        print("geocoder not found")
         install('geocoder')
+        
     try:
         import openrouteservice
     except ImportError:
+        print("openrouteservice not found")
         install("openrouteservice")
+        
     try:
         import nltk
         install('nltk')
@@ -92,7 +130,9 @@ def update_modules():
         nltk.download('brown')
         nltk.download('maxent_treebank_pos_tagger')
         nltk.download('wordnet')
+        
     except ImportError:
+        print("nltk not found")
         install('nltk')
         import nltk
         install('nltk')
@@ -104,6 +144,12 @@ def update_modules():
         nltk.download('brown')
         nltk.download('maxent_treebank_pos_tagger')
         nltk.download('wordnet')
+
+    try:
+        import tweepy
+    except:
+        print("tweepy not found")
+        install('tweepy')
 
 #create the initial user data
 def initial_data():
@@ -168,5 +214,6 @@ def del_guest():
 
 def main():
     update_modules()
-    user_data = initial_data()
-    write_data(user_data)
+
+if __name__ == "__main__":
+    main()
