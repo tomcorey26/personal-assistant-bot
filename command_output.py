@@ -23,16 +23,17 @@ def tell_joke():
 
 #function to catch a fish
 def catch_fish():
-    import fish
-    fish_name, wiki_url = fish.main()
-    result = fish_name + "\n" + wiki_url
+    from fish import Fish
+    import random
+
+    catch = Fish(random.randint(0,20))
+    result = catch.toString()
     return result
 
 #function to order a pizza
 def order_pizza():
-    import init_order
-    #go through the order process
-    return init_order.main()
+    return "pizza ordering via chatbot not available right now. " + \
+           "go to the 'pizza' tab below to order a pizza"
 
 #function to scrape for a recipe
 def get_recipe(command_input):
@@ -133,8 +134,9 @@ def get_weather(command_input):
     latitude, longitude = zip_converter.main(city, state)
     # find the conditions in that location
     import weather
-    print("")
-    temp, summ = weather.main(latitude, longitude)
+    daily_forecast, hourly_forecast, current_conditions = weather.get_weather(latitude, longitude)
+    temp = str(current_conditions.get('temp'))
+    summ = current_conditions.get('summary')
     # construct a single output string from this input
     print("In " + city + " " + state + ", it is currently " + temp + '\u00b0' + "F and " + summ + ".")
     return "In " + city + " " + state + ", it is currently " + temp + '\u00b0' + "F and " + summ + "."
@@ -157,14 +159,14 @@ def reddit_posts(command_input):
     sub = sub.replace(" ", "")
     #remove r/
     sub = sub.replace("r/", "")
-    print("sub: ",sub)
-    say("Here are the top posts from r/" + sub + ":\n")
+    #print("sub: ",sub)
+    #say("Here are the top posts from r/" + sub + ":\n")
     output = RedditApi.redditPosts(5, sub)
     #format the string to make it look nicer
     result = ""
     for key, value in output.items():
         result += key + ":\n" + value + "\n\n"
-    print(result)
+    #print(result)
     #return the final string result
     return result
 
@@ -181,17 +183,19 @@ def twitter_posts(command_input):
 
 #function to utilize the calendar
 def get_calendar(command_input):
-    import calendar_events
-    if "view" in command_input:
-        choice = "view"
-    elif "add" in command_input:
-        choice = "add"
-    elif "remove" in command_input:
-        choice = "remove"
-    elif "search" in command_input or "find" in command_input:
-        choice = "search"
-    #perform a different calendar action based on the choice given
-    return calendar_events.choices(choice)
+##    import calendar_events
+##    if "view" in command_input:
+##        choice = "view"
+##    elif "add" in command_input:
+##        choice = "add"
+##    elif "remove" in command_input:
+##        choice = "remove"
+##    elif "search" in command_input or "find" in command_input:
+##        choice = "search"
+##    #perform a different calendar action based on the choice given
+##    return calendar_events.choices(choice)
+    return "events not available in chatbot right now. " + \
+           "go to the calendar tab below to add/remove/view events"
 
 #function to get directions to a location
 def get_directions(command_input):
@@ -202,6 +206,20 @@ def get_directions(command_input):
     print("Location: ", destination)
     dir_text = directions.locate(destination)
     return dir_text
+
+def get_news(command_input):
+    import News
+    for token in command_input:
+        if ".com" in token:
+            source = token
+    articles = News.getTheNews(source)
+    articleText = ""
+    for i in range(5):
+        articleText += ("Title: " + articles[0][i] + "\n")
+        for author in articles[1][i]:
+            articleText += ("Author: " + author + " ")
+        articleText += "\n\n"
+    return articleText
 
 #do different actions based on the given input
 def commands(command_input):
@@ -229,6 +247,8 @@ def commands(command_input):
     #     key = "calendar"
     elif any(c in command_input for c in ("directions", "route", "direct", "locate")):
         key = "directions"
+    elif "news" in command_input:
+        key = "news"
 
     #define an output variable for later
     output = "Invalid Command."
@@ -279,5 +299,7 @@ def commands(command_input):
     #     output = get_calendar(command_input)
     elif "directions" in key:
         output = get_directions(command_input)
+    elif "news" in key:
+        output = get_news(command_input)
 
     return output
