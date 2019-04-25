@@ -138,6 +138,7 @@ def get_weather(command_input):
     temp = str(current_conditions.get('temp'))
     summ = current_conditions.get('summary')
     # construct a single output string from this input
+    print("In " + city + " " + state + ", it is currently " + temp + '\u00b0' + "F and " + summ + ".")
     return "In " + city + " " + state + ", it is currently " + temp + '\u00b0' + "F and " + summ + "."
 
 #function to search top reddit posts
@@ -226,8 +227,8 @@ def commands(command_input):
     key = ""
     if "settings" in command_input:
         key = "settings"
-    if any(c in command_input for c in ("pizza", "domino's")) and not ("recipe" in command_input):
-        key = "pizza";
+    # if any(c in command_input for c in ("pizza", "domino's")) and not ("recipe" in command_input):
+    #     key = "pizza"
     elif "recipe" in command_input:
         key = "recipe"
     elif "time" in command_input:
@@ -242,8 +243,8 @@ def commands(command_input):
         key = "reddit"
     elif "twitter" in command_input or "tweets" in command_input:
         key = "twitter"
-    elif any(c in command_input for c in ("add", "remove", "search", "find", "view")) and any(d in command_input for d in ("event", "calendar")):
-        key = "calendar"
+    # elif any(c in command_input for c in ("add", "remove", "search", "find", "view")) and any(d in command_input for d in ("event", "calendar")):
+    #     key = "calendar"
     elif any(c in command_input for c in ("directions", "route", "direct", "locate")):
         key = "directions"
     elif "news" in command_input:
@@ -294,8 +295,8 @@ def commands(command_input):
         # use the parsed text to get the desired output
         output = twitter_posts(parsed_command)
     #manipulate or view calendar events
-    elif "calendar" in key:
-        output = get_calendar(command_input)
+    # elif "calendar" in key:
+    #     output = get_calendar(command_input)
     elif "directions" in key:
         output = get_directions(command_input)
     elif "news" in key:
