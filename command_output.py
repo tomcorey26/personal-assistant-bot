@@ -136,6 +136,7 @@ def get_weather(command_input):
     print("")
     temp, summ = weather.main(latitude, longitude)
     # construct a single output string from this input
+    print("In " + city + " " + state + ", it is currently " + temp + '\u00b0' + "F and " + summ + ".")
     return "In " + city + " " + state + ", it is currently " + temp + '\u00b0' + "F and " + summ + "."
 
 #function to search top reddit posts
@@ -167,6 +168,17 @@ def reddit_posts(command_input):
     #return the final string result
     return result
 
+#function to search top tweets
+def twitter_posts(command_input):
+    user = ""
+    for i in command_input:
+        if "tweets" in i:
+            user = command_input[command_input.index(i)+1]
+    print(user)
+    import TwitterApi
+    tweets = TwitterApi.get_tweets(user)
+    return tweets
+
 #function to utilize the calendar
 def get_calendar(command_input):
     import calendar_events
@@ -197,8 +209,8 @@ def commands(command_input):
     key = ""
     if "settings" in command_input:
         key = "settings"
-    if any(c in command_input for c in ("pizza", "domino's")) and not ("recipe" in command_input):
-        key = "pizza";
+    # if any(c in command_input for c in ("pizza", "domino's")) and not ("recipe" in command_input):
+    #     key = "pizza"
     elif "recipe" in command_input:
         key = "recipe"
     elif "time" in command_input:
@@ -209,10 +221,12 @@ def commands(command_input):
         key = "joke"
     elif any(c in command_input for c in ("fish", "catch", "cast", "snag")):
         key = "fish"
-    elif "reddit" in command_input or "posts" in command_input:
+    elif "reddit" in command_input or "r/" in command_input or "r /" in command_input:
         key = "reddit"
-    elif any(c in command_input for c in ("add", "remove", "search", "find", "view")) and any(d in command_input for d in ("event", "calendar")):
-        key = "calendar"
+    elif "twitter" in command_input or "tweets" in command_input:
+        key = "twitter"
+    # elif any(c in command_input for c in ("add", "remove", "search", "find", "view")) and any(d in command_input for d in ("event", "calendar")):
+    #     key = "calendar"
     elif any(c in command_input for c in ("directions", "route", "direct", "locate")):
         key = "directions"
 
@@ -254,9 +268,15 @@ def commands(command_input):
         parsed_command = input_converter.convert_text(command_input.lower())
         #use the parsed text to get the desired output
         output = reddit_posts(parsed_command)
+    #access top tweets
+    elif "twitter" in key:
+        # parse the text for this feature
+        parsed_command = input_converter.convert_text(command_input.lower())
+        # use the parsed text to get the desired output
+        output = twitter_posts(parsed_command)
     #manipulate or view calendar events
-    elif "calendar" in key:
-        output = get_calendar(command_input)
+    # elif "calendar" in key:
+    #     output = get_calendar(command_input)
     elif "directions" in key:
         output = get_directions(command_input)
 
