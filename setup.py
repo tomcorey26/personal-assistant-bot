@@ -73,7 +73,7 @@ def update_modules():
     print("installing tweepy")
     install('tweepy')
 
-    print("instaslling newspaper3k")
+    print("installing newspaper3k")
     install('newspaper3k')
 
 #create the initial user data
