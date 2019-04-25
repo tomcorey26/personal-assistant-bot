@@ -1,5 +1,6 @@
 import subprocess
 import json
+from sys import version_info
 
 #create guest variable
 is_guest = False
@@ -10,100 +11,70 @@ def install(name):
 
 def update_modules():
     #update pip if necessary
+    print("updating pip")
     install("pip")
 
     #install various necessary modules
-    try:
-        import darksky
-    except ImportError:
-        install('darkskylib')
-    try:
-        import uszipcode
-    except ImportError:
-        install('uszipcode')
-    try:
-        import kivy
-    except ImportError:
-        install('docutils pygments pypiwin32 kivy.deps.sdl2 kivy.deps.glew')
-        install('kivy.deps.angle')
-        install('kivy')
-    try:
-        import pyaudio
-    except ImportError:
-        install('pyaudio')
-    try:
-        import speech_recognition
-    except ImportError:
-        install('SpeechRecognition')
-    try:
-        import gtts
-    except ImportError:
-        install('gtts')
-    try:
-        import pyttsx3
-    except ImportError:
-        install('pyttsx3')
-    try:
-        import keyboard
-    except ImportError:
-        install('keyboard')
-    try:
-        import googlesearch
-    except ImportError:
-        install("beautifulsoup4")
-        install("google")
-    try:
-        import pizzapi
-    except ImportError:
-        install('pizzapi')
+    print("installing Darksky")
+    install('darkskylib')
 
-    try:
-        import pizzapy
-    except ImportError:
-        install('git+https://github.com/Magicjarvis/pizzapi.git')
-    try:
-        import newspaper
-    except ImportError:
-        install('newspaper3k')
-    try:
-        import praw
-    except ImportError:
-        install('praw')
-    try:
-        import recipe_scrapers
-    except ImportError:
-        install("git+git://github.com/hhursev/recipe-scrapers.git")
-    try:
-        import geocoder
-    except ImportError:
-        install('geocoder')
-    try:
-        import openrouteservice
-    except ImportError:
-        install("openrouteservice")
-    try:
-        import nltk
-        install('nltk')
-        nltk.download('punkt')
-        nltk.download('stopwords')
-        nltk.download('averaged_perceptron_tagger')
-        nltk.download('maxent_ne_chunker')
-        nltk.download('words')
-        nltk.download('brown')
-        nltk.download('maxent_treebank_pos_tagger')
-        nltk.download('wordnet')
-    except ImportError:
-        install('nltk')
-        import nltk
-        install('nltk')
-        nltk.download('punkt')
-        nltk.download('stopwords')
-        nltk.download('averaged_perceptron_tagger')
-        nltk.download('maxent_ne_chunker')
-        nltk.download('words')
-        nltk.download('brown')
-        nltk.download('maxent_treebank_pos_tagger')
-        nltk.download('wordnet')
+    print("installing uszipcode")
+    install('uszipcode')
+
+    print("installing kivy")
+    install('docutils pygments pypiwin32 kivy.deps.sdl2 kivy.deps.glew')
+    install('kivy.deps.angle')
+    install('kivy')
+
+    print("installing pyaudio")
+    #need to install from a custom wheel if python version 3.7
+    if (version_info[0] == 3 and version_info[1] == 7):
+        install('PyAudio-0.2.11-cp37-cp37m-win32.whl')
+    else:
+        install('pyaudio')
+
+    print("installing speech_recognition")
+    install('SpeechRecognition')
+
+    print("installing gtts")
+    install('gtts')
+
+    print("installing pyttsx3")
+    install('pyttsx3')
+
+    print("installing keyboard")
+    install('keyboard')
+
+    print("installing googlesearch")
+    install("beautifulsoup4")
+    install("google")
+
+    print("installing pizzapi")
+    install('pizzapi')
+
+    print("installing pizzapy")
+    install('git+https://github.com/Magicjarvis/pizzapi.git')
+
+    print("installing praw")
+    install('praw')
+
+    print("installing recipe_scrapers")
+    install("git+git://github.com/hhursev/recipe-scrapers.git")
+
+    print("installing geocoder")
+    install('geocoder')
+
+    print("installing openrouteservice")
+    install("openrouteservice")
+
+    print("installing nltk")
+    install('nltk')
+
+    print("installing tweepy")
+    install('tweepy')
+
+    print("installing newspaper3k")
+    install('newspaper3k')
 
 #create the initial user data
 def initial_data():
@@ -168,5 +139,6 @@ def del_guest():
 
 def main():
     update_modules()
-    user_data = initial_data()
-    write_data(user_data)
+
+if __name__ == "__main__":
+    main()

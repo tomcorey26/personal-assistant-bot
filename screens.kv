@@ -11,6 +11,7 @@
 	SettingsScreen:
 	PizzaScreen:
 	RecipeScreen:
+	NewsScreen:
 
 <CalendarScreen>:
 	name: "Calendar"
@@ -107,10 +108,10 @@
 
 	#variables for the buttons/labels/images
 	location_input: _loc_Input
-	humidity_button: humidButton
-	temp_button: tempButton
-	summary_button: summButton
-	image_button: imageButton
+	daily_button: dailyButton
+	currently_button: currentlyButton
+	hourly_button: hourlyButton
+	##simage_button: imageButton
 	city_label: _city_label
 
 	BoxLayout:
@@ -138,7 +139,7 @@
 				width: 120
 			UserInput:
 				id: _loc_Input
-				hint_text: "Enter zipcode, city, or city/state here"
+				hint_text: "Enter ZIP code, city, or city/state here"
 				on_text_validate: root.getWeather()
 
 		Button:
@@ -149,30 +150,34 @@
 
 		Label:
 			id: _city_label
-			text: "Enter a location above to get the weather"
+			text: "Enter a location above to get the weather\nPowered by Dark Sky"
 			size_hint_y: None
-			height: 60
+			height: 50
 
 		GridLayout:
-			rows: 2
+			rows: 1
 
 			Button:
-				id: tempButton
+				id: currentlyButton
 				background_color: .5, .5, 1, 1
-				text: "Temperature"
+				text: "Current\nConditions"
+				halign: "center"
 			Button:
-				id: summButton
-				text: "Summary"
+				id: hourlyButton
+				text: "Hourly\nForecast"
 				background_color: .5, .5, 1, 1
-			Button:
-				id: humidButton
-				text: "Humidity"
-				background_color: .5, .5, 1, 1
-			Button:
-				id: imageButton
-				text: "Image"
-				background_color: .5, .5, 1, 1
+				halign: "center"
+		GridLayout:
+		    rows: 1
 
+			Button:
+				id: dailyButton
+				halign: "left"
+				valign: "top"
+				text: "Weekly Summary"
+
+				background_color: .5, .5, 1, 1
+				
 <TwitterScreen>:
 	name: "Twitter"
 	twitter_input: _twitter_username
@@ -247,6 +252,8 @@
 
 <FishScreen>:
 	name: "Fishing"
+	
+	wiki_button: _wiki_button
 
 	BoxLayout:
 		orientation: "vertical"
@@ -273,6 +280,9 @@
 			Button:
 				text: "View Totals"
 				on_press: root.view_fish_tally()
+			Button:
+				id: _wiki_button
+				text: "View Wiki"
 	
 	Image:
 		id: _fish_image
@@ -722,6 +732,40 @@
 		height: self.width
 		color: 1, 1, 1, 0.2
 
+<NewsScreen>:
+	name: "News"
+	news_input: _news_source
+	top_articles: _news_results
+	BoxLayout:
+		orientation: "vertical"
+		canvas.before:
+			Color:
+				rgba: 1, .2, 0, 1
+			Rectangle:
+				pos: self.pos
+				size: self.size		
+
+		Label:
+			text: "News screen"
+			size_hint_y: None
+			height: 30
+
+		UserInput:
+			id: _news_source
+			size_hint_x: 0.9
+			hint_text: "Enter a news source here"
+			on_text_validate: root.getNews()
+
+		TextInput:
+			id: _news_results
+			readonly: True
+
+
+	Image:
+		source: "images/news.png"
+		size_hint_y: None
+		height: self.width
+		color: 1, 1, 1, 0.2
 				
 <LoginPopup>:
 	title: 'Log In' 

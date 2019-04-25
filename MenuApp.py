@@ -17,9 +17,11 @@ from kivy.uix.popup import Popup
 from kivy.properties import ListProperty, NumericProperty
 from kivy.uix.dropdown import DropDown
 from kivy.uix.label import Label
+from kivy.uix.image import Image
+import webbrowser
+
 
 #import all of the local python files that the group created
-from sampleParser import memeParserXD as mp
 import time
 
 #imports for fish file
@@ -29,7 +31,7 @@ import calendar_events as events
 import RedditApi
 
 #weather import statements
-from weather import Forecasts
+import weather
 from datetime import date, timedelta
 import location_to_coords
 
@@ -41,6 +43,11 @@ import setup
 import TwitterApi
 import command_output
 import directions
+import News
+
+#Twitter/Reddit error handling
+import tweepy
+import prawcore
 
 Builder.load_file('menubar.kv')
 Builder.load_file('chatwindow.kv')
@@ -53,7 +60,13 @@ class MenuContainer(AnchorLayout):
         super(MenuContainer, self).__init__(**kwargs)
 
         #load the login popup when the app starts
-        Clock.schedule_once(LoginPopup().open, 0)
+        Clock.schedule_once(self.getStartupPopup, 0)
+
+    def getStartupPopup(self, inst):
+        pop = Popup(title='Welcome to SalmonBot!', title_align='center',content=Image(source='images/MainLogo.png'),
+            size_hint=(None,None), height=400, width=400)
+        pop.open()
+
 
 class MenuManager(ScreenManager):
 
@@ -144,67 +157,133 @@ class AddEventPopup(Popup):
 class WeatherScreen(Screen):
 
     def getWeather(self):
-        
-        #save the string from the textbox and set the textbox to empty
+
+        # save the string from the textbox and set the textbox to empty
         location = self.location_input.text
         self.location_input.text = ""
 
-        #convert the location into latitude and longitude
-
+        # convert the location into latitude and longitude
         latitude, longitude, cityname = location_to_coords.main(location)
 
-
-        #if the city isn't found, let the user know of the error
+        # if the city isn't found, let the user know of the error
         if cityname == 'Unrecognized location':
             self.location_input.hint_text = "Error, location not found"
             self.location_input.hint_color = (1, .3, .3, 1)
 
-        #otherwise, print out the current weather for that city
+        # otherwise, print out the current weather for that city
         else:
-            
-            #reset the userinput hint, in case they had an error before
-            self.location_input.hint_text = "Enter zipcode, city, or city/state"
+
+            # reset the userinput hint, in case they had an error before
+            self.location_input.hint_text = "Enter ZIP code, city, or city/state"
             self.location_input.hint_color = (.2, .2, .2, 1)
-            
-            #display the name of the city
-            self.city_label.text = "Weather for " + cityname + ":"
-            
-            #display the city's weather
 
-            forecast = Forecasts(latitude, longitude, date, timedelta)
-            
-            temperature, summary, dewPoint, humidity, wind, windBearing, pressure, ozone, icon = forecast.hourlyForecast()
+            # display the name of the city
+            self.city_label.text = f"Weather for {cityname}:"
 
-            print(humidity)
+            # display the city's weather
+            ##  i have no idea: forecast = weather.Forecasts(lat, lng, date, timedelta)
+            # i think what I should do is craft the main function to return each list of dictionaries.
 
-            degree_sign= u'\N{DEGREE SIGN}'
-            
-            self.temp_button.text = "Temperature:\n" + str(temperature) + degree_sign + "F"
-            self.summary_button.text = "Summary:\n" + str(summary)
-            self.image_button.text = "imageurl:\n" + str(icon) + ".png"
-            self.humidity_button.text = "Humidity:\n" + humidity + "%"
+            #  will use daily_forecast, hourly_forecast, current_conditions = weather.getCurrentget_weather(latitude, longitude)
+            daily_forecast, hourly_forecast, current_conditions = weather.get_weather(latitude, longitude)
+            """
+            # temp, summ, icon, humid = weather.getCurrentget_weather(latitude, longitude)
+            for i in daily_forecast:
+                hey = ('{day}: {summary} Temp range: {tempMin} - {tempMax}'.format(**i))
+
+            self.temp_button.text = hey
+            """
+
+
+            #temp, summ, icon, humid = weather.getCurrentget_weather(latitude, longitude)
+            self.currently_button.text = "Current Conditions\n\n"\
+                f"{current_conditions.get('temp')} °F\n" \
+                f"(Feels like {current_conditions.get('feelsLike')} °F)\n" \
+                f"{current_conditions.get('hourSummary')}\n" \
+                f"{current_conditions.get('windBearing')} winds at " \
+                f"{current_conditions.get('windSpeed')} mph\n" \
+                f"{current_conditions.get('windGust')} mph gusts\n" \
+                f"Visibility: {current_conditions.get('visibility')} miles\n" \
+                f"UV Index: {current_conditions.get('uvIndex')}\n " \
+                f"{current_conditions.get('cloudCover')}% cloud cover" \
+
+            # Gets the weather icon from the weatherflaticons folder
+            self.currently_button.background_normal = f"images\weatherflaticons\{current_conditions.get('icon')}.png"
+            self.currently_button.background_down = f"images\weatherflaticons\{current_conditions.get('icon')}.png"
+
+            self.hourly_button.halign = "left"
+            self.hourly_button.font_size = 11
+            self.hourly_button.text = f"                 Hourly Forecast\n\n" \
+                f"{hourly_forecast[0].get('hour')}:00 {hourly_forecast[0].get('summary')}, {hourly_forecast[0].get('temp')}°F, {hourly_forecast[0].get('windSpeed')}mph {hourly_forecast[0].get('windBearing')}\n" \
+                f"{hourly_forecast[1].get('hour')}:00 {hourly_forecast[1].get('summary')}, {hourly_forecast[1].get('temp')}°F, {hourly_forecast[1].get('windSpeed')}mph {hourly_forecast[1].get('windBearing')}\n" \
+                f"{hourly_forecast[2].get('hour')}:00 {hourly_forecast[2].get('summary')}, {hourly_forecast[2].get('temp')}°F, {hourly_forecast[2].get('windSpeed')}mph {hourly_forecast[2].get('windBearing')}\n" \
+                f"{hourly_forecast[3].get('hour')}:00 {hourly_forecast[3].get('summary')}, {hourly_forecast[3].get('temp')}°F, {hourly_forecast[3].get('windSpeed')}mph {hourly_forecast[3].get('windBearing')}\n" \
+                f"{hourly_forecast[4].get('hour')}:00 {hourly_forecast[4].get('summary')}, {hourly_forecast[4].get('temp')}°F, {hourly_forecast[4].get('windSpeed')}mph {hourly_forecast[4].get('windBearing')}\n" \
+                f"{hourly_forecast[5].get('hour')}:00 {hourly_forecast[5].get('summary')}, {hourly_forecast[5].get('temp')}°F, {hourly_forecast[5].get('windSpeed')}mph {hourly_forecast[5].get('windBearing')}\n" \
+                f"{hourly_forecast[6].get('hour')}:00 {hourly_forecast[6].get('summary')}, {hourly_forecast[6].get('temp')}°F, {hourly_forecast[6].get('windSpeed')}mph {hourly_forecast[6].get('windBearing')}\n" \
+                f"{hourly_forecast[7].get('hour')}:00 {hourly_forecast[7].get('summary')}, {hourly_forecast[7].get('temp')}°F, {hourly_forecast[7].get('windSpeed')}mph {hourly_forecast[7].get('windBearing')}\n" \
+                f"{hourly_forecast[8].get('hour')}:00 {hourly_forecast[8].get('summary')}, {hourly_forecast[8].get('temp')}°F, {hourly_forecast[8].get('windSpeed')}mph {hourly_forecast[8].get('windBearing')}\n" \
+                f"{hourly_forecast[9].get('hour')}:00 {hourly_forecast[9].get('summary')}, {hourly_forecast[9].get('temp')}°F, {hourly_forecast[9].get('windSpeed')}mph {hourly_forecast[9].get('windBearing')}\n" \
+                f"{hourly_forecast[10].get('hour')}:00 {hourly_forecast[10].get('summary')}, {hourly_forecast[10].get('temp')}°F, {hourly_forecast[10].get('windSpeed')}mph {hourly_forecast[10].get('windBearing')}" \
+
+            # Fills in the Weekly Forecast section
+            self.daily_button.font_size = 11.5
+            self.daily_button.text = f"Tomorrow: {daily_forecast[1].get('summary')}\n    High of {daily_forecast[1].get('tempHigh')}°F and low of {daily_forecast[1].get('tempLow')}°F.  Winds {daily_forecast[1].get('windBearing')} at {daily_forecast[1].get('windSpeed')} mph with gusts of {daily_forecast[1].get('windGust')} mph.\n" \
+                f"{daily_forecast[2].get('day')}: {daily_forecast[2].get('summary')}\n    High of {daily_forecast[2].get('tempHigh')}°F and low of {daily_forecast[2].get('tempLow')}°F.  Winds {daily_forecast[2].get('windBearing')} at {daily_forecast[2].get('windSpeed')} mph with gusts of {daily_forecast[2].get('windGust')} mph.\n" \
+                f"{daily_forecast[3].get('day')}: {daily_forecast[3].get('summary')}\n    High of {daily_forecast[3].get('tempHigh')}°F and low of {daily_forecast[3].get('tempLow')}°F.  Winds {daily_forecast[3].get('windBearing')} at {daily_forecast[3].get('windSpeed')} mph with gusts of {daily_forecast[3].get('windGust')} mph.\n" \
+                f"{daily_forecast[4].get('day')}: {daily_forecast[4].get('summary')}\n    High of {daily_forecast[4].get('tempHigh')}°F and low of {daily_forecast[4].get('tempLow')}°F.  Winds {daily_forecast[4].get('windBearing')} at {daily_forecast[4].get('windSpeed')} mph with gusts of {daily_forecast[4].get('windGust')} mph.\n" \
+                f"{daily_forecast[5].get('day')}: {daily_forecast[5].get('summary')}\n    High of {daily_forecast[5].get('tempHigh')}°F and low of {daily_forecast[5].get('tempLow')}°F.  Winds {daily_forecast[5].get('windBearing')} at {daily_forecast[5].get('windSpeed')} mph with gusts of {daily_forecast[5].get('windGust')} mph.\n" \
+                f"{daily_forecast[6].get('day')}: {daily_forecast[6].get('summary')}\n    High of {daily_forecast[6].get('tempHigh')}°F and low of {daily_forecast[6].get('tempLow')}°F.  Winds {daily_forecast[6].get('windBearing')} at {daily_forecast[6].get('windSpeed')} mph with gusts of {daily_forecast[6].get('windGust')} mph.\n" \
+                f"{daily_forecast[7].get('day')}: {daily_forecast[7].get('summary')}\n    High of {daily_forecast[7].get('tempHigh')}°F and low of {daily_forecast[7].get('tempLow')}°F.  Winds {daily_forecast[7].get('windBearing')} at {daily_forecast[7].get('windSpeed')} mph with gusts of {daily_forecast[7].get('windGust')} mph."
+
+            # Include precipitation with {daily_forecast[1].get('precipProb')}% chance precipitation.
 
 class TwitterScreen(Screen):
 
     def getTweets(self):
+        
         user = self.twitter_input.text
+        self.recent_tweets.text = "\n"
 
-        self.recent_tweets.text = ""
+        #try/except handles user not found
+        try:
 
-        twitter = TwitterApi.TwitterScrape(5, user)
-        posts = twitter.grabRecentPosts()
-        for status in posts:
-            self.recent_tweets.text += status.text + '\n'
+            #Selected users last 5 tweets printed to gui
+            twitter = TwitterApi.TwitterScrape(5, user)
+            posts = twitter.grabRecentPosts()
+            for status in posts:
+                self.recent_tweets.text += user + ":\n" + status.text + "\n\n"
+
+        except tweepy.error.TweepError:
+
+            #Twitter user doesn't exist
+            self.recent_tweets.text = "user not found"
+        
 
 class RedditScreen(Screen):
 
     def getPosts(self):
-        posts = RedditApi.redditPosts(5, self.subreddit_input.text)
 
-        self.top_posts.text = ""
-        
-        for (name, url) in posts.items():
-            self.top_posts.text += (name + "\n" + url + "\n\n")
+        #Try/except handles subreddit not found
+        try:
+
+            #Top 5 selected subeddit posts printed to gui
+            posts = RedditApi.redditPosts(5, self.subreddit_input.text)
+            self.top_posts.text = "\n"
+            for (name, url) in posts.items():
+                self.top_posts.text += (name + "\n" + url + "\n\n")
+                
+        except prawcore.exceptions.Redirect:
+
+            #Subreddit not found- Redirected
+            self.top_posts.text = "Subreddit not found"
+
+        except prawcore.exceptions.NotFound:
+
+            #Subreddit not found- 404 error
+            self.top_posts.text = "Subreddit not found"
+
+            
 
 class FishScreen(Screen):
 
@@ -229,9 +308,9 @@ class FishScreen(Screen):
 
         #dictionary of the image URL's
         #TODO find a better way to implement these
-        fishImages = {1: "Trout.png", 2: "Salmon.png", 3:"Crayfish.png", 4:"Minnow.png",
+        fishImages = {1: "Trout.png", 2: "Salmon.png", 3:"Crayfish.png", 4:"Shark.png",
                       5: "Boots.png", 6: "Lobster.png", 7: "Sardine.png", 8: "Mackerel.png",
-                      9: "sadFace.png",0: "Seaweed.png"} 
+                      9: "Crab.png",0: "Seaweed.png"} 
 
         #get the url for the image
         image = fishImages.get(fishID)
@@ -239,6 +318,8 @@ class FishScreen(Screen):
         #update the fish tally
         if (catch.number < 10):
             self.fish_tally[catch.number] += 1
+
+        self.wiki_button.bind(on_press= partial(webbrowser.open, wikiURL))
 
         #if the fishID doesn't have an image, just default to seaweed for now
         if image == None:
@@ -253,12 +334,12 @@ class FishScreen(Screen):
                         + "\nTrout: " + str(self.fish_tally[1]) \
                         + "\nSalmon: " + str(self.fish_tally[2]) \
                         + "\nCrayfish: " + str(self.fish_tally[3]) \
-                        + "\nMinnow: " + str(self.fish_tally[4]) \
+                        + "\nShark: " + str(self.fish_tally[4]) \
                         + "\nBoots: " + str(self.fish_tally[5]) \
                         + "\nLobster: " + str(self.fish_tally[6]) \
                         + "\nSardine: " + str(self.fish_tally[7]) \
                         + "\nMackerel: " + str(self.fish_tally[8]) \
-                        + "\nFinger: " + str(self.fish_tally[9])
+                        + "\nCrab: " + str(self.fish_tally[9])
 
         #TODO create a popup that prints this string
         popup = Popup(size_hint=(None, None), size=(300, 300), title="Total Fish Tally")
@@ -435,7 +516,7 @@ class RecipeScreen(Screen):
             #get the ingredients for the recipe
             ingredients = recipe_finder.main(self.meal_keyword.text)
 
-            #update the panel with teh recipe info
+            #update the panel with the recipe info
             self.meal_label.text = "Recipe for " + self.meal_keyword.text + ":"
             self.ingredient_box.text = ingredients
             self.meal_keyword.hint_text = ("Enter the meal you want to make here")
@@ -445,9 +526,45 @@ class RecipeScreen(Screen):
             self.meal_keyword.hint_text = "Error: not specific enough"
         
 class DirectionsScreen(Screen):
+    
     def getDirections(self):
-        dir_str = directions.locate(self.destination_input.text)
-        self.direction_box.text = dir_str
+      
+        try:
+            #Get the directions and then update the panel
+            dir_str = directions.locate(self.destination_input.text)
+            self.direction_box.text = dir_str
+  
+        except:
+            #Directions not found/invalid input
+            self.direction_box.text = "Please enter a valid destination."
+
+class NewsScreen(Screen):
+
+    def getNews(self):
+
+        #Construct the source/ TODO is this used?
+        source = self.news_input.text
+        if ".com" not in source:
+            source = source + ".com"
+        source = "http://www." + source
+
+        try:
+            #Get the news
+            articles = News.getTheNews(source)
+
+            #Clear the panel
+            self.top_articles.text = ""
+
+            #Update the panel
+            for i in range(5):
+                self.top_articles.text += ("Title: " + articles[0][i] + "\n")
+                for author in articles[1][i]:
+                    self.top_articles.text += ("Author: " + author + " ")
+                self.top_articles.text += "\n\n"
+
+        except:
+            #Invalid input
+            self.top_articles.text = "Please enter a news topic to search for." 
 
 class LoginPopup(Popup):
 
@@ -496,14 +613,13 @@ class ChatWindow(AnchorLayout):
     #use output_command here instead of the MemeParserXD class
 
     def getResponse(self, inputString, dt):
-        self.text_log.text += ("bot: " + mp.parse(self, inputString) + '\n\n')
 
         # TODO only use the command_output file once all commands work
-        # try:
-        #     self.text_log.text += ("command_output: " + command_output.commands(inputString) + "\n\n")
-        # except:
-        #     self.text_log.hint_text = "Error: command not recognized"
-        #     self.text_input.text = ""
+        try:
+            self.text_log.text += ("Bot: " + command_output.commands(inputString) + "\n\n")
+        except:
+            self.text_input.hint_text = "Error: command not recognized"
+            self.text_input.text = ""
             
         self.text_input.focus = True
 

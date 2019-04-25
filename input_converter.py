@@ -12,11 +12,14 @@ def myCommand():
     #listens to microphone audio
     with sr.Microphone() as source:
         print("Ready...")
-        r.pause_threshold = 1
-        r.adjust_for_ambient_noise(source, duration=1)
-        audio = r.listen(source)
+        #time between pauses to cut off a statement
+        r.pause_threshold = 0.6
+        #take "duration" seconds to establish a threshold for background noise levels before listening
+        r.adjust_for_ambient_noise(source, duration=0.8)
+        #get the audio from the user; listen for "duration" seconds
+        audio = r.record(source, duration=4.0)
 
-    #attemptd to process that audio into text
+    #attempt to process that audio into text
     try:
         command = r.recognize_google(audio).lower()
         print('You said: ' + command + '\n')
@@ -24,7 +27,7 @@ def myCommand():
     #loop back to continue to listen for commands if unrecognizable speech is received
     except sr.UnknownValueError:
         print('Your last command couldn\'t be heard')
-        command = myCommand()
+        return ""
 
     return command
 
@@ -37,23 +40,23 @@ def phrase_conversion(tagged_chunks):
 def convert_text(input):
     #separate the sentence into words and punctuation
     tokens = nltk.word_tokenize(input)
-    print(tokens)
+    #print(tokens)
 
     #remove useless words (and, is, the, a, etc.)
     stop_words = set(nltk.corpus.stopwords.words('english'))
     clean_tokens = [w for w in tokens if not w in stop_words]
-    print("clean: ", clean_tokens)
+    #print("clean: ", clean_tokens)
 
     #tag remaining words with parts of speech
     tagged = nltk.pos_tag(tokens)
-    print("Tagged: ", tagged)
+    #print("Tagged: ", tagged)
 
     #chunk common phrases using a chunk grammar
     grammar = "CM: {<VB>|<CD>|<JJ.*>*<NN.*>+}"
     cp = nltk.RegexpParser(grammar)
     #using the pattern in the grammer, chunks are put into noun phrases
     result = cp.parse(tagged)
-    print("Chunked: ", result)
+    #print("Chunked: ", result)
 
     #combine separated noun phrases into full strings
     phrases = []
