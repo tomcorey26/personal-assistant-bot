@@ -1,4 +1,5 @@
 import subprocess
+import struct
 import json
 from sys import version_info
 
@@ -28,8 +29,13 @@ def update_modules():
 
     print("installing pyaudio")
     #need to install from a custom wheel if python version 3.7
-    if (version_info[0] == 3 and version_info[1] == 7):
-        install('PyAudio-0.2.11-cp37-cp37m-win32.whl')
+    #check for 32 bit or 64 bit
+    py_vers = struct.calcsize("P") * 8
+    if (version_info[0] == 3) and (version_info[1] == 7):
+        if py_vers == 32:
+            install('PyAudio-0.2.11-cp37-cp37m-win32.whl')
+        elif py_vers == 64:
+            install('PyAudio-0.2.11-cp37-cp37m-win_amd64.whl')
     else:
         install('pyaudio')
 
