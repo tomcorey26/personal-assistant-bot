@@ -33,8 +33,10 @@ def update_modules():
     py_vers = struct.calcsize("P") * 8
     if (version_info[0] == 3) and (version_info[1] == 7):
         if py_vers == 32:
+            print("32 bit version detected")
             install('PyAudio-0.2.11-cp37-cp37m-win32.whl')
         elif py_vers == 64:
+            print('64 bit version detected')
             install('PyAudio-0.2.11-cp37-cp37m-win_amd64.whl')
     else:
         install('pyaudio')
