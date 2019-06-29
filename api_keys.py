@@ -1,6 +1,4 @@
 
-#open weather API
-OPEN_WEATHER_KEY = '4e0b0a70bcacb5de5b14339ddc82b11d'
 
 #dark sky weather api
 DARK_SKY_KEY = 'ce4149755b8988664a910e0ba7f9e5d1'
